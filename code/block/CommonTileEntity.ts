@@ -17,12 +17,13 @@ abstract class CommonTileEntity implements TileEntity {
     remove: boolean;
     noupdate: boolean;
     useNetworkItemContainer?: boolean;
-    events?: {
-        [packetName: string]: (packetData: any, packetExtra: any, connectedClient: NetworkClient) => void;
-    };
-    containerEvents?: {
-        [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow | null, windowContent: UI.WindowContent | null, eventData: any) => void;
-    };
+    events: { 
+        [packetName: string]: (packetData: any, packetExtra: any) => void; 
+    } = {};
+
+    containerEvents?: { 
+        [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void; 
+    } = {};
     client?: LocalTileEntity;
 
     public created(): void {}
@@ -85,7 +86,6 @@ class TestLocal extends LocalTileEntity {
 }
 
 class Test extends CommonTileEntity {
-
     tick() {
         return this.sendPacket("msg", {});
     }

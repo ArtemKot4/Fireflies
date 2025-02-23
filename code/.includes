@@ -3,6 +3,14 @@ translations.js
 header.ts
 MathHelper.ts
 
+render/RenderHelper.ts
+
+animation/RenderSide.ts
+animation/BlockAnimation.ts
+
+ui/Keyboard.ts
+ui/UIHelper.ts
+
 WorldSaves.ts
 
 Vector3.ts

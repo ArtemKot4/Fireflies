@@ -46,7 +46,7 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
                 const obj = {
                     entities: [],
                     players: [],
-                    caller: [client.getPlayerUid()]
+                    caller: client.getPlayerUid()
                 };
 
                 if(typeof Number(value) !== "number") {
@@ -147,5 +147,17 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
 
     protected sendToAllClients(data: T): void {
         Network.sendToAllClients("packet.command.client." + this.caller, data);
+    };
+};
+
+class TestServerCommand extends ServerCommand<ICommandParams> {
+    constructor() {
+        super("hello", {
+            "initiator": "number"
+        });
+    };
+
+    public onServer(client: NetworkClient, data: ICommandParams) {
+        return this.sendMessageToClient(client, "Список сущностей: " + JSON.stringify(data.initiator.entities) + ", игроков: " + JSON.stringify(data.initiator.players) + ", вызвавшего: " + data.initiator.caller)
     };
 };

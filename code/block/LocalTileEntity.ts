@@ -1,4 +1,11 @@
 abstract class LocalTileEntity implements TileEntity.LocalTileEntityPrototype {
+        events: { 
+            [packetName: string]: (packetData: any, packetExtra: any) => void; 
+        } = {};
+
+        containerEvents?: { 
+            [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void; 
+        } = {};
         /**
          * Called when the client copy is created.
          * @since 2.0.2b29

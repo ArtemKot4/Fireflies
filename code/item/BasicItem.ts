@@ -47,7 +47,7 @@ interface IGlintItem {
 
 type ItemParams = Item.ItemParams | Item.FoodParams | Item.ArmorParams;
 
-class BasicItem {
+class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
     public static handFunctions: Map<number, (item: ItemInstance, playerUid: number) => void> = new Map();
 
     public maxStack: number = 64;
@@ -56,8 +56,8 @@ class BasicItem {
     public id: number;
     public stringID: string;
 
-    public constructor(stringID: string, texture: IItemTextureDescription, params: ItemParams);
-    public constructor(stringID: string, texture: IItemTextureDescription, stack: number | ItemParams = 64, params?: ItemParams) {
+    public constructor(stringID: string, texture: IItemTextureDescription, params: T);
+    public constructor(stringID: string, texture: IItemTextureDescription, stack: number | T = 64, params?: T) {
         this.id = IDRegistry.genItemID(stringID);
  
         const isStack = typeof stack === "number";

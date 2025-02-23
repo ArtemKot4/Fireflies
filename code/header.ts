@@ -1,11 +1,4 @@
-LIBRARY({
-    name: "ICHelper",
-    version: 1,
-    shared: true,
-    api: "CoreEngine"
-});
-
-namespace Utils {
+namespace SquidUtils {
     export function setEmptyBlockCollision(id: number) {
         const render = new ICRender.Model();
         const model = BlockRenderer.createModel();
@@ -87,3 +80,5 @@ enum EDestroyLevel {
     DIAMOND = 3,
     OBSIDIAN = 4
 };
+
+alert("Library SquidCore has been loaded");

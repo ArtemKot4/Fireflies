@@ -48,15 +48,15 @@ class BasicBlock {
     public readonly id: number;
     public readonly stringID: string;
 
-    public constructor(stringID: string, variationList: Block.BlockVariation[] = [{
-        inCreative: true,
-        name: `block.${stringID}`,
-        texture: [[stringID, 0]]
-    }]) {
+    public constructor(stringID: string, variationList?: Block.BlockVariation[]) {
         this.id = IDRegistry.genBlockID(stringID);
 
         this.stringID = stringID;
-        this.variationList = variationList;
+        this.variationList = variationList || [{
+            inCreative: true,
+            name: `block.${stringID}`,
+            texture: [[stringID, 0]]
+        }];
 
         this.build();
     };
@@ -263,7 +263,7 @@ class BasicBlock {
 
     public getDestroyLevel(): EDestroyLevel {
         return EDestroyLevel.STONE;
-    }
+    };
 
     public getCreativeGroup?(): string;
 
@@ -271,7 +271,7 @@ class BasicBlock {
 
     public setTileEntity(tileEntity: CommonTileEntity) {
         TileEntity.registerPrototype(this.id, tileEntity);
-    }
+    };
 
     public isSolid?(): boolean;
 

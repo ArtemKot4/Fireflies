@@ -10,6 +10,6 @@ interface ICommandParams {
     initiator?: {
         entities: number[] | [],
         players: number[] | [],
-        caller: [number]
+        caller: number
     };
 };
