@@ -58,7 +58,7 @@ abstract class CommonTileEntity implements TileEntity {
     };
 
     public destroy(): boolean | void {
-        return this.onDestroyTile();
+        return this.onDestroyTile() || false;
     };
 
     public tick(): void {
@@ -88,8 +88,8 @@ abstract class CommonTileEntity implements TileEntity {
     };
 
     public requireMoreLiquid(liquid: string, amount: number): void {};
-    public sendPacket: (name: string, data: object) => void;
-    public sendResponse:(packetName: string, someData: object) => void;
+    public sendPacket: (name: string, data: object) => {};
+    public sendResponse:(packetName: string, someData: object) => {};
 
     public selfDestroy(): void {
         TileEntity.destroyTileEntityAtCoords(this.x, this.y, this.z);
@@ -104,6 +104,7 @@ abstract class CommonTileEntity implements TileEntity {
 
         if(localTileEntity != null) {
             this.client = localTileEntity;
+            Game.message(JSON.stringify(Object.keys(localTileEntity.events))); //debug
         };
     };
 };
@@ -111,7 +112,7 @@ abstract class CommonTileEntity implements TileEntity {
 class TestLocal extends LocalTileEntity {
     @NetworkEvent
     public msg() {
-        Game.message("lol");
+        Game.message("msg lol");
     };
 
     public onTick(): boolean | void {
@@ -122,11 +123,12 @@ class TestLocal extends LocalTileEntity {
 };
 
 class Test extends CommonTileEntity {
-    public override onTick() {
-        this.sendPacket("msg", {});
+    public onTick() {
+
         if(World.getThreadTime() % 20 === 0) {
             Game.message("hi");
         };
+
         return;
     };
     
@@ -135,7 +137,9 @@ class Test extends CommonTileEntity {
     };
 
     public onClick(item: ItemStack, coords: Callback.ItemUseCoordinates, player: number): boolean | void {
-        Game.message("click!")
+        Game.message("click!");
+        this.sendPacket("msg", {});
+        return;
     }
 };
 

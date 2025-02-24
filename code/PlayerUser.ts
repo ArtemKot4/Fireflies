@@ -210,4 +210,20 @@ class PlayerUser {
     public getName(): string {
         return Entity.getNameTag(this.getUid());
     };
+
+    public decrease(count: number) {
+        const stack = this.getInventorySlot(this.getSelectedSlot());
+
+        this.setInventorySlot(this.getSelectedSlot(), stack.id, stack.count - count, stack.data, stack.extra);
+    };
+
+    public clearSlot(slot?: number) {
+        this.setInventorySlot(typeof slot === "number" ? slot : this.getSelectedSlot(), new ItemStack());
+    };
+
+    public clearInventory() {
+        for(let i = 0; i < 36; i++) {
+            this.setInventorySlot(i, new ItemStack());
+        };
+    };
 };

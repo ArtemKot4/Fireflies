@@ -14,7 +14,7 @@ Callback.addCallback("NativeCommand", (command) => {
 
                 const arguments = args.slice(0, Math.min(args.length, arguments_name.length))
                 .reduce<Record<string, any>>((result, currentValue, currentIndex) => {
-                    let res;
+                    let res: unknown = currentValue;
 
                     switch(arguments_type[currentIndex]) {
                         case "boolean": {
@@ -80,9 +80,9 @@ Callback.addCallback("NativeCommand", (command) => {
 
                 const message = Translation.translate("command.not_enough_arguments")
                 .replace("%s", current.require_count.toString())
-                .replace("%d", current.arguments.length.toString());
+                .replace("%d", args.length.toString());
 
-                Game.message(Native.Color.RED + message)
+                Game.message(Native.Color.RED + message);
             };
         };
     };

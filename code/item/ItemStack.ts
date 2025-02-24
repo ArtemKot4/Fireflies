@@ -1,7 +1,7 @@
-class ItemStack {
+class ItemStack implements ItemInstance {
     public id: number;
     public count: number;
-    public data?: number;
+    public data: number;
     public extra?: ItemExtraData;
 
     public constructor();
@@ -15,18 +15,18 @@ class ItemStack {
             this.extra = id.extra;
         } else {
             this.id = id || 0;
-            this.count = count || id ? 64 : 0;
+            this.count = count || (id ? 64 : 0);
             this.data = data;
             this.extra = extra;
         };
     };
 
-    public decrease(count: number = 1) {
+    public decrease(count: number = 1): void {
         this.count = Math.max(this.count - count, 0);
     };
 
-    public increase(count: number = 1, stack_count?: number) {
-        this.count = Math.min(this.count + count, stack_count || 64);
+    public increase(count: number = 1): void {
+        this.count = Math.min(this.count + count, this.getMaxStack());
     };
 
     public equals(stack: ItemStack): boolean {
@@ -51,9 +51,10 @@ class ItemStack {
         return this.id === 0 && this.count === 0 && this.data === 0 && this.extra === null;
     };
 
-    public clear() {
+    public clear(): void {
         this.id = 0;
         this.count = 0;
+
         delete this.data;
         delete this.extra;
     };
@@ -74,7 +75,7 @@ class ItemStack {
         return IDRegistry.getStringIdForIntegerId(this.id);
     };
     
-    public copy() {
+    public copy(): ItemStack {
         return new ItemStack(this.id, this.count, this.data, this.extra);
-    }
+    };
 };

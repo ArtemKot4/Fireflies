@@ -3,15 +3,15 @@ abstract class LocalTileEntity implements TileEntity.LocalTileEntityPrototype {
 
     public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void; } = {};
     public load() {
-        return this.onLoad();
+        this.onLoad();
     };
 
     public unload() {
-        return this.onUnload();
+        this.onUnload();
     };
 
     public tick() {
-        return this.onTick();
+        this.onTick();
     };
 
     public onLoad() {};
