@@ -104,7 +104,6 @@ abstract class CommonTileEntity implements TileEntity {
 
         if(localTileEntity != null) {
             this.client = localTileEntity;
-            Game.message(JSON.stringify(Object.keys(localTileEntity.events))); //debug
         };
     };
 };
@@ -124,11 +123,9 @@ class TestLocal extends LocalTileEntity {
 
 class Test extends CommonTileEntity {
     public onTick() {
-
         if(World.getThreadTime() % 20 === 0) {
             Game.message("hi");
         };
-
         return;
     };
     
@@ -138,6 +135,8 @@ class Test extends CommonTileEntity {
 
     public onClick(item: ItemStack, coords: Callback.ItemUseCoordinates, player: number): boolean | void {
         Game.message("click!");
+        Game.message(JSON.stringify(Object.keys(this.client.events)));
+        
         this.sendPacket("msg", {});
         return;
     }

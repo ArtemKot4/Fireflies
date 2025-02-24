@@ -46,4 +46,5 @@ PlayerUser.ts
 event/ServerPlayerTick.ts
 event/NativeCommand.ts
 
+final.ts
 shared.ts

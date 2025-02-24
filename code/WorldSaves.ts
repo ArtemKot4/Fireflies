@@ -1,8 +1,6 @@
 namespace WorldSaves {
     export const defaultData = {
-        players: {
-            permissions: []
-        }
+        players: {}
     };
 
     export let data = {} as { players: Record<number, typeof defaultData.players & Scriptable> } & Scriptable;
@@ -42,14 +40,14 @@ namespace WorldSaves {
     });
 
     Callback.addCallback("LevelLeft", () => {
-        for(const key in data) {
-            data[key] = null;
+        for(const key in defaultData) {
+            data[key] = defaultData[key];
         };
     });
 
     Saver.addSavesScope("squid_core.world_saves", 
         function read(scope: {data: typeof data}) {
-            WorldSaves.data = scope ? scope.data : WorldSaves.data;
+            WorldSaves.data = scope && scope.data ? scope.data : WorldSaves.data;
         },
         function save() {
             return { data: WorldSaves.data };
@@ -57,6 +55,10 @@ namespace WorldSaves {
     );
 
     Network.addClientPacket("packet.squid_core.set_player_data", (data: {uid: number, data: typeof defaultData.players}) => {
+        WorldSaves.data = WorldSaves.data || {
+            players: {}
+        };
+
         WorldSaves.data[data.uid] = data.data;
     });
 };

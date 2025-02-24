@@ -27,4 +27,4 @@ ModAPI.registerAPI("SquidCore", {
     requireGlobal: function(command: string) {
 		return eval(command);
 	}
-})
+});

@@ -1,7 +1,7 @@
 /**
  * Class to create your client side commands.
  */
-abstract class ClientCommand<T extends ICommandParams> extends Command {
+abstract class ClientCommand<T extends Object> extends Command {
     /**
      * @param caller string name of your command 
      * @param args object of your arguments and types. Use initiator name to create entity vanilla like find argument.
@@ -16,9 +16,4 @@ abstract class ClientCommand<T extends ICommandParams> extends Command {
      * @param data your arguments from client
      */
     abstract onCall(data: T): void;
-
-    /**
-     * Method, works after player send a command in chat in client side.
-     */
-    abstract onCall(): void;
 };
