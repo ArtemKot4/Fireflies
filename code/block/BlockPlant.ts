@@ -9,7 +9,7 @@ abstract class BlockPlant extends BasicBlock implements INeighbourChangeCallback
 
     public constructor(stringID: string, variationList: Block.BlockVariation[]) {
         super(stringID, variationList);
-        SquidUtils.setEmptyBlockCollision(this.id);
+        Utils.setEmptyBlockCollision(this.id);
     };
 
     public override getCreativeGroup(): string {

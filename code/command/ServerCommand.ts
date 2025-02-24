@@ -2,6 +2,7 @@
  * Class to create your server & client side commands
  */
 abstract class ServerCommand<T extends ICommandParams> extends Command {
+    public static initiator_chars = ["s", "p", "a", "e"];
     /**
      * @param caller string name of your command 
      * @param args object of your arguments and types. Use initiator name to create entity vanilla like find argument.
@@ -40,6 +41,7 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
     protected getParsedData(client: NetworkClient, data: T) {
         for(const i in data) {
             const argument_name = i as string;
+
             if(argument_name.startsWith("initiator")) {
                 const value = data[argument_name] as string;
 
@@ -50,33 +52,25 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
                 };
 
                 if(typeof Number(value) !== "number") {
-                    if(!value.startsWith("@")) {
+                    if(!value.startsWith("@") || !ServerCommand.initiator_chars.includes(value[1])) {
                         const error = Translation.translate("command.invalid_search_entities")
                         .replace("%s", argument_name);
                             
                         client.sendMessage(Native.Color.RED + error);
+                        break;
                     };
 
                     switch(value.slice(0, 2)) {
-                        case "@s": {
-                            continue;
-                        };
-                        case "@p": {
-                            continue;
-                        };
                         case "@a": {
-                            const players = Network.getConnectedPlayers()
-                            const list = [];
+                            const players = Network.getConnectedPlayers();
 
                             for(const i in players) {
-                                list.push(Number(players[i]));
+                                obj.players.push(Number(players[i]));
                             };
 
-                            obj.players = list;
                             break;
                         };
                         case "@e": {
-                            let list = null;
                             const blockSource = BlockSource.getDefaultForActor(client.getPlayerUid());
                             const radius = Number(value.slice(3, -1).split("r=")[1]);
 
@@ -84,7 +78,7 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
                                 const position = Entity.getPosition(client.getPlayerUid());
                                 const radius_multipliered = radius * 2;
                                 
-                                list = blockSource.listEntitiesInAABB(
+                                obj.entities = blockSource.listEntitiesInAABB(
                                     position.x - radius, 
                                     position.y - radius, 
                                     position.z - radius, 
@@ -93,14 +87,11 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
                                     position.z + radius_multipliered
                                 );
                             } else {
-                                list = Entity.getAll();
-                            };
-
-                            obj.entities = list;                     
+                                obj.entities = Entity.getAll();
+                            };                   
                         };
                     };
                 };
-
                 data[argument_name] = obj;
             };
         };
@@ -161,3 +152,5 @@ class TestServerCommand extends ServerCommand<ICommandParams> {
         return this.sendMessageToClient(client, "Список сущностей: " + JSON.stringify(data.initiator.entities) + ", игроков: " + JSON.stringify(data.initiator.players) + ", вызвавшего: " + data.initiator.caller)
     };
 };
+
+new TestServerCommand();

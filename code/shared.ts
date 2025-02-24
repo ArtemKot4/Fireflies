@@ -1,6 +1,6 @@
 ModAPI.registerAPI("SquidCore", {
     MathHelper: MathHelper,
-    SquidUtils: SquidUtils,
+    Utils: Utils,
     RenderHelper: RenderHelper,
     RenderSide: RenderSide,
     BlockAnimation: BlockAnimation,
@@ -21,6 +21,8 @@ ModAPI.registerAPI("SquidCore", {
     ServerCommand: ServerCommand,
     CommonTileEntity: CommonTileEntity,
     LocalTileEntity: LocalTileEntity,
+    NetworkEvent: NetworkEvent,
+    ContainerEvent: ContainerEvent,
     WorldSaves: WorldSaves,
     requireGlobal: function(command: string) {
 		return eval(command);

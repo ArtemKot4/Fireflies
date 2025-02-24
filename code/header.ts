@@ -1,4 +1,4 @@
-namespace SquidUtils {
+namespace Utils {
     export function setEmptyBlockCollision(id: number) {
         const render = new ICRender.Model();
         const model = BlockRenderer.createModel();

@@ -20,6 +20,10 @@ command/Command.ts
 command/ClientCommand.ts
 command/ServerCommand.ts
 
+item/ItemStack.ts
+item/ItemHandComponent.ts
+item/BasicItem.ts
+
 block/IBlockModel.ts
 block/BlockModel.ts
 block/BasicBlock.ts
@@ -31,13 +35,13 @@ block/wood/Bark.ts
 block/wood/Hewn.ts
 block/wood/Planks.ts
 
-block/LocalTileEntity.ts
-block/CommonTileEntity.ts
+block/tile_entity/NetworkEvent.ts
+block/tile_entity/ContainerEvent.ts
 
+block/tile_entity/LocalTileEntity.ts
+block/tile_entity/CommonTileEntity.ts
 
-item/ItemStack.ts
-item/ItemHandComponent.ts
-item/BasicItem.ts
+PlayerUser.ts
 
 event/ServerPlayerTick.ts
 event/NativeCommand.ts

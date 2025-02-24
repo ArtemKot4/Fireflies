@@ -152,7 +152,7 @@ class BasicBlock {
         };
 
         if("getTileEntity" in this) {
-            this.setTileEntity(this.getTileEntity());
+            TileEntity.registerPrototype(this.id, this.getTileEntity());
         };
 
         if("getCreativeGroup" in this) {
@@ -161,11 +161,9 @@ class BasicBlock {
         };
 
         if("getDrop" in this) {
-            Block.registerDropFunctionForID(this.id, 
-                (coords, id, data, diggingLevel, enchant, item, region) => {
-                    return this.getDrop(coords, id, data, diggingLevel, enchant, new ItemStack(item), region);
-                }
-            );
+            Block.registerDropFunctionForID(this.id, (coords, id, data, diggingLevel, enchant, item, region) => {
+                return this.getDrop(coords, id, data, diggingLevel, enchant, new ItemStack(item), region);
+            });
         };
 
         if("onDestroy" in this) {
@@ -211,16 +209,16 @@ class BasicBlock {
         BasicItem.setFunctions(this);
 
         Block.setDestroyLevel(this.stringID, this.getDestroyLevel());
+        return;
     };
 
     public setModel(model: BlockModel | RenderMesh, data: number): this {
         const render: ICRender.Model = new ICRender.Model();
         let mesh;
-        let _data = data;
 
         if(model instanceof BlockModel) {
             mesh = model.getRenderMesh();
-            _data = model.getBlockData();
+            data = model.getBlockData();
         } else mesh = model;
 
         render.addEntry(new BlockRenderer.Model(mesh));
@@ -269,10 +267,6 @@ class BasicBlock {
 
     public getTileEntity?(): CommonTileEntity;
 
-    public setTileEntity(tileEntity: CommonTileEntity) {
-        TileEntity.registerPrototype(this.id, tileEntity);
-    };
-
     public isSolid?(): boolean;
 
     public static destroyWithTile(x: number, y: number, z: number, blockSource: BlockSource) {
@@ -287,7 +281,7 @@ Callback.addCallback("DestroyBlockContinue", (coords, block, progress) => {
 
     if(blockFunction) {
         return blockFunction(coords, block, progress);
-    }
+    };
 });
 
 Callback.addCallback("DestroyBlockStart", (coords, block, player) => {
@@ -304,6 +298,5 @@ Callback.addCallback("DestroyBlock", (coords, block, player) => {
     if(blockFunction) {
         return blockFunction(coords, block, player);
     };
-    
 });
 
