@@ -37,9 +37,7 @@ abstract class CommonTileEntity implements TileEntity {
         this.onUnload();
     };
 
-    public update(): void {
-        this.onUpdate();
-    };
+    public update: () => void;
 
     public onCheckerTick(isInitialized: boolean, isLoaded: boolean, wasLoaded: boolean): void {};
 

@@ -74,7 +74,6 @@ Callback.addCallback("NativeCommand", (command) => {
                     current.onCall(arguments);
                     return;
                 };
-
             } else {
                 Game.prevent();
 

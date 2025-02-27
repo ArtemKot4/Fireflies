@@ -14,9 +14,9 @@ class PlayerDataCommand extends ClientCommand<IPlayerDataCommand> {
 
         if('key' in data) {
             if(data.key in playerData) {
-                Game.message(Native.Color.RED + Translation.translate("squid_core.command.player_data_key") + playerData[data.key]);
+                Game.message(Native.Color.GREEN + Translation.translate("squid_core.command.player_data_key") + playerData[data.key]);
             } else {
-                Game.message(Native.Color.GREEN + Translation.translate("squid_core.command.player_data_key_not_exists"));
+                Game.message(Native.Color.RED + Translation.translate("squid_core.command.player_data_key_not_exists"));
             };
             return;
         };
