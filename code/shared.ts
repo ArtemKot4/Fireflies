@@ -1,4 +1,4 @@
-ModAPI.registerAPI("SquidCore", {
+ModAPI.registerAPI("Core_Engine_API", {
     MathHelper: MathHelper,
     Utils: Utils,
     RenderHelper: RenderHelper,
