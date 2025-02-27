@@ -211,7 +211,11 @@ class PlayerUser {
         return Entity.getNameTag(this.playerUid);
     };
 
-    public decrease(count: number) {
+    public getCarriedItem(): ItemStack {
+        return new ItemStack(Entity.getCarriedItem(this.playerUid));
+    };
+
+    public decreaseCarriedItem(count: number) {
         const stack = this.getInventorySlot(this.getSelectedSlot());
 
         this.setInventorySlot(this.getSelectedSlot(), stack.id, stack.count - count, stack.data, stack.extra);

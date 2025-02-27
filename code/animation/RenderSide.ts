@@ -1,9 +1,10 @@
 class RenderSide<T extends string | RenderMesh> {
     public readonly list: RenderMesh[];
 
-    constructor(model: RenderMesh);
-    constructor(model: string, importParams?: RenderMesh.ImportParams);
+    constructor(dir: string, model: RenderMesh);
+    constructor(dir: string, model: string, importParams?: RenderMesh.ImportParams);
     constructor(
+        dir: string, 
         public model: T,
         public importParams: RenderMesh.ImportParams = null
     ) {
@@ -29,7 +30,7 @@ class RenderSide<T extends string | RenderMesh> {
         };
 
         this.list = rotations.map((value: number[]) => {
-            return RenderHelper.generateMesh(model, this.importParams, value)
+            return RenderHelper.generateMesh(dir, model, this.importParams, value)
         });
     };
 
@@ -37,7 +38,7 @@ class RenderSide<T extends string | RenderMesh> {
         return this.list[data];
     };
 
-    public getForTile(tile_entity: CommonTileEntity): RenderMesh {
+    public getForTile(tile_entity: TileEntity.TileEntityPrototype): RenderMesh {
         const data = BlockSource.getCurrentClientRegion().getBlockData(
             tile_entity.x,
             tile_entity.y,

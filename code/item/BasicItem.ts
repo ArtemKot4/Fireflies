@@ -56,7 +56,7 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
     public id: number;
     public stringID: string;
 
-    public constructor(stringID: string, texture: IItemTextureDescription, params: T);
+    public constructor(stringID: string, texture: IItemTextureDescription, params?: T);
     public constructor(stringID: string, texture: IItemTextureDescription, stack: number | T = 64, params?: T) {
         this.id = IDRegistry.genItemID(stringID);
  

@@ -1,5 +1,6 @@
 namespace RenderHelper {
     export function generateMesh(
+        dir: string,
         model: string,
         params: RenderMesh.ImportParams = {
             translate: [0.5, 0.5, 0.5],
@@ -9,7 +10,7 @@ namespace RenderHelper {
         rotate?: number[]
     ): RenderMesh {
         const mesh = new RenderMesh(
-          __dir__ + "/resources/assets/models/" + model + ".obj",
+          dir + model + ".obj",
           "obj",
           params
         );

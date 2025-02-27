@@ -1,9 +1,7 @@
-type NativeRendererTransform = com.zhekasmirnov.innercore.api.NativeRenderer.Transform;
- 
 class BlockAnimation {
     public animation?: Animation.Base;
 
-    constructor(public coords: Vector, public tile_entity?: CommonTileEntity) {
+    constructor(public coords: Vector, public tile_entity?: TileEntity.TileEntityPrototype) {
         this.animation = new Animation.Base(coords.x, coords.y, coords.z);
         this.animation.setBlocklightMode();
         return;

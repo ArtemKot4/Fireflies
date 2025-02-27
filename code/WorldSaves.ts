@@ -4,14 +4,6 @@ namespace WorldSaves {
     };
 
     export let data = {} as { players: Record<number, typeof defaultData.players & Scriptable> } & Scriptable;
-
-    export function addData<T>(name: string, value: T) {
-        defaultData[name] = value;
-    };
-
-    export function addPlayerData(name: string, value: any) {
-        defaultData.players[name] = value;
-    };
 };
 
 Callback.addCallback("ModsLoaded", () => {

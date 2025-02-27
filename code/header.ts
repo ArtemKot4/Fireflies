@@ -57,6 +57,8 @@ namespace Utils {
 
 const NativeBlock = com.zhekasmirnov.innercore.api.NativeBlock;
 
+type NativeRendererTransform = com.zhekasmirnov.innercore.api.NativeRenderer.Transform;
+
 declare namespace com.zhekasmirnov.innercore.api.NativeBlock {
     export function setSolid(id: number, solid: boolean): void;
     export function setRenderAllFaces(id: number, render: boolean): void;

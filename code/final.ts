@@ -1,18 +1,23 @@
-interface IPlayerDataCommand {
+interface IPlayerDataCommand extends ICommandParams {
     key: string;
 };
 
-class PlayerDataCommand extends ClientCommand<IPlayerDataCommand> {
+class PlayerDataCommand extends ServerCommand<IPlayerDataCommand> {
     public constructor() {
-        super("player_data", {
+        super("core_engine:player_data", {
             "key": "string"
         }, 0);
     };
 
-    public override onCall(data: IPlayerDataCommand) {
+    public override onServer(client: NetworkClient, data: IPlayerDataCommand) {
         const playerData = WorldSaves.data.players[Player.getLocal()];
 
         if('key' in data) {
+            if(data.key === "clear" && new PlayerActor(client.getPlayerUid()).isOperator()) {
+                WorldSaves.data.players = WorldSaves.defaultData.players;
+                return;
+            };
+
             if(data.key in playerData) {
                 Game.message(Native.Color.GREEN + Translation.translate("squid_core.command.player_data_key") + playerData[data.key]);
             } else {
@@ -29,21 +34,6 @@ class PlayerDataCommand extends ClientCommand<IPlayerDataCommand> {
     };
 };
 
-namespace ClientCommands {
+namespace ServerCommands {
     export const PLAYER_DATA = new PlayerDataCommand();
 };
-
-Translation.addTranslation("squid_core.command.player_data_key_not_exists", {
-    en: "Player data key not exists",
-    ru: "Такого ключа не существует"
-});
-
-Translation.addTranslation("squid_core.command.player_data_key", {
-    en: "Key data: ",
-    ru: "Данные ключа: "
-});
-
-Translation.addTranslation("squid_core.command.all_player_data", {
-    en: "All player data: ",
-    ru: "Все данные игрока: "
-});

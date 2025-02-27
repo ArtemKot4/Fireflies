@@ -50,7 +50,7 @@
 		}
 	],
 	"info": {
-		"name": "Core Engine",
+		"name": "CoreEngine",
 		"author": "ArtemKot",
 		"version": "2025",
 		"description": "Технический мод для более удобной разработки модификаций на языке программирования TypeScript.",

@@ -2,12 +2,12 @@ class BlockModel {
     protected readonly mesh: RenderMesh;
     protected readonly data: number;
 
-    public constructor(model: string, texture: {name: string, meta: number} | string = model, data: number = -1) {
+    public constructor(dir: string, model: string, texture: {name: string, meta: number} | string = model, data: number = -1) {
        
          texture = typeof texture === "object" ? texture : {name: texture, meta: 0}; 
 
          this.mesh = new RenderMesh();
-         this.mesh.importFromFile(__dir__ + "/resources/assets/models/block/" + model + ".obj","obj", null);
+         this.mesh.importFromFile(dir + model + ".obj","obj", null);
          this.mesh.setBlockTexture(texture.name, texture.meta);
          this.mesh.translate(0.5, 0, 0.5);
 

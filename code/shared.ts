@@ -1,4 +1,4 @@
-ModAPI.registerAPI("Core_Engine_API", {
+ModAPI.registerAPI("CoreEngineAPI", {
     MathHelper: MathHelper,
     Utils: Utils,
     RenderHelper: RenderHelper,
@@ -10,6 +10,10 @@ ModAPI.registerAPI("Core_Engine_API", {
     BasicBlock: BasicBlock,
     BlockModel: BlockModel,
     BlockPlant: BlockPlant,
+    BlockBush: BlockBush,
+    Keyboard: Keyboard,
+    UIHelper: UIHelper,
+    PlayerUser: PlayerUser,
     Bark: Bark,
     Hewn: Hewn,
     Log: Log,
@@ -24,6 +28,7 @@ ModAPI.registerAPI("Core_Engine_API", {
     NetworkEvent: NetworkEvent,
     ContainerEvent: ContainerEvent,
     WorldSaves: WorldSaves,
+    NativeBlock: NativeBlock,
     requireGlobal: function(command: string) {
 		return eval(command);
 	}
