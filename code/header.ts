@@ -81,4 +81,23 @@ enum EDestroyLevel {
     OBSIDIAN = 4
 };
 
-alert("Library SquidCore has been loaded");
+declare namespace ToolAPI {
+    export function isAxe(item: number): boolean;
+    export function isPickaxe(item: number): boolean;
+};
+
+ToolAPI.isAxe = function(item: number): boolean {
+    return ToolAPI.getToolData(item)?.blockMaterials?.["wood"];
+};
+
+ToolAPI.isPickaxe = function(item: number): boolean {
+    return ToolAPI.getToolData(item)?.blockMaterials?.["stone"];
+};
+
+declare namespace Game {
+    export function actionbarMessage(message: string): void;
+};
+
+Game.actionbarMessage = function(message: string): void {
+    Commands.exec(`title ${Player.getLocal()} actionbar ${message}`);
+};

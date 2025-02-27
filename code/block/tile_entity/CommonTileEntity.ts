@@ -17,25 +17,23 @@ abstract class CommonTileEntity implements TileEntity {
     public remove: boolean;
     public noupdate: boolean;
     public useNetworkItemContainer?: boolean;
-    public events: { [packetName: string]: (packetData: any, packetExtra: any) => void; } = {};
+    public events: { [packetName: string]: (packetData: any, packetExtra: any) => void; };
 
-    public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void; } = {};
+    public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void; };
     client?: LocalTileEntity;
+
+    public eventNames: {
+        network: string[],
+        container: string[]
+    };
 
     public created(): void {};
     
-    public init(): void {
-        return this.onInit();
-    };
+    public init(): void {};
     
-    public load(): void {
-        Game.message("Debug. Тайл создан!")
-        this.onLoad();
-    };
+    public load(): void {};
 
-    public unload(): void {
-        this.onUnload();
-    };
+    public unload(): void {};
 
     public update: () => void;
 
@@ -45,28 +43,19 @@ abstract class CommonTileEntity implements TileEntity {
         return this.onClick(new ItemStack(id, count, data, extra), coords, player);
     };
 
-    public destroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {
-        return this.onDestroyBlock(coords, player);
-    };
+    public destroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
 
     public redstone(params: Callback.RedstoneSignalParams): void {};
 
-    public projectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {
-        return this.onProjectileHit(coords, target);
-    };
+    public projectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
 
-    public destroy(): boolean | void {
-        return this.onDestroyTile() || false;
-    };
+    public destroy(): boolean | void {};
 
-    public tick(): void {
-        this.onTick();
-    };
+    public tick(): void {};
 
     public onInit() {};
     public onLoad() {};
     public onUnload() {};
-    public onUpdate() {};
     public onClick(item: ItemStack, coords: Callback.ItemUseCoordinates, player: number): boolean | void {};
     public onDestroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
     public onProjectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
@@ -103,6 +92,33 @@ abstract class CommonTileEntity implements TileEntity {
         if(localTileEntity != null) {
             this.client = localTileEntity;
         };
+
+        this.tick = this.onTick;
+        this.onInit = this.init;
+        this.onLoad = this.load;
+        this.onUnload = this.unload;
+        this.destroyBlock = this.onDestroyBlock;
+        this.destroy = this.onDestroyTile;
+        this.projectileHit = this.onProjectileHit;
+        
+      
+        if(this.eventNames) {
+            this.events = {};
+            this.containerEvents = {};
+
+            for(const i in this.eventNames.network) {
+                const name = this.eventNames.network[i];
+
+                this.events[name] = this[name];
+            };
+    
+            for(const i in this.eventNames.container) {
+                const name = this.eventNames.container[i];
+
+                this.containerEvents[name] = this[name];
+            };
+        };
+       
     };
 };
 
@@ -112,7 +128,7 @@ class TestLocal extends LocalTileEntity {
         Game.message("msg lol");
     };
 
-    public onTick(): boolean | void {
+    public onTick(): void {
         if(World.getThreadTime() % 60 === 0) {
             Game.message("local tick")
         };
@@ -135,7 +151,7 @@ class Test extends CommonTileEntity {
         Game.message("click!");
         Game.message(JSON.stringify(Object.keys(this.client.events)));
         
-        this.sendPacket("msg", {});
+        this.sendResponse("msg", {});
         return;
     }
 };

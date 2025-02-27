@@ -4,7 +4,9 @@
  * @param propertyName Name of method
  */
 
-function NetworkEvent(target: CommonTileEntity | LocalTileEntity, propertyName: string, descriptor: PropertyDescriptor) {
-    target.events = target.events || {};
-    target.events[propertyName] = descriptor.value
+function NetworkEvent(target: CommonTileEntity | LocalTileEntity, propertyName: string) {
+    target.eventNames = { ...target.eventNames };
+    target.eventNames.network = target.eventNames.network || [];
+
+    target.eventNames.network.push(propertyName);
 };

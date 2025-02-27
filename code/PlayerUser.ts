@@ -192,23 +192,23 @@ class PlayerUser {
     };
 
     public getEffect(effect: EPotionEffect): Entity.EffectInstance {
-        return Entity.getEffect(this.getUid(), effect);
+        return Entity.getEffect(this.playerUid, effect);
     };
 
     public setEffect(effectId: EPotionEffect, effectData: number, effectTime: number, ambience?: boolean, particles?: boolean) {
-        Entity.addEffect(this.getUid(), effectId, effectData, effectTime, ambience, particles);
+        Entity.addEffect(this.playerUid, effectId, effectData, effectTime, ambience, particles);
     };
 
     public getSneaking(): boolean {
-        return Entity.getSneaking(this.getUid());
+        return Entity.getSneaking(this.playerUid);
     };
 
     public setSneaking(value: boolean): void {
-        Entity.setSneaking(this.getUid(), value);
+        Entity.setSneaking(this.playerUid, value);
     };
 
     public getName(): string {
-        return Entity.getNameTag(this.getUid());
+        return Entity.getNameTag(this.playerUid);
     };
 
     public decrease(count: number) {

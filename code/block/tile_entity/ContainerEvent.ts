@@ -4,7 +4,9 @@
  * @param propertyName Name of method
  */
 
-function ContainerEvent(target: CommonTileEntity | LocalTileEntity, propertyName: string, descriptor: PropertyDescriptor) {
-    target.containerEvents = target.containerEvents || {};
-    target.containerEvents[propertyName] = descriptor.value;
+function ContainerEvent(target: CommonTileEntity | LocalTileEntity, propertyName: string) {
+    target.eventNames = { ...target.eventNames };
+    target.eventNames.container = target.eventNames.container || [];
+    
+    target.eventNames.container.push(propertyName);
 };
