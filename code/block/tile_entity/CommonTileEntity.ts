@@ -85,7 +85,7 @@ abstract class CommonTileEntity implements TileEntity {
     public onCheckerTick(isInitialized: boolean, isLoaded: boolean, wasLoaded: boolean): void {};
 
     public click(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: ItemExtraData): boolean | void {
-        return this.onClick(new ItemStack(id, count, data, extra), coords, player);
+        return this.onClick( coords, new ItemStack(id, count, data, extra), player);
     };
 
     /**@deprecated */
@@ -109,7 +109,7 @@ abstract class CommonTileEntity implements TileEntity {
     public onInit() {};
     public onLoad() {};
     public onUnload() {};
-    public onClick(item: ItemStack, coords: Callback.ItemUseCoordinates, player: number): boolean | void {};
+    public onClick(coords: Callback.ItemUseCoordinates, item: ItemStack, player: number): boolean | void {};
     public onDestroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
     public onProjectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
     public onDestroyTile(): boolean | void {};
@@ -124,7 +124,7 @@ abstract class CommonTileEntity implements TileEntity {
     };
 
     public onItemClick(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
-        return this.onClick(new ItemStack(id, count, data, extra), coords, player) || false;
+        return this.onClick( coords, new ItemStack(id, count, data, extra), player) || false;
     };
 
     public requireMoreLiquid(liquid: string, amount: number): void {};
@@ -174,5 +174,3 @@ abstract class CommonTileEntity implements TileEntity {
        
     };
 };
-
-Saver.addSavesScope
