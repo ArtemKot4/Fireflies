@@ -8,9 +8,15 @@ abstract class LocalTileEntity implements TileEntity.LocalTileEntityPrototype {
         container: string[]
     };
 
+    /**@deprecated */
+
     public load() {};
 
+    /**@deprecated */
+
     public unload() {};
+
+    /**@deprecated */
 
     public tick() {};
 

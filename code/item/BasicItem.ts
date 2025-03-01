@@ -10,19 +10,19 @@ interface IconOverrideCallback {
 };
 
 interface NoTargetUseCallback {
-    onNoTargetUse(item: ItemInstance, player: number): void;
+    onNoTargetUse(item: ItemStack, player: number): void;
 };
 
 interface ItemUsingReleasedCallback {
-    onUsingReleased(item: ItemInstance, ticks: number, player: number): void;
+    onUsingReleased(item: ItemStack, ticks: number, player: number): void;
 };
 
-interface onUsingCompleteCallback {
-    onUsingComplete(item: ItemInstance, player: number): void;
+interface ItemUsingCompleteCallback {
+    onUsingComplete(item: ItemStack, player: number): void;
 };
 
 interface ItemUseCallback {
-    onItemUse(coords: Callback.ItemUseCoordinates, item: ItemInstance, block: Tile, player: number): void
+    onItemUse(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number): void
 };
 
 interface NameOverrideCallback {
@@ -65,6 +65,11 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
         this.stringID = stringID;
         this.maxStack = isStack ? stack : 64;
         this.texture = texture;
+        
+        const food = this.getFood();
+        if(food) {
+            (params as Item.FoodParams).food = food;
+        };
 
         this.create(!isStack ? stack : params || {});
     };
@@ -103,7 +108,20 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
 
     public isThrowable?(): boolean;
 
-    public static setFunctions(instance: { id: number, [key: string]: any }) {
+    public getFood?(): number;
+
+    public static setFunctions(instance: 
+            (
+                IconOverrideCallback | 
+                NoTargetUseCallback |
+                ItemUsingReleasedCallback | 
+                ItemUsingCompleteCallback |
+                ItemUseCallback | 
+                NameOverrideCallback | 
+                ItemHandComponent | 
+                BasicItem
+            ) & { id: number }
+        ) {
         if("isFireResistant" in instance) {
             Item.setFireResistant(instance.id, true);
         };
@@ -121,27 +139,27 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
         };
 
         if('onIconOverride' in instance) {
-            Item.registerIconOverrideFunction(instance.id, instance.onIconOverride);
+            Item.registerIconOverrideFunction(instance.id, instance.onIconOverride.bind(this));
         };
 
         if('onNoTargetUse' in instance) {
-            Item.registerNoTargetUseFunction(instance.id, instance.onNoTargetUse);
+            Item.registerNoTargetUseFunction(instance.id, (item, player) => instance.onNoTargetUse(new ItemStack(item), player));
         };
 
         if('onUsingReleased' in instance) {
-            Item.registerUsingReleasedFunction(instance.id, instance.onUsingReleased);
+            Item.registerUsingReleasedFunction(instance.id, (item, ticks, player) => instance.onUsingReleased(new ItemStack(item), ticks, player));
         };
 
         if('onUsingComplete' in instance) {
-            Item.registerUsingCompleteFunction(instance.id, instance.onUsingComplete);
+            Item.registerUsingCompleteFunction(instance.id, (item, player) => instance.onUsingComplete(new ItemStack(item), player));
         };
 
         if('onItemUse' in instance) {
-            Item.registerUseFunction(instance.id, instance.onItemUse);
+            Item.registerUseFunction(instance.id, (coords, item, block, player) => instance.onItemUse(coords, new ItemStack(item), block, player));
         };
 
         if('onNameOverride' in instance) {
-            Item.registerNameOverrideFunction(instance.id, instance.onNameOverride);
+            Item.registerNameOverrideFunction(instance.id, instance.onNameOverride.bind(this));
         };
 
         if('onHand' in instance) {
@@ -150,7 +168,7 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
 
         if("getItemCategory" in instance) {
             Item.setCategory(instance.id, instance.getItemCategory())
-        }
+        };
     };
 
     public create(params: ItemParams): void {

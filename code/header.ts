@@ -1,4 +1,6 @@
 namespace Utils {
+    export const NativeBlock = com.zhekasmirnov.innercore.api.NativeBlock;
+    
     export function setEmptyBlockCollision(id: number) {
         const render = new ICRender.Model();
         const model = BlockRenderer.createModel();
@@ -54,8 +56,6 @@ namespace Utils {
         return parseBlockID(id) ?? parseItemID(id);
     };
 };
-
-const NativeBlock = com.zhekasmirnov.innercore.api.NativeBlock;
 
 type NativeRendererTransform = com.zhekasmirnov.innercore.api.NativeRenderer.Transform;
 

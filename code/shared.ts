@@ -28,7 +28,6 @@ ModAPI.registerAPI("CoreEngineAPI", {
     NetworkEvent: NetworkEvent,
     ContainerEvent: ContainerEvent,
     WorldSaves: WorldSaves,
-    NativeBlock: NativeBlock,
     requireGlobal: function(command: string) {
 		return eval(command);
 	}

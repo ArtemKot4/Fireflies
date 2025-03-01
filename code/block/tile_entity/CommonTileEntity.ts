@@ -1,3 +1,40 @@
+/**Class to create tile entities in separated client server side formats.
+ * @example
+ * ```ts 
+ * class LocalExampleTile extends LocalTileEntity {
+ *     @NetworkEvent
+ *     public exampleMessagePacket(): void {
+ *         Game.message("example");
+ *         return;
+ *     };
+ * 
+ *     public onTick(): void {
+ *         Game.message("tick work")
+ *     };
+ * };
+ * 
+ * class ExampleTile extends CommonTileEntity {
+ *     public getLocalTileEntity(): LocalTileEntity {
+ *         return new LocalExampleTile();    
+ *     };
+ * 
+ *     public onTick(): void {
+ *         this.sendPacket("exampleMessagePacket", {});
+ *     };
+ * };
+ * 
+ * class ExampleBlock extends BasicBlock {
+ *     public constructor() {
+ *         super("example_block");
+ *     };
+ * 
+ *     public override getTileEntity(): CommonTileEntity {
+ *         return new ExampleTile();
+ *     };
+ * };
+ * ```
+ */
+
 abstract class CommonTileEntity implements TileEntity {
     public readonly x: number;
     public readonly y: number;
@@ -28,12 +65,20 @@ abstract class CommonTileEntity implements TileEntity {
     };
 
     public created(): void {};
+
+    /**@deprecated */
     
     public init(): void {};
+
+    /**@deprecated */
     
     public load(): void {};
+    
+    /**@deprecated */
 
     public unload(): void {};
+
+    /**@deprecated */
 
     public update: () => void;
 
@@ -43,13 +88,21 @@ abstract class CommonTileEntity implements TileEntity {
         return this.onClick(new ItemStack(id, count, data, extra), coords, player);
     };
 
+    /**@deprecated */
+
     public destroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
 
     public redstone(params: Callback.RedstoneSignalParams): void {};
 
+    /**@deprecated */
+
     public projectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
 
+    /**@deprecated */
+
     public destroy(): boolean | void {};
+
+    /**@deprecated */
 
     public tick(): void {};
 
@@ -121,3 +174,5 @@ abstract class CommonTileEntity implements TileEntity {
        
     };
 };
+
+Saver.addSavesScope

@@ -43,6 +43,8 @@ block/tile_entity/CommonTileEntity.ts
 
 PlayerUser.ts
 
+Dimension.ts
+
 event/ServerPlayerTick.ts
 event/NativeCommand.ts
 

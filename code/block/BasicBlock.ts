@@ -108,27 +108,27 @@ class BasicBlock {
         };
 
         if("getSoundType" in this) {
-            NativeBlock.setSoundType(this.id, this.getSoundType());
+            Utils.NativeBlock.setSoundType(this.id, this.getSoundType());
         };
 
         if("getFriction" in this) {
-            NativeBlock.setFriction(this.id, this.getFriction());
+            Utils.NativeBlock.setFriction(this.id, this.getFriction());
         };
 
         if("getLightLevel" in this) {
-            NativeBlock.setLightLevel(this.id, this.getLightLevel());
+            Utils.NativeBlock.setLightLevel(this.id, this.getLightLevel());
         };
 
         if("getLightOpacity" in this) {
-            NativeBlock.setLightOpacity(this.id, this.getLightOpacity());
+            Utils.NativeBlock.setLightOpacity(this.id, this.getLightOpacity());
         };
 
         if("getExplosionResistance" in this) {
-            NativeBlock.setExplosionResistance(this.id, this.getExplosionResistance());
+            Utils.NativeBlock.setExplosionResistance(this.id, this.getExplosionResistance());
         };
 
         if("getMapColor" in this) {
-            NativeBlock.setMapColor(this.id, this.getMapColor());
+            Utils.NativeBlock.setMapColor(this.id, this.getMapColor());
         };
 
         if("getMaterial" in this) {
@@ -136,19 +136,19 @@ class BasicBlock {
         };
 
         if("getRenderLayer" in this) {
-            NativeBlock.setRenderLayer(this.id, this.getRenderLayer());
+            Utils.NativeBlock.setRenderLayer(this.id, this.getRenderLayer());
         };
 
-        if("getTranslurency" in this) {
-            NativeBlock.setTranslucency(this.id, this.getTranslurency());
+        if("getTranslucency" in this) {
+            Utils.NativeBlock.setTranslucency(this.id, this.getTranslucency());
         };
 
         if("isSolid" in this) {
-            NativeBlock.setSolid(this.id, this.isSolid());
+            Utils.NativeBlock.setSolid(this.id, this.isSolid());
         };
 
         if("getRenderType" in this) {
-            NativeBlock.setRenderType(this.id, this.getRenderType());
+            Utils.NativeBlock.setRenderType(this.id, this.getRenderType());
         };
 
         if("getTileEntity" in this) {
@@ -185,19 +185,27 @@ class BasicBlock {
         };
 
         if("onNeighbourChange" in this) {
-            Block.registerNeighbourChangeFunctionForID(this.id, (this as INeighbourChangeCallback).onNeighbourChange);
+            Block.registerNeighbourChangeFunctionForID(this.id, (coords, block, changedCoords, region) => {
+                return (this as unknown as INeighbourChangeCallback).onNeighbourChange(coords, block, changedCoords, region);
+            });
         };
 
         if("onEntityInside" in this) {
-            Block.registerEntityInsideFunctionForID(this.id, (this as IEntityInsideCallback).onEntityInside);
+            Block.registerEntityInsideFunctionForID(this.id, (coords, block, entity) => {
+                return (this as unknown as IEntityInsideCallback).onEntityInside(coords, block, entity);
+            });
         };
 
         if("onEntityStepOn" in this) {
-            Block.registerEntityStepOnFunctionForID(this.id, (this as IEntityStepOnCallback).onEntityStepOn);
+            Block.registerEntityStepOnFunctionForID(this.id, (coords, block, entity) => {
+                return (this as unknown as IEntityStepOnCallback).onEntityStepOn(coords, block, entity);
+            });
         };
 
         if("onRandomTick" in this) {
-            Block.setRandomTickCallback(this.id, (this as IRandomTickCallback).onRandomTick);
+            Block.setRandomTickCallback(this.id, (x, y, z, id, data, region) => {
+                return (this as unknown as IRandomTickCallback).onRandomTick(x, y, z, id, data, region);
+            });
         };
 
         if("onClick" in this) {
@@ -257,7 +265,7 @@ class BasicBlock {
 
     public getRenderType?(): number;
 
-    public getTranslurency?(): number;
+    public getTranslucency?(): number;
 
     public getDestroyLevel(): EDestroyLevel {
         return EDestroyLevel.STONE;
