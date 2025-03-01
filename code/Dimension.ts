@@ -28,25 +28,38 @@ abstract class Dimension {
         };
         
         const tags = this.getTags();
+
         if(tags != null) {
             TagRegistry.addCommonObject("dimensions", this.id, tags);
         };
 
         this.dimension.setGenerator(this.getGenerator());
+        this.dimension.setHasSkyLight(this.hasSkyLight());
 
-        const skyColor = this.getSkyColor();
-        const fogColor = this.getFogColor();
-        const cloudColor = this.getCloudColor();
-        const sunsetColor = this.getSunsetColor();
-        const fogDistance = this.getFogDistance();
-        const hasSkyLight = this.hasSkyLight();
+        if("getSkyColor" in this) {
+            const skyColor = this.getSkyColor();
+            this.dimension.setSkyColor(skyColor[0], skyColor[1], skyColor[2]);
+        };
 
-        if(skyColor) this.dimension.setSkyColor(skyColor[0], skyColor[1], skyColor[2]);
-        if(fogColor) this.dimension.setFogColor(fogColor[0], fogColor[1], fogColor[2]);
-        if(cloudColor) this.dimension.setCloudColor(cloudColor[0], cloudColor[1], cloudColor[2]);
-        if(sunsetColor) this.dimension.setSunsetColor(sunsetColor[0], sunsetColor[1], sunsetColor[2]);
-        if(fogDistance) this.dimension.setFogDistance(fogDistance[0], fogDistance[1]);
-        if(hasSkyLight) this.dimension.setHasSkyLight(hasSkyLight);
+        if("getFogColor" in this) {
+            const fogColor = this.getFogColor();
+            this.dimension.setFogColor(fogColor[0], fogColor[1], fogColor[2]);
+        };
+
+        if("getCloudColor" in this) {
+            const cloudColor = this.getCloudColor();
+            this.dimension.setCloudColor(cloudColor[0], cloudColor[1], cloudColor[2]);
+        };
+
+        if("getSunsetColor" in this) {
+            const sunsetColor = this.getSunsetColor();
+            this.dimension.setSunsetColor(sunsetColor[0], sunsetColor[1], sunsetColor[2]);
+        };
+
+        if("getFogDistance" in this) {
+            const fogDistance = this.getFogDistance();
+            this.dimension.setFogDistance(fogDistance[0], fogDistance[1]);
+        };
 
         if("generateDimensionChunk" in this) {
             Dimension.generateChunkFunctions[this.id] = this.generateDimensionChunk;
@@ -119,6 +132,10 @@ abstract class Dimension {
         return false;
     };
 
+    public hasSkyLight(): boolean {
+        return true;
+    };
+
     /** Method places colors in rgb format */
     public getSkyColor?(): number[];
     /** Method places colors in rgb format */
@@ -129,8 +146,6 @@ abstract class Dimension {
     public getFogDistance?(): [start: number, end: number];
     /** Method places colors in rgb format */
     public getSunsetColor?(): number[];
-    
-    public hasSkyLight?(): boolean;
 
     public generateDimensionChunk?(chunkX: number, chunkZ: number, random: java.util.Random): void;
     public insidePlayerDimensionTransfer?(playerUid: number, from: number): void;
@@ -146,7 +161,7 @@ Callback.addCallback("GenerateCustomDimensionChunk", (chunkX, chunkZ, random, di
 Callback.addCallback("PlayerChangedDimension", (playerUid, from, to) => {
     if(to in Dimension.insideDimensionTransferFunctions) {
         Dimension.insideDimensionTransferFunctions[to](playerUid, from);
-    }
+    };
 
     if(from in Dimension.outsideDimensionTransferFunctions) {
         Dimension.outsideDimensionTransferFunctions[from](playerUid, to);

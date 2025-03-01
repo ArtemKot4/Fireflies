@@ -9,7 +9,7 @@ interface IconOverrideCallback {
     onIconOverride?(item: ItemInstance, isModUi: boolean): void | Item.TextureData
 };
 
-interface NoTargetUseCallback {
+interface INoTargetUseCallback {
     onNoTargetUse(item: ItemStack, player: number): void;
 };
 
@@ -25,7 +25,7 @@ interface ItemUseCallback {
     onItemUse(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number): void
 };
 
-interface NameOverrideCallback {
+interface INameOverrideCallback {
     onNameOverride(item: ItemInstance, translation: string, name: string): void | string;
 };
 
@@ -66,9 +66,8 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
         this.maxStack = isStack ? stack : 64;
         this.texture = texture;
         
-        const food = this.getFood();
-        if(food) {
-            (params as Item.FoodParams).food = food;
+        if("getFood" in this) {
+            (params as Item.FoodParams).food = this.getFood();
         };
 
         this.create(!isStack ? stack : params || {});
@@ -113,11 +112,11 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
     public static setFunctions(instance: 
             (
                 IconOverrideCallback | 
-                NoTargetUseCallback |
+                INoTargetUseCallback |
                 ItemUsingReleasedCallback | 
                 ItemUsingCompleteCallback |
                 ItemUseCallback | 
-                NameOverrideCallback | 
+                INameOverrideCallback | 
                 ItemHandComponent | 
                 BasicItem
             ) & { id: number }
