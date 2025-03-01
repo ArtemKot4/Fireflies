@@ -18,10 +18,10 @@ abstract class LocalTileEntity implements TileEntity.LocalTileEntityPrototype {
 
     /**@deprecated */
 
-    public tick() {};
+    public tick(): void {};
 
-    public onLoad() {};
-    public onUnload() {};
+    public onLoad(): void {};
+    public onUnload(): void {};
     public onTick(): void {};
 
     public constructor() {

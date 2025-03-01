@@ -1,4 +1,4 @@
-class Log extends BasicBlock implements IClickCallback {
+class Log extends RotatableLog implements IClickCallback {
     constructor(id: string, public hewn_id: string) {
         super(id);
     };

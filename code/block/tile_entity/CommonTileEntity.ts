@@ -106,9 +106,9 @@ abstract class CommonTileEntity implements TileEntity {
 
     public tick(): void {};
 
-    public onInit() {};
-    public onLoad() {};
-    public onUnload() {};
+    public onInit(): void {};
+    public onLoad(): void {};
+    public onUnload(): void {};
     public onClick(coords: Callback.ItemUseCoordinates, item: ItemStack, player: number): boolean | void {};
     public onDestroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
     public onProjectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
@@ -147,9 +147,9 @@ abstract class CommonTileEntity implements TileEntity {
         };
 
         this.tick = this.onTick;
-        this.onInit = this.init;
-        this.onLoad = this.load;
-        this.onUnload = this.unload;
+        this.init = this.onInit;
+        this.load = this.onLoad;
+        this.unload = this.onUnload;
         this.destroyBlock = this.onDestroyBlock;
         this.destroy = this.onDestroyTile;
         this.projectileHit = this.onProjectileHit;

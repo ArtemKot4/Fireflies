@@ -195,7 +195,7 @@ class PlayerUser {
         return Entity.getEffect(this.playerUid, effect);
     };
 
-    public setEffect(effectId: EPotionEffect, effectData: number, effectTime: number, ambience?: boolean, particles?: boolean) {
+    public setEffect(effectId: EPotionEffect, effectData: number, effectTime: number, ambience?: boolean, particles?: boolean): void {
         Entity.addEffect(this.playerUid, effectId, effectData, effectTime, ambience, particles);
     };
 
@@ -215,17 +215,17 @@ class PlayerUser {
         return new ItemStack(Entity.getCarriedItem(this.playerUid));
     };
 
-    public decreaseCarriedItem(count: number) {
+    public decreaseCarriedItem(count: number): void {
         const stack = this.getInventorySlot(this.getSelectedSlot());
 
         this.setInventorySlot(this.getSelectedSlot(), stack.id, stack.count - count, stack.data, stack.extra);
     };
 
-    public clearSlot(slot?: number) {
+    public clearSlot(slot?: number): void {
         this.setInventorySlot(typeof slot === "number" ? slot : this.getSelectedSlot(), new ItemStack());
     };
 
-    public clearInventory() {
+    public clearInventory(): void {
         for(let i = 0; i < 36; i++) {
             this.setInventorySlot(i, new ItemStack());
         };

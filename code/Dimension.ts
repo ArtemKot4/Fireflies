@@ -15,7 +15,7 @@ abstract class Dimension {
 
     public dimension: Dimensions.CustomDimension;
     public biome: CustomBiome;
-    public layers: Dimensions.TerrainLayerParams[];
+    public layers: Dimensions.TerrainLayerParams[] = [];
     
     public constructor(public id: number, public stringId: string, biome?: CustomBiome) {
         this.dimension = new Dimensions.CustomDimension(stringId, id);
@@ -98,17 +98,26 @@ abstract class Dimension {
             }) : this.layers
         } as CustomGeneratorDescription;
 
-        const base = this.getBase();
-        const modWorldgenDimension = this.modWorldgenDimension();
-        const type = this.getType();
+        if("getBase" in this) {
+            object.base = this.getBase();
+        };
 
-        if(base) object.base = base;
-        if(modWorldgenDimension) object.modWorldgenDimension = modWorldgenDimension;
-        if(type) object.type = type;
+        if("modWorldgenDimension" in this) {
+            object.modWorldgenDimension = this.modWorldgenDimension();
+        };
+
+        if("getType" in this) {
+            object.type = this.getType();
+        };
 
         object.generateVanillaStructures = this.generateVanillaStructures();
 
         object.buildVanillaSurfaces = this.buildVanillaSurfaces();
+        
+        const generator = Dimensions.newGenerator(object);
+
+        const generateCaves = this.generateCaves(); 
+        generator.setGenerateCaves(generateCaves[0], generateCaves[1]);
 
         return Dimensions.newGenerator(object);
     };
@@ -128,7 +137,11 @@ abstract class Dimension {
         return false;
     };
 
-    public generateVanillaStructures?(): boolean {
+    public generateCaves(): [caves: boolean, underwater_caves: boolean] {
+        return [false, false]
+    };
+
+    public generateVanillaStructures(): boolean {
         return false;
     };
 
