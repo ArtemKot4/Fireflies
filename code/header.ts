@@ -109,14 +109,6 @@ declare namespace com.zhekasmirnov.innercore.api.NativeAPI {
     export function setCloudColor(r: number, g: number, b: number): void;
 };
 
-enum EDestroyLevel {
-    HAND = 0,
-    STONE = 1,
-    IRON = 2,
-    DIAMOND = 3,
-    OBSIDIAN = 4
-};
-
 declare namespace ToolAPI {
     export function isAxe(item: number): boolean;
     export function isPickaxe(item: number): boolean;

@@ -6,3 +6,4 @@ enum EScreenName {
     FURNACE_SCREEN = "furnace_screen",
     SMALL_CHEST_SCREEN = "small_chest_screen",
 };
+

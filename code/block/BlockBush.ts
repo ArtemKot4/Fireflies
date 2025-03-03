@@ -1,4 +1,4 @@
-abstract class BlockBush extends BasicBlock implements IClickCallback, IRandomTickCallback {
+abstract class BlockBush extends BlockPlant implements IClickCallback, IRandomTickCallback {
     public berryID: number;
 
     public getMaxStage() {

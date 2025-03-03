@@ -11,7 +11,7 @@ animation/BlockAnimation.ts
 ui/Keyboard.ts
 ui/UIHelper.ts
 
-EScreenName.ts
+ui/EScreenName.ts
 
 ui/notification/INotificationTimerParams.ts
 ui/notification/INotificationParams.ts
@@ -35,6 +35,7 @@ item/ItemStack.ts
 item/ItemHandComponent.ts
 item/BasicItem.ts
 
+block/EDestroyLevel.ts
 block/IBlockModel.ts
 block/BlockModel.ts
 block/BasicBlock.ts

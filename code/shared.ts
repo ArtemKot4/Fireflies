@@ -30,7 +30,9 @@ ModAPI.registerAPI("CoreEngineAPI", {
     WorldSaves,
     Dimension,
     LocalData,
+    EScreenName,
+    Notification,
     requireGlobal(command: string) {
-		  return eval(command);
-	  }
+		return eval(command);
+	}
 });
