@@ -199,7 +199,7 @@ class PlayerUser {
         Entity.addEffect(this.playerUid, effectId, effectData, effectTime, ambience, particles);
     };
 
-    public getSneaking(): boolean {
+    public isSneaking(): boolean {
         return Entity.getSneaking(this.playerUid);
     };
 
@@ -215,7 +215,7 @@ class PlayerUser {
         return new ItemStack(Entity.getCarriedItem(this.playerUid));
     };
 
-    public decreaseCarriedItem(count: number): void {
+    public decreaseCarriedItem(count: number = 1): void {
         const stack = this.getInventorySlot(this.getSelectedSlot());
 
         this.setInventorySlot(this.getSelectedSlot(), stack.id, stack.count - count, stack.data, stack.extra);

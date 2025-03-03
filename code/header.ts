@@ -132,8 +132,34 @@ ToolAPI.isPickaxe = function(item: number): boolean {
 
 declare namespace Game {
     export function actionbarMessage(message: string): void;
+    export function titleMessage(message: string): void;
 };
 
 Game.actionbarMessage = function(message: string): void {
     Commands.exec(`title ${Player.getLocal()} actionbar ${message}`);
+};
+
+Game.titleMessage = function(message: string): void {
+    Commands.exec(`title ${Player.getLocal()} title ${message}`);
+};
+
+declare namespace Entity {
+    export function getNameTag(id: number): string;
+    export function setNameTag(id: number, tag: string): void;
+};
+
+enum EScreenName {
+    IN_GAME_PLAY_SCREEN = "in_game_play_screen",
+    WORLD_LOADING_PROGRESS_SCREEN = "world_loading_progress_screen",
+    INVENTORY_SCREEN = "inventory_screen",
+    ENDER_CHEST_SCREEN = "ender_chest_screen",
+    FURNACE_SCREEN = "furnace_screen",
+    SMALL_CHEST_SCREEN = "small_chest_screen",
+};
+
+namespace LocalData {
+    /**
+     * screen name on client. 
+     */
+    export let screenName: EScreenName = null;
 };

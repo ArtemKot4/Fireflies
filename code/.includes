@@ -11,6 +11,15 @@ animation/BlockAnimation.ts
 ui/Keyboard.ts
 ui/UIHelper.ts
 
+ui/notification/INotificationTimerParams.ts
+ui/notification/INotificationParams.ts
+ui/notification/INotificationRuntimeParams.ts
+ui/notification/INotificationElement.ts
+ui/notification/INotificationStyle.ts
+ui/notification/INotificationWindowData.ts
+ui/notification/INotificationInputData.ts
+ui/notification/Notification.ts
+
 WorldSaves.ts
 
 Vector3.ts

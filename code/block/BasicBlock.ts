@@ -152,7 +152,7 @@ class BasicBlock {
         };
 
         if("getTileEntity" in this) {
-            TileEntity.registerPrototype(this.id, this.getTileEntity());
+            TileEntity.registerPrototype(this.id, this.getTileEntity() as any);
         };
 
         if("getCreativeGroup" in this) {
@@ -220,17 +220,32 @@ class BasicBlock {
         return;
     };
 
-    public setModel(model: BlockModel | RenderMesh, data: number): this {
-        const render: ICRender.Model = new ICRender.Model();
-        let mesh;
+    public setModel(model: BlockModel | RenderMesh | BlockRenderer.Model | ICRender.Model, data: number): this {
+        let render: ICRender.Model = null;
+        let mesh: RenderMesh = null;
+        let blockModel: BlockRenderer.Model = null;
 
-        if(model instanceof BlockModel) {
-            mesh = model.getRenderMesh();
-            data = model.getBlockData();
-        } else mesh = model;
+        if(model instanceof ICRender.Model) {
+            render = model;
+        } else {
+            if(model instanceof BlockRenderer.Model) {
+                blockModel = model;
+            } else {
+                render = new ICRender.Model();
+            
+                if(model instanceof BlockModel) {
+                    mesh = model.getRenderMesh();
+                    data = model.getBlockData();
+                } else {
+                    mesh = model;
+                };
 
-        render.addEntry(new BlockRenderer.Model(mesh));
-        BlockRenderer.setStaticICRender(this.id, data ?? mesh, render);
+                blockModel = new BlockRenderer.Model(mesh);
+            };
+            render.addEntry(blockModel);
+        };
+
+        BlockRenderer.setStaticICRender(this.id, data || -1, render);
 
         return this;
     };

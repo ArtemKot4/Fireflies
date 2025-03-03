@@ -50,10 +50,10 @@
 		}
 	],
 	"info": {
-		"name": "CoreEngine",
+		"name": "Fireflies",
 		"author": "ArtemKot",
 		"version": "2025",
-		"description": "Технический мод для более удобной разработки модификаций на языке программирования TypeScript.",
+		"description": "Мод-библиотека, добавляющая возможности для более широкого создания модификаций объектно-ориентированным методом с использованием TypeScript.",
 		"icon": "mod_icon.png"
 	},
 	"api": "CoreEngine",

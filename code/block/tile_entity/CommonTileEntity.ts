@@ -46,7 +46,14 @@ abstract class CommonTileEntity implements TileEntity {
     public readonly networkEntity: NetworkEntity;
     public readonly networkEntityType: NetworkEntityType;
     public readonly networkEntityTypeName: string;
+    /**
+     * Scriptable object that contains data of tile entity.
+     * You can use it instead {@link defaultValues}
+     */
     public data: Scriptable;
+    /**
+     * Scriptable object that contains default data of tile entity.
+     */
     public defaultValues: Scriptable;
     public container: ItemContainer | UI.Container;
     public liquidStorage: LiquidRegistry.Storage;
@@ -66,15 +73,21 @@ abstract class CommonTileEntity implements TileEntity {
 
     public created(): void {};
 
-    /**@deprecated */
+    /**@deprecated
+     * Use {@link onInit} instead
+     */
     
     public init(): void {};
 
-    /**@deprecated */
+    /**@deprecated
+     * Use {@link onLoad} instead
+     */
     
     public load(): void {};
     
-    /**@deprecated */
+    /**@deprecated
+     * Use {@link onUnload} instead
+     */
 
     public unload(): void {};
 
@@ -88,21 +101,29 @@ abstract class CommonTileEntity implements TileEntity {
         return this.onClick( coords, new ItemStack(id, count, data, extra), player);
     };
 
-    /**@deprecated */
+    /**@deprecated
+     * Use {@link onDestroyBlock} instead
+     */
 
     public destroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
 
     public redstone(params: Callback.RedstoneSignalParams): void {};
 
-    /**@deprecated */
+    /**@deprecated
+     * Use {@link onProjectileHit} instead
+     */
 
     public projectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
 
-    /**@deprecated */
+    /**@deprecated
+     * Use {@link onDestroyTile} instead
+     */
 
     public destroy(): boolean | void {};
 
-    /**@deprecated */
+    /**@deprecated
+     * Use {@link onTick} instead
+     */
 
     public tick(): void {};
 
@@ -153,7 +174,6 @@ abstract class CommonTileEntity implements TileEntity {
         this.destroyBlock = this.onDestroyBlock;
         this.destroy = this.onDestroyTile;
         this.projectileHit = this.onProjectileHit;
-        
       
         if(this.eventNames) {
             this.events = {};
@@ -171,6 +191,7 @@ abstract class CommonTileEntity implements TileEntity {
                 this.containerEvents[name] = this[name];
             };
         };
-       
+
+        this.defaultValues = this.defaultValues || {...this.data};
     };
 };

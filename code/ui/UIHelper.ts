@@ -18,4 +18,16 @@ namespace UIHelper {
     
         return result.join("\n");
     };
+
+    export function getItemIcon(itemID: string | number, x: number, y: number, size: number = 70, bitmap: string = "unknown"): UI.UISlotElement {
+        return {
+            type: "slot",
+            visual: true,
+            source: new ItemStack(typeof Number(itemID) === "number" ? Number(itemID) : Utils.parseID(itemID as string), 1),
+            x,
+            y,
+            size,
+            bitmap
+        }
+    }
 }; 

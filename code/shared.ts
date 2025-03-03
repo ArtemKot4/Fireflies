@@ -29,6 +29,7 @@ ModAPI.registerAPI("CoreEngineAPI", {
     ContainerEvent,
     WorldSaves,
     Dimension,
+    LocalData,
     requireGlobal(command: string) {
 		  return eval(command);
 	  }
