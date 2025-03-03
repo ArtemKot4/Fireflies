@@ -11,6 +11,8 @@ animation/BlockAnimation.ts
 ui/Keyboard.ts
 ui/UIHelper.ts
 
+EScreenName.ts
+
 ui/notification/INotificationTimerParams.ts
 ui/notification/INotificationParams.ts
 ui/notification/INotificationRuntimeParams.ts

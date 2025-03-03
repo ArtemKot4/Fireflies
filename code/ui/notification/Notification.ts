@@ -1,3 +1,71 @@
+/**
+ * Class to create custom notification animations, be like as minecraft achievement animation.
+ * @example
+ * ```ts
+    namespace NotificationStyleList {
+        export const LEARNING: INotificationStyle = {
+            scale: 2.3,
+            width: 240,
+            height: 40,
+            wait_time: 2000,
+            queue_time: 1000,
+            background: {
+                default_x: 0,
+                default_y: 0,
+                icon: {
+                    image: {
+                        bitmap: "notification",
+                        width: 240,
+                        height: 40
+                    }
+                }
+            },
+            text: {
+                default_x: 48,
+                default_y: 30,
+                text: {
+                    max_line_length: 30
+                }
+            },
+            icon: {
+                default_x: 8,
+                default_y: 10,
+                icon: {
+                    image: {    
+                        width: 27,
+                        height: 27
+                    },
+                    item: {
+                        default_x: 2.25,
+                        default_y: 0,
+                        size: 90
+                    }
+                }
+            }
+        };
+
+        Notification.addStyle("learning", LEARNING);
+
+        Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
+            Notification.sendFor(player, NotificationStyleList.LEARNING, {
+                text: {
+                    text: {
+                        text: Item.getName(item.id, item.data)
+                    }
+                },
+                icon: {
+                    icon: {
+                        image_type: "item",
+                        image: String(item.id)
+                    }
+                }
+            })
+        });
+    };
+ * ```
+ */
+
+    
 class Notification {
     public static styles: Record<string, INotificationStyle> = {};
 
@@ -18,15 +86,24 @@ class Notification {
     public static queue: INotificationInputData[] = [];
     public static lock: boolean = false;
 
+    /**
+     * Method clears queue
+     */
+
     public static clearQueue(): void {
         this.queue = [];
     };
+
+    /**
+     * Changes lock state
+     * @param lock lock state
+     */
 
     public static setLock(lock: boolean): void {
         this.lock = lock;
     };
 
-    public static getData(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams): INotificationWindowData {
+    protected static getData(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams): INotificationWindowData {
         const coords: Record<string, { default_x: number, default_y: number }> = {};
 
         const width = style.width * style.scale;
@@ -114,6 +191,12 @@ class Notification {
         );
     };
 
+    /**
+     * Method to open notification with specified style name and runtime data.
+     * @param styleName name of your style in {@link Notification.styles}
+     * @param runtimeStyle your runtime data. It can be text or image
+     */
+
     public static open(styleName: string, runtimeStyle: INotificationRuntimeParams): void {
         if(this.lock || LocalData.screenName !== EScreenName.IN_GAME_PLAY_SCREEN) {
             this.queue.push({ style_name: styleName, runtime_style: runtimeStyle });
@@ -138,7 +221,7 @@ class Notification {
         return;
     };
 
-    public static updateElementHeights(description: {}, value: number): void {
+    protected static updateElementHeights(description: {}, value: number): void {
         const elements = this.UI.getElements();
 
         for(const name in description) {
@@ -148,7 +231,7 @@ class Notification {
         return;
     };
 
-    public static initAnimation(style: INotificationStyle, description: INotificationWindowData): void {
+    protected static initAnimation(style: INotificationStyle, description: INotificationWindowData): void {
         const sleep_time = description.sleep_time || style.sleep_time || 3;
         const queue_time = description.queue_time || style.queue_time || 1000;
         const wait_time = description.wait_time || style.wait_time || 2000;
@@ -192,6 +275,12 @@ class Notification {
         return;
     };
 
+    /**
+     * Method to send player from server notification with specified style name and runtime data.
+     * @param styleName name of your style in {@link Notification.styles}
+     * @param runtimeStyle your runtime data. It can be text or image
+     */
+
     public static sendFor(player_uid: number, styleName: string, runtimeStyle: INotificationRuntimeParams): void {
         const client = Network.getClientForPlayer(player_uid);
 
@@ -221,47 +310,3 @@ Callback.addCallback("NativeGuiChanged", function(name: EScreenName, lastName, i
     };
 });
 
-// namespace NotificationStyles {
-//     export const LEARNING: INotificationStyle = {
-//         scale: 2.3,
-//         width: 240,
-//         height: 40,
-//         wait_time: 2000,
-//         queue_time: 1000,
-//         background: {
-//             default_x: 0,
-//             default_y: 0,
-//             icon: {
-//                 image: {
-//                     bitmap: "notification",
-//                     width: 240,
-//                     height: 40
-//                 }
-//             }
-//         },
-//         text: {
-//             default_x: 48,
-//             default_y: 37,
-//             text: {
-//                 max_line_length: 30
-//             }
-//         },
-//         icon: {
-//             default_x: 8,
-//             default_y: 10,
-//             icon: {
-//                 image: {    
-//                     width: 27,
-//                     height: 27
-//                 },
-//                 item: {
-//                     default_x: 2.25,
-//                     default_y: 2.25,
-//                     size: 90
-//                 }
-//             }
-//         }
-//     };
-
-//     Notification.addStyle("learning", LEARNING);
-// };
