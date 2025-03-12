@@ -22,6 +22,11 @@ ui/notification/INotificationWindowData.ts
 ui/notification/INotificationInputData.ts
 ui/notification/Notification.ts
 
+
+ui/notification/AchievementNotification.ts
+
+ui/notification/TransparentNotification.ts
+
 WorldSaves.ts
 
 Vector3.ts

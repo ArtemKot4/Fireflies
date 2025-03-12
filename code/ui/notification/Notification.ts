@@ -2,7 +2,7 @@
  * Class to create custom notification animations, be like as minecraft achievement animation.
  * @example
  * ```ts
-    namespace NotificationStyleList {
+    namespace ENotificationStyle {
         export const LEARNING: INotificationStyle = {
             scale: 2.3,
             width: 240,
@@ -42,40 +42,59 @@
                     }
                 }
             }
-        };
-
-        Notification.addStyle("learning", LEARNING);
-
-        Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
-            Notification.sendFor(player, NotificationStyleList.LEARNING, {
-                text: {
-                    text: {
-                        text: Item.getName(item.id, item.data)
-                    }
-                },
-                icon: {
-                    icon: {
-                        image_type: "item",
-                        image: String(item.id)
-                    }
-                }
-            })
-        });
+        };  
     };
+
+    Notification.addStyle("learning", ENotificationStyle.LEARNING);
+
+    Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
+        Notification.get("achievement").sendFor(player, NotificationStyleList.LEARNING, {
+            text: {
+                text: {
+                    text: Item.getName(item.id, item.data)
+                }
+            },
+            icon: {
+                icon: {
+                    image_type: "item",
+                    image: String(item.id)
+                }
+            }
+        })
+    });
  * ```
  */
 
     
-class Notification {
-    public static styles: Record<string, INotificationStyle> = {};
+abstract class Notification {
+    public static list: Record<string, Notification> = {};
 
-    public static addStyle(name: string, style: INotificationStyle): void {
-        Notification.styles[name] = style;
+    public constructor() {
+        Network.addClientPacket(`packet.fireflies.send_${this.getType()}_notification`, (data: INotificationInputData) => {
+            return this.init(data.style_name, data.runtime_style);
+        });
+
+        Notification.list[this.getType()] = this;
     };
 
-    private constructor() {};
+    /**
+     * Method to get specified Notification by type. {@link AchievementNotification} for example can be got with Notification.{@link get}("achievement")
+     * @param type type of the notification
+     */
 
-    public static UI: UI.Window = (() => {
+    public static get<T extends Notification>(type: string): T {
+        if(!(type in this.list)) {
+            throw new java.lang.NoSuchFieldException("Notification: notification not found");
+        };
+        return this.list[type] as T;
+    };
+
+    public styles: Record<string, INotificationStyle> = {};
+    public queue: INotificationInputData[] = [];
+    public lock: boolean = false;
+    public stop: boolean = false;
+    
+    public UI: UI.Window = (() => {
         const window = new UI.Window();
         window.setAsGameOverlay(true);
         window.setDynamic(true);
@@ -83,14 +102,25 @@ class Notification {
         return window;
     })();
 
-    public static queue: INotificationInputData[] = [];
-    public static lock: boolean = false;
+    public addStyle(name: string, style: INotificationStyle): void {
+        this.styles[name] = style;
+    };
+
+    /**
+     * Method to get type of notification
+     */
+    
+    abstract getType(): string;
+
+    public setStop(stop: boolean): void {
+        this.stop = stop;
+    };
 
     /**
      * Method clears queue
      */
 
-    public static clearQueue(): void {
+    public clearQueue(): void {
         this.queue = [];
     };
 
@@ -99,11 +129,11 @@ class Notification {
      * @param lock lock state
      */
 
-    public static setLock(lock: boolean): void {
+    public setLock(lock: boolean): void {
         this.lock = lock;
     };
 
-    protected static getData(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams): INotificationWindowData {
+    protected getData(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams): INotificationWindowData {
         const coords: Record<string, { default_x: number, default_y: number }> = {};
 
         const width = style.width * style.scale;
@@ -197,16 +227,19 @@ class Notification {
      * @param runtimeStyle your runtime data. It can be text or image
      */
 
-    public static open(styleName: string, runtimeStyle: INotificationRuntimeParams): void {
+    public init(styleName: string, runtimeStyle: INotificationRuntimeParams): void {
+        this.setStop(false);
+
         if(this.lock || LocalData.screenName !== EScreenName.IN_GAME_PLAY_SCREEN) {
             this.queue.push({ style_name: styleName, runtime_style: runtimeStyle });
             return;
         };
 
-        if(!(styleName in Notification.styles)) {
+        if(!(styleName in this.styles)) {
             throw new java.lang.NoSuchFieldException(`Notification error: style ${styleName} is not exists`);
         };
-        const style = Notification.styles[styleName];
+
+        const style = this.styles[styleName];
         const data = this.getData(style, runtimeStyle);
 
         if(!this.UI.isOpened()) {
@@ -217,63 +250,42 @@ class Notification {
         this.UI.setContent(data.content);
         this.UI.forceRefresh();
 
-        this.initAnimation(style, data);
-        return;
-    };
+        data.sleep_time = data.sleep_time || style.sleep_time || 3;
+        data.queue_time = data.queue_time || style.queue_time || 1000;
+        data.wait_time = data.wait_time || style.wait_time || 2000;
 
-    protected static updateElementHeights(description: {}, value: number): void {
-        const elements = this.UI.getElements();
+        this.onInit(style, data);
 
-        for(const name in description) {
-            elements.get(name).setPosition(description[name].default_x, value + description[name].default_y);
-        };
-
-        return;
-    };
-
-    protected static initAnimation(style: INotificationStyle, description: INotificationWindowData): void {
-        const sleep_time = description.sleep_time || style.sleep_time || 3;
-        const queue_time = description.queue_time || style.queue_time || 1000;
-        const wait_time = description.wait_time || style.wait_time || 2000;
-        
-        const maxHeight = style.height * style.scale;
-
-        let mark: boolean = false;
-        let height: number = -maxHeight;
-
-        Threading.initThread("thread.ui.notification", () => {
-            while(true) {
-                java.lang.Thread.sleep(sleep_time);
-                if(!mark) {
-                    if(height < 0) {
-                        this.updateElementHeights(description.coords, height += 1);
-                    } else {
-                        java.lang.Thread.sleep(wait_time);
-                        mark = true;
-                    };
-                } else {
-                    if(height > -maxHeight) {
-                        this.updateElementHeights(description.coords,  height -= 1);
-                    } else {
-                        this.setLock(false);
-
-                        if(this.queue.length > 0 && LocalData.screenName === EScreenName.IN_GAME_PLAY_SCREEN) {
-                            java.lang.Thread.sleep(queue_time);
-
-                            const notification = this.queue.shift();
-                            this.open(notification.style_name, notification.runtime_style);
-                            
-                            return;
-                        };
-
-                        this.UI.close();
-                        return;
-                    };
-                };
+        Threading.initThread(`thread.ui.${this.getType()}_notification`, () => {
+            while(this.stop == false) {
+                java.lang.Thread.sleep(data.sleep_time);
+                this.run(style, data);
             };
         });
-        return;
     };
+
+    /**
+     * Method {@link init}s  and deletes last notification from queue
+     */
+
+    public initLast(): void {
+        if(this.queue.length > 0) {
+            const data = this.queue.shift();
+            if(data) {
+                this.init(data.style_name, data.runtime_style);
+            };
+        };
+    };
+
+    /**
+     * Method, calls after opening ui. It can be used to set default values.
+     * @param style Notification style from init.
+     * @param description Description of window.
+     */
+
+    protected onInit(style: INotificationStyle, description: INotificationWindowData): void {};
+
+    protected abstract run(style: INotificationStyle, description: INotificationWindowData): void;
 
     /**
      * Method to send player from server notification with specified style name and runtime data.
@@ -281,32 +293,103 @@ class Notification {
      * @param runtimeStyle your runtime data. It can be text or image
      */
 
-    public static sendFor(player_uid: number, styleName: string, runtimeStyle: INotificationRuntimeParams): void {
+    public sendFor(player_uid: number, styleName: string, runtimeStyle: INotificationRuntimeParams): void {
         const client = Network.getClientForPlayer(player_uid);
 
         if(client) {
-            client.send("packet.fireflies.send_notification", { style_name: styleName, runtime_style: runtimeStyle });
+            client.send(`packet.fireflies.send_${this.getType()}_notification`, { style_name: styleName, runtime_style: runtimeStyle });
         };
+    };
+
+    public onClose() {};
+
+    public close() {
+        this.onClose();
+        this.UI.close();
     };
 };
 
-Network.addClientPacket("packet.fireflies.send_notification", (data: INotificationInputData) => {
-    return Notification.open(data.style_name, data.runtime_style);
-});
-
 Callback.addCallback("LocalLevelLeft", () => {
-    Notification.clearQueue();
+    for(const i in Notification.list) {
+        const notification = Notification.list[i];
+
+        notification.clearQueue();
+        notification.setStop(true);
+    };
 });
 
 Callback.addCallback("NativeGuiChanged", function(name: EScreenName, lastName, isPushEvent) {
     LocalData.screenName = name;
 
     if(name === EScreenName.IN_GAME_PLAY_SCREEN) {
-        const data = Notification.queue.shift();
+        for(const i in Notification.list) {
+            const notification = Notification.list[i];
 
-        if(data) {
-            Notification.open(data.style_name, data.runtime_style);
+            notification.initLast();
         };
     };
 });
 
+namespace ENotificationStyle {
+    export const LEARNING: INotificationStyle = {
+        scale: 2.3,
+        width: 240,
+        height: 40,
+        wait_time: 2000,
+        queue_time: 1000,
+        background: {
+            default_x: 0,
+            default_y: 0,
+            icon: {
+                image: {
+                    bitmap: "notification",
+                    width: 240,
+                    height: 40
+                }
+            }
+        },
+        text: {
+            default_x: 48,
+            default_y: 20,
+            text: {
+                font: {
+                    color: android.graphics.Color.BLACK
+                },
+                max_line_length: 30
+            }
+        },
+        icon: {
+            default_x: 8,
+            default_y: 10,
+            icon: {
+                image: {    
+                    width: 27,
+                    height: 27
+                },
+                item: {
+                    default_x: 2.25,
+                    default_y: 0,
+                    size: 90
+                }
+            }
+        }
+    };
+};
+
+Notification.get("achievement").addStyle("learning", ENotificationStyle.LEARNING);
+
+Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
+    Notification.get("achievement").sendFor(player, "learning", {
+        text: {
+            text: {
+                text: Item.getName(item.id, item.data)
+            }
+        },
+        icon: {
+            icon: {
+                image_type: "item",
+                image: String(item.id)
+            }
+        }
+    })
+}); //debug
