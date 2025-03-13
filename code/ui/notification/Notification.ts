@@ -162,7 +162,7 @@ abstract class Notification {
 
                 let element = {
                     x: description.default_x * style.scale,
-                    y: -height + (description.default_y * style.scale),
+                    y: height + (description.default_y * style.scale),
                 } as UI.UIImageElement | UI.UITextElement | UI.UISlotElement;
 
                 const runtime = runtimeStyle[element_name] || {};
@@ -379,7 +379,7 @@ namespace ENotificationStyle {
 Notification.get("achievement").addStyle("learning", ENotificationStyle.LEARNING);
 
 Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
-    Notification.get("achievement").sendFor(player, "learning", {
+    const obj = {
         text: {
             text: {
                 text: Item.getName(item.id, item.data)
@@ -391,5 +391,11 @@ Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
                 image: String(item.id)
             }
         }
-    })
+    } as INotificationRuntimeParams;
+
+    if(Entity.getSneaking(player)) {
+        Notification.get("achievement").sendFor(player, "learning", obj);
+    } else {
+        Notification.get("transparent").sendFor(player, "learning", obj);
+    };
 }); //debug
