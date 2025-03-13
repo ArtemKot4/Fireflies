@@ -27,12 +27,15 @@ class TransparentNotification extends Notification {
         if(this.mark) {
             this.setAlpha(alpha - 0.01);
             if(alpha <= 0) {
-                this.close();
                 this.setLock(false);
                 this.setStop(true);
 
-                java.lang.Thread.sleep(data.queue_time);
-                this.initLast();
+                if(this.initLast()) {
+                    java.lang.Thread.sleep(data.queue_time);
+                    return;
+                };
+
+                this.close();
             };
         };
     };      

@@ -133,7 +133,19 @@ abstract class Notification {
         this.lock = lock;
     };
 
-    protected getData(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams): INotificationWindowData {
+    public getColor(): number {
+        return android.graphics.Color.TRANSPARENT;
+    };
+
+    public getLocationX(): number {
+        return 0;
+    };
+
+    public getLocationY(): number {
+        return 0;
+    };
+
+    protected getDescription(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams): INotificationWindowData {
         const coords: Record<string, { default_x: number, default_y: number }> = {};
 
         const width = style.width * style.scale;
@@ -141,14 +153,14 @@ abstract class Notification {
 
         const content = {
             location: {
-                x: style.x || 10,
-                y: style.y || 0,
+                x: style.x || this.getLocationX(),
+                y: style.y || this.getLocationY(),
                 width,
                 height
             },
             drawing: [{
                 type: "background",
-                color: android.graphics.Color.argb(0, 0, 0, 0)
+                color: runtimeStyle.color || style.color || this.getColor(),
             }],
             elements: {} as UI.ElementSet
         } satisfies UI.WindowContent;
@@ -162,7 +174,7 @@ abstract class Notification {
 
                 let element = {
                     x: description.default_x * style.scale,
-                    y: height + (description.default_y * style.scale),
+                    y: description.default_y * style.scale
                 } as UI.UIImageElement | UI.UITextElement | UI.UISlotElement;
 
                 const runtime = runtimeStyle[element_name] || {};
@@ -187,7 +199,7 @@ abstract class Notification {
                         element = UIHelper.getItemIcon(
                             image, 
                             defaultX, 
-                            -height + defaultY, 
+                            defaultY, 
                             (runtime.icon.size || description.icon.item.size) ?? 70
                         );
                     };
@@ -228,9 +240,7 @@ abstract class Notification {
      */
 
     public init(styleName: string, runtimeStyle: INotificationRuntimeParams): void {
-        this.setStop(false);
-
-        if(this.lock || LocalData.screenName !== EScreenName.IN_GAME_PLAY_SCREEN) {
+        if(this.lock || RuntimeData.local.screenName !== EScreenName.IN_GAME_PLAY_SCREEN) {
             this.queue.push({ style_name: styleName, runtime_style: runtimeStyle });
             return;
         };
@@ -240,41 +250,47 @@ abstract class Notification {
         };
 
         const style = this.styles[styleName];
-        const data = this.getData(style, runtimeStyle);
+        const description = this.getDescription(style, runtimeStyle);
 
         if(!this.UI.isOpened()) {
             this.UI.open();
         };
 
         this.setLock(true);
-        this.UI.setContent(data.content);
+        this.UI.setContent(description.content);
+        this.UI.updateWindowLocation();
         this.UI.forceRefresh();
 
-        data.sleep_time = data.sleep_time || style.sleep_time || 3;
-        data.queue_time = data.queue_time || style.queue_time || 1000;
-        data.wait_time = data.wait_time || style.wait_time || 2000;
+        description.sleep_time = description.sleep_time || style.sleep_time || 3;
+        description.queue_time = description.queue_time || style.queue_time || 1000;
+        description.wait_time = description.wait_time || style.wait_time || 2000;
 
-        this.onInit(style, data);
+        this.onInit(style, description);
+        this.setStop(false);
 
         Threading.initThread(`thread.ui.${this.getType()}_notification`, () => {
-            while(this.stop == false) {
-                java.lang.Thread.sleep(data.sleep_time);
-                this.run(style, data);
+            while(this.stop === false) {
+                java.lang.Thread.sleep(description.sleep_time);
+                this.run(style, description);
             };
         });
     };
 
     /**
      * Method {@link init}s  and deletes last notification from queue
+     * @returns true if notification was inited
      */
 
-    public initLast(): void {
-        if(this.queue.length > 0) {
+    public initLast(): boolean {
+        let truth = false;
+
+        if(this.queue.length > 0 && RuntimeData.local.screenName === EScreenName.IN_GAME_PLAY_SCREEN) {
             const data = this.queue.shift();
-            if(data) {
-                this.init(data.style_name, data.runtime_style);
-            };
+            this.init(data.style_name, data.runtime_style);
+
+            truth = true;
         };
+        return truth;
     };
 
     /**
@@ -315,11 +331,12 @@ Callback.addCallback("LocalLevelLeft", () => {
 
         notification.clearQueue();
         notification.setStop(true);
+        notification.close();
     };
 });
 
 Callback.addCallback("NativeGuiChanged", function(name: EScreenName, lastName, isPushEvent) {
-    LocalData.screenName = name;
+    RuntimeData.local.screenName = name;
 
     if(name === EScreenName.IN_GAME_PLAY_SCREEN) {
         for(const i in Notification.list) {
@@ -331,29 +348,19 @@ Callback.addCallback("NativeGuiChanged", function(name: EScreenName, lastName, i
 });
 
 namespace ENotificationStyle {
-    export const LEARNING: INotificationStyle = {
+    export const TRANSPARENT: INotificationStyle = {
         scale: 2.3,
         width: 240,
         height: 40,
         wait_time: 2000,
         queue_time: 1000,
-        background: {
-            default_x: 0,
-            default_y: 0,
-            icon: {
-                image: {
-                    bitmap: "notification",
-                    width: 240,
-                    height: 40
-                }
-            }
-        },
+        color: android.graphics.Color.argb(0.5, 0, 0, 0),
         text: {
             default_x: 48,
-            default_y: 20,
+            default_y: 15,
             text: {
                 font: {
-                    color: android.graphics.Color.BLACK
+                    color: android.graphics.Color.WHITE
                 },
                 max_line_length: 30
             }
@@ -376,26 +383,24 @@ namespace ENotificationStyle {
     };
 };
 
-Notification.get("achievement").addStyle("learning", ENotificationStyle.LEARNING);
+// Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
+//     const obj = {
+//         text: {
+//             text: {
+//                 text: Item.getName(item.id, item.data)
+//             }
+//         },
+//         icon: {
+//             icon: {
+//                 image_type: "item",
+//                 image: String(item.id)
+//             }
+//         }
+//     } as INotificationRuntimeParams;
 
-Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
-    const obj = {
-        text: {
-            text: {
-                text: Item.getName(item.id, item.data)
-            }
-        },
-        icon: {
-            icon: {
-                image_type: "item",
-                image: String(item.id)
-            }
-        }
-    } as INotificationRuntimeParams;
-
-    if(Entity.getSneaking(player)) {
-        Notification.get("achievement").sendFor(player, "learning", obj);
-    } else {
-        Notification.get("transparent").sendFor(player, "learning", obj);
-    };
-}); //debug
+//     if(Entity.getSneaking(player)) {
+//         Notification.get("achievement").sendFor(player, "transparent", obj);
+//     } else {
+//         Notification.get("transparent").sendFor(player, "transparent", obj);
+//     };
+// }); //debug

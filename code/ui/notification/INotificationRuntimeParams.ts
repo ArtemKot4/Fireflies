@@ -1,4 +1,4 @@
-type INotificationRuntimeParams = INotificationTimerParams & {
+type INotificationRuntimeParams = INotificationTimerParams & { color?: number } & {
     [element: string]: {
         icon?: {
             image: string,

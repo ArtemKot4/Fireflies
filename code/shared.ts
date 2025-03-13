@@ -29,7 +29,7 @@ ModAPI.registerAPI("CoreEngineAPI", {
     ContainerEvent,
     WorldSaves,
     Dimension,
-    LocalData,
+    RuntimeData,
     EScreenName,
     Notification,
     requireGlobal(command: string) {

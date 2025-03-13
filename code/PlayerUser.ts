@@ -230,4 +230,8 @@ class PlayerUser {
             this.setInventorySlot(i, new ItemStack());
         };
     };
+
+    public getSelectedItem(): ItemStack {
+        return this.getInventorySlot(this.getSelectedSlot());
+    };
 };

@@ -140,22 +140,3 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
         Network.sendToAllClients("packet.command.client." + this.caller, data);
     };
 };
-
-interface ITestCommand extends ICommandParams {
-    "aboba": string
-};
-
-class TestServerCommand extends ServerCommand<ITestCommand> {
-    constructor() {
-        super("hello", {
-            "initiator": "any",
-            "aboba": "string"
-        });
-    };
-
-    public onServer(client: NetworkClient, data: ITestCommand) {
-        return this.sendMessageToClient(client, "Список сущностей: " + JSON.stringify(data.initiator.entities) + ", игроков: " + JSON.stringify(data.initiator.players) + ", вызвавшего: " + data.initiator.caller + ", текст игрока: " + data.aboba)
-    };
-};
-
-new TestServerCommand();

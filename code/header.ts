@@ -135,14 +135,11 @@ Game.titleMessage = function(message: string): void {
     Commands.exec(`title ${Player.getLocal()} title ${message}`);
 };
 
-declare namespace Entity {
-    export function getNameTag(id: number): string;
-    export function setNameTag(id: number, tag: string): void;
-};
-
-namespace LocalData {
+namespace RuntimeData {
     /**
      * Screen name on client. 
      */
-    export let screenName: EScreenName = null;
+    export namespace local {
+        export let screenName: EScreenName = null;
+    };
 };

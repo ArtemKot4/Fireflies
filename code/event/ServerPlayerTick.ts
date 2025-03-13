@@ -2,13 +2,13 @@ Callback.addCallback("ServerPlayerTick", (playerUid: number) => {
     if(World.getThreadTime() % 8 === 0) {
 
         const actor = new PlayerActor(playerUid);
-        const selectedItemInstance = actor.getInventorySlot(actor.getSelectedSlot());
-        const carriedItemInstance = Entity.getCarriedItem(playerUid);
+        const selectedItem = actor.getInventorySlot(actor.getSelectedSlot());
+        const carriedItem = Entity.getCarriedItem(playerUid);
 
-        const handFunction = BasicItem.handFunctions.get(selectedItemInstance.id);
+        const handFunction = BasicItem.handFunctions.get(selectedItem.id);
 
-        if(selectedItemInstance.id == carriedItemInstance.id && handFunction !== undefined) {
-            return handFunction(selectedItemInstance, playerUid);
+        if(selectedItem.id == carriedItem.id && handFunction !== undefined) {
+            return handFunction(selectedItem, playerUid);
         };
     };
 });

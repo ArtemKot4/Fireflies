@@ -13,4 +13,5 @@ interface INotificationParams extends INotificationTimerParams {
     height: number,
     x?: number,
     y?: number
+    color?: number;
 };

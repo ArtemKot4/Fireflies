@@ -39,22 +39,17 @@ class AchievementNotification extends Notification {
                 this.updateElementsHeight(data.coords, this.height -= 1);
             } else {
                 this.setLock(false);
-
-                if(this.queue.length > 0 && LocalData.screenName === EScreenName.IN_GAME_PLAY_SCREEN) {
+                this.setStop(true);
+                
+                if(this.initLast()) {
                     java.lang.Thread.sleep(style.queue_time);
-                    this.initLast();
-                    
-                    this.setStop(true);
                     return;
                 };
 
                 this.close();
-                this.setStop(true);
             };
         };
     };
 };
-
-
 
 new AchievementNotification();
