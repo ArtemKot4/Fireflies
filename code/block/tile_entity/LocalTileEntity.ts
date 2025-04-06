@@ -35,21 +35,6 @@ abstract class LocalTileEntity implements LocalTileEntity {
         this.load = this.onLoad;
         this.unload = this.onUnload;
 
-        if(this.eventNames) {
-            this.events = {};
-            this.containerEvents = {};
-
-            for(const i in this.eventNames.network) {
-                const name = this.eventNames.network[i];
-
-                this.events[name] = this[name];
-            };
-    
-            for(const i in this.eventNames.container) {
-                const name = this.eventNames.container[i];
-
-                this.containerEvents[name] = this[name];
-            };
-        };
+        TileEntity.buildEvents(this);
     };
 };

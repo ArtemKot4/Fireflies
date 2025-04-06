@@ -112,6 +112,7 @@ declare namespace com.zhekasmirnov.innercore.api.NativeAPI {
 declare namespace ToolAPI {
     export function isAxe(item: number): boolean;
     export function isPickaxe(item: number): boolean;
+    export function isShovel(item: number): boolean;
 };
 
 ToolAPI.isAxe = function(item: number): boolean {
@@ -122,13 +123,12 @@ ToolAPI.isPickaxe = function(item: number): boolean {
     return ToolAPI.getToolData(item)?.blockMaterials?.["stone"];
 };
 
-declare namespace Game {
-    export function actionbarMessage(message: string): void;
-    export function titleMessage(message: string): void;
+ToolAPI.isShovel = function(item: number): boolean {
+    return ToolAPI.getToolData(item)?.blockMaterials?.["dirt"];
 };
 
-Game.actionbarMessage = function(message: string): void {
-    Commands.exec(`title ${Player.getLocal()} actionbar ${message}`);
+declare namespace Game {
+    export function titleMessage(message: string): void;
 };
 
 Game.titleMessage = function(message: string): void {

@@ -55,12 +55,12 @@ abstract class CommonTileEntity implements TileEntity {
      * Scriptable object that contains default data of tile entity.
      */
     public defaultValues: Scriptable;
-    public container: ItemContainer | UI.Container;
+    public container: ItemContainer;
     public liquidStorage: LiquidRegistry.Storage;
     public isLoaded: boolean;
     public remove: boolean;
     public noupdate: boolean;
-    public useNetworkItemContainer?: boolean;
+    public readonly useNetworkItemContainer: boolean = true;
     public events: { [packetName: string]: (packetData: any, packetExtra: any) => void; };
 
     public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void; };
@@ -69,6 +69,26 @@ abstract class CommonTileEntity implements TileEntity {
     public eventNames: {
         network: string[],
         container: string[]
+    };
+
+    public constructor() {
+        const localTileEntity = this.getLocalTileEntity();
+
+        if(localTileEntity != null) {
+            this.client = localTileEntity;
+        };
+
+        this.tick = this.onTick;
+        this.init = this.onInit;
+        this.load = this.onLoad;
+        this.unload = this.onUnload;
+        this.destroyBlock = this.onDestroyBlock;
+        this.destroy = this.onDestroyTile;
+        this.projectileHit = this.onProjectileHit;
+      
+        TileEntity.buildEvents(this);
+        this.defaultValues = this.defaultValues || this.data;
+        this.data = {};
     };
 
     public created(): void {};
@@ -97,9 +117,7 @@ abstract class CommonTileEntity implements TileEntity {
 
     public onCheckerTick(isInitialized: boolean, isLoaded: boolean, wasLoaded: boolean): void {};
 
-    public click(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: ItemExtraData): boolean | void {
-        return this.onClick( coords, new ItemStack(id, count, data, extra), player) || false;
-    };
+    public click(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: ItemExtraData): boolean | void {};
 
     /**@deprecated
      * Use {@link onDestroyBlock} instead
@@ -126,13 +144,22 @@ abstract class CommonTileEntity implements TileEntity {
      */
 
     public tick(): void {};
-
     public onInit(): void {};
     public onLoad(): void {};
     public onUnload(): void {};
+
+    /**
+     * Method, calls when player clicks on block with this tile entity. If method returns false, ui will be opened.
+     * @param coords 
+     * @param item 
+     * @param player 
+     * @returns boolean
+     */
+
     public onClick(coords: Callback.ItemUseCoordinates, item: ItemStack, player: number): boolean | void {
         return false;
     };
+
     public onDestroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
     public onProjectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
     public onDestroyTile(): boolean | void {};
@@ -142,12 +169,28 @@ abstract class CommonTileEntity implements TileEntity {
         return null;
     };
 
-    public getScreenByName(screenName?: string): Nullable<UI.IWindow> {
+    public getScreenByName(screenName?: string, container?: ItemContainer): Nullable<UI.IWindow> {
         return null;
     };
 
+    public getScreenName(player: number, coords: Vector): string {
+        return "main";
+    };
+
     public onItemClick(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
-        return this.onClick( coords, new ItemStack(id, count, data, extra), player) || false;
+        if(!this.onClick( coords, new ItemStack(id, count, data, extra), player)) {
+            const client = Network.getClientForPlayer(player);
+
+            if(client) {
+                const screenName = this.getScreenName(player, coords);
+                const screen = this.getScreenByName(screenName, this.container);
+                if(screenName && screen) {
+                    this.container.openFor(client, screenName);
+                    return true;
+                };
+            };
+        };
+        return false;
     };
 
     public requireMoreLiquid(liquid: string, amount: number): void {};
@@ -161,40 +204,25 @@ abstract class CommonTileEntity implements TileEntity {
     public getLocalTileEntity(): LocalTileEntity {
         return null;
     };
+};
 
-    public constructor() {
-        const localTileEntity = this.getLocalTileEntity();
+namespace TileEntity {
+    export function buildEvents(prototype: TileEntity.TileEntityPrototype): void {
+        if(prototype.eventNames) {
+            prototype.events = {};
+            prototype.containerEvents = {};
 
-        if(localTileEntity != null) {
-            this.client = localTileEntity;
-        };
+            for(const i in prototype.eventNames.network) {
+                const name = prototype.eventNames.network[i];
 
-        this.tick = this.onTick;
-        this.init = this.onInit;
-        this.load = this.onLoad;
-        this.unload = this.onUnload;
-        this.destroyBlock = this.onDestroyBlock;
-        this.destroy = this.onDestroyTile;
-        this.projectileHit = this.onProjectileHit;
-      
-        if(this.eventNames) {
-            this.events = {};
-            this.containerEvents = {};
-
-            for(const i in this.eventNames.network) {
-                const name = this.eventNames.network[i];
-
-                this.events[name] = this[name];
+                prototype.events[name] = this[name];
             };
     
-            for(const i in this.eventNames.container) {
-                const name = this.eventNames.container[i];
+            for(const i in prototype.eventNames.container) {
+                const name = prototype.eventNames.container[i];
 
-                this.containerEvents[name] = this[name];
+                prototype.containerEvents[name] = this[name];
             };
         };
-
-        this.defaultValues = this.defaultValues || this.data;
-        this.data = {};
-    };
-};
+    }
+}
