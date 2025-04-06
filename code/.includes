@@ -64,6 +64,8 @@ PlayerUser.ts
 
 Dimension.ts
 
+event/ECallback.ts
+event/SubscribeEvent.ts
 event/ServerPlayerTick.ts
 event/NativeCommand.ts
 

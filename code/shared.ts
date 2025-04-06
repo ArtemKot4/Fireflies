@@ -27,11 +27,12 @@ ModAPI.registerAPI("FirefliesAPI", {
     LocalTileEntity,
     NetworkEvent,
     ContainerEvent,
-    WorldSaves,
     Dimension,
     RuntimeData,
     EScreenName,
     Notification,
+    ECallback,
+    SubscribeEvent,
     requireGlobal(command: string) {
 		return eval(command);
 	}

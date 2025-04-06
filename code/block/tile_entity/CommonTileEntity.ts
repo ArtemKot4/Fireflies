@@ -98,7 +98,7 @@ abstract class CommonTileEntity implements TileEntity {
     public onCheckerTick(isInitialized: boolean, isLoaded: boolean, wasLoaded: boolean): void {};
 
     public click(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: ItemExtraData): boolean | void {
-        return this.onClick( coords, new ItemStack(id, count, data, extra), player);
+        return this.onClick( coords, new ItemStack(id, count, data, extra), player) || false;
     };
 
     /**@deprecated
@@ -130,7 +130,9 @@ abstract class CommonTileEntity implements TileEntity {
     public onInit(): void {};
     public onLoad(): void {};
     public onUnload(): void {};
-    public onClick(coords: Callback.ItemUseCoordinates, item: ItemStack, player: number): boolean | void {};
+    public onClick(coords: Callback.ItemUseCoordinates, item: ItemStack, player: number): boolean | void {
+        return false;
+    };
     public onDestroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
     public onProjectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
     public onDestroyTile(): boolean | void {};
