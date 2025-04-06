@@ -1,4 +1,6 @@
 # lib: esnext
+ILocalizeable.ts
+
 translations.js
 header.ts
 MathHelper.ts

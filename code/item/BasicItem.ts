@@ -5,7 +5,7 @@ interface IItemTextureDescription {
   meta: number
 };
 
-interface IconOverrideCallback {
+interface IIconOverrideCallback {
     onIconOverride?(item: ItemInstance, isModUi: boolean): void | Item.TextureData
 };
 
@@ -13,15 +13,15 @@ interface INoTargetUseCallback {
     onNoTargetUse(item: ItemStack, player: number): void;
 };
 
-interface ItemUsingReleasedCallback {
+interface IItemUsingReleasedCallback {
     onUsingReleased(item: ItemStack, ticks: number, player: number): void;
 };
 
-interface ItemUsingCompleteCallback {
+interface IItemUsingCompleteCallback {
     onUsingComplete(item: ItemStack, player: number): void;
 };
 
-interface ItemUseCallback {
+interface IItemUseCallback {
     onItemUse(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number): void
 };
 
@@ -111,11 +111,11 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
 
     public static setFunctions(instance: 
             (
-                IconOverrideCallback | 
+                IIconOverrideCallback | 
                 INoTargetUseCallback |
-                ItemUsingReleasedCallback | 
-                ItemUsingCompleteCallback |
-                ItemUseCallback | 
+                IItemUsingReleasedCallback | 
+                IItemUsingCompleteCallback |
+                IItemUseCallback | 
                 INameOverrideCallback | 
                 ItemHandComponent | 
                 BasicItem
@@ -171,6 +171,8 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
     };
 
     public create(params: ItemParams): void {
+        params = params || {};
+
         const tags = this.getTags();
 
         if(tags) {

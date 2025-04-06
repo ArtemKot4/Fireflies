@@ -21,10 +21,8 @@ abstract class Dimension {
         this.dimension = new Dimensions.CustomDimension(stringId, id);
         this.biome = biome || new CustomBiome(stringId + "_biome");
 
-        const layers = this.getLayers();
-
-        if(this.layers) {
-            layers.forEach(layer => this.layers.push(layer));
+        if("getLayers" in this) {
+            this.layers = this.getLayers();
         };
         
         const tags = this.getTags();
@@ -75,7 +73,7 @@ abstract class Dimension {
     };
 
     public hasBedrockLayer(): boolean {
-        return true;
+        return false;
     };
     
     public addLayer(layer: Dimensions.TerrainLayerParams): void {

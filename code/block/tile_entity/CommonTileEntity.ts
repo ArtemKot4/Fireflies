@@ -192,6 +192,7 @@ abstract class CommonTileEntity implements TileEntity {
             };
         };
 
-        this.defaultValues = this.defaultValues || {...this.data};
+        this.defaultValues = this.defaultValues || this.data;
+        this.data = {};
     };
 };

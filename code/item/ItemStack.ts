@@ -29,7 +29,7 @@ class ItemStack implements ItemInstance {
         this.count = Math.min(this.count + count, this.getMaxStack());
     };
 
-    public equals(stack: ItemStack): boolean {
+    public equals(stack: ItemInstance | ItemStack): boolean {
         return (
             stack.id === this.id && 
             this.count === stack.count && 

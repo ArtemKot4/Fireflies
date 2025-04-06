@@ -1,4 +1,4 @@
-ModAPI.registerAPI("CoreEngineAPI", {
+ModAPI.registerAPI("FirefliesAPI", {
     MathHelper,
     Utils,
     RenderHelper,
