@@ -108,5 +108,9 @@ enum ECallback {
     SERVER_PLAYER_EAT = "ServerPlayerEat",
     GENERATE_CUSTOM_DIMENSION_CHUNK = "GenerateCustomDimensionChunk",
     TILE_ENTITY_ADDED = "TileEntityAdded",
-    TILE_ENTITY_REMOVED = "TileEntityRemoved"
+    TILE_ENTITY_REMOVED = "TileEntityRemoved",
+    /**
+     * Custom callback. Works in one time of 8 ticks, if player held the item.
+     */
+    ITEM_HOLD = "ItemHold"
 };
