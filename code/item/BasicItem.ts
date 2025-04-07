@@ -48,8 +48,6 @@ interface IGlintItem {
 type ItemParams = Item.ItemParams | Item.FoodParams | Item.ArmorParams;
 
 class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
-    public static handFunctions: Map<number, (item: ItemInstance, playerUid: number) => void> = new Map();
-
     public maxStack: number = 64;
     public texture: IItemTextureDescription;
 
@@ -117,7 +115,7 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
                 IItemUsingCompleteCallback |
                 IItemUseCallback | 
                 INameOverrideCallback | 
-                ItemHandComponent | 
+                IItemHoldCallback | 
                 BasicItem
             ) & { id: number }
         ) {
@@ -162,9 +160,8 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
         };
 
         if('onHand' in instance) {
-            BasicItem.handFunctions.set(instance.id, (instance as ItemHandComponent).onHand);
+            Item.registerHoldFunctionForID(instance.id, (instance as IItemHoldCallback).onItemHold);
         };
-
         if("getItemCategory" in instance) {
             Item.setCategory(instance.id, instance.getItemCategory())
         };
@@ -222,3 +219,15 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
 
 };
 
+
+namespace Item {
+    export const holdFunctions: Record<number, Callback.ItemHoldFunction> = {};
+   
+    export function registerHoldFunctionForID(id: number, func: Callback.ItemHoldFunction) {
+        Item.holdFunctions[id] = func;
+    };
+
+    export function registerHoldFunction(id: string | number, func: Callback.ItemHoldFunction) {
+        Item.holdFunctions[typeof id === "string" ? Utils.parseID(id) : id] = func;
+    };
+};

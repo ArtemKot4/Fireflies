@@ -33,22 +33,13 @@ function SubscribeEvent(target: unknown, key: string, descriptor: PropertyDescri
 
 function SubscribeEvent(value: unknown, key?: string, descriptor?: PropertyDescriptor): unknown {
     if(typeof value === "string" && arguments.length === 1) {
-        return function(target: Function, key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+        return function(target: any, key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
             Callback.addCallback(value, descriptor.value);
             return descriptor;
         };
     };
+    let name = key.replace("on", "");
 
-    if(key.startsWith("on")) {
-        key.replace("on", "");
-    };
-
-    if(!key) {
-        throw new java.lang.RuntimeException("Decorator SubscribeEvent error: name of the function after change become is not valid.");
-    };
-
-    key.replace(key[0], key[0].toLocaleLowerCase());
-
-    Callback.addCallback(key, descriptor.value);
+    Callback.addCallback(name, descriptor.value);
     return descriptor;
 };
