@@ -3,13 +3,11 @@
  * @example
  * ```ts
     class Example {
-        SubscribeEvent(ECallback.LOCAL_TICK)
+        [@SubscribeEvent(ECallback.LOCAL_TICK)]
         public onTick() {
             Game.message("example")
         }
     };
-
-    
  * ```
  * @param event {@link ECallback} enum value
  * @returns decorator
@@ -21,7 +19,7 @@ function SubscribeEvent(event: ECallback): MethodDecorator;
  * @example
  * ```ts
  * class ExampleDestroyBlock {
-        SubscribeEvent
+        [@SubscribeEvent]
         public onDestroyBlock() {
             Game.message("break block")
         }
@@ -35,17 +33,22 @@ function SubscribeEvent(target: unknown, key: string, descriptor: PropertyDescri
 
 function SubscribeEvent(value: unknown, key?: string, descriptor?: PropertyDescriptor): unknown {
     if(typeof value === "string" && arguments.length === 1) {
-        return function(target: any, key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+        return function(target: Function, key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
             Callback.addCallback(value, descriptor.value);
             return descriptor;
         };
     };
-    let name = key.replace("on", "");
 
-    if(name === "Tick") {
-        name = "tick";
+    if(key.startsWith("on")) {
+        key.replace("on", "");
     };
 
-    Callback.addCallback(name, descriptor.value);
+    if(!key) {
+        throw new java.lang.RuntimeException("Decorator SubscribeEvent error: name of the function after change become is not valid.");
+    };
+
+    key.replace(key[0], key[0].toLocaleLowerCase());
+
+    Callback.addCallback(key, descriptor.value);
     return descriptor;
 };
