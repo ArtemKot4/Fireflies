@@ -39,7 +39,7 @@ command/ClientCommand.ts
 command/ServerCommand.ts
 
 item/ItemStack.ts
-item/ItemHandComponent.ts
+item/IItemHoldCallback.ts
 item/BasicItem.ts
 
 block/EDestroyLevel.ts
