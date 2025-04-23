@@ -23,7 +23,7 @@ namespace UIHelper {
         return {
             type: "slot",
             visual: true,
-            source: new ItemStack(typeof Number(itemID) === "number" ? Number(itemID) : Utils.parseID(itemID as string), 1),
+            source: new ItemStack(typeof Number(itemID) === "number" ? Number(itemID) : IDRegistry.parseID(itemID as string), 1),
             x,
             y,
             size,

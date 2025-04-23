@@ -1,6 +1,5 @@
 ModAPI.registerAPI("FirefliesAPI", {
     MathHelper,
-    Utils,
     RenderHelper,
     RenderSide,
     BlockAnimation,
@@ -32,6 +31,7 @@ ModAPI.registerAPI("FirefliesAPI", {
     EScreenName,
     Notification,
     ECallback,
+    Side,
     SubscribeEvent,
     requireGlobal(command: string) {
 		return eval(command);

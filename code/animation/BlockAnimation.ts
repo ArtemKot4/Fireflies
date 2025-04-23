@@ -25,11 +25,11 @@ class BlockAnimation {
         });
     };
 
-    public rotate(x: number, y: number, z: number): NativeRendererTransform {
+    public rotate(x: number, y: number, z: number): com.zhekasmirnov.innercore.api.NativeRenderer.Transform {
         return this.animation.transform().rotate(x, y, z);
     };
 
-    public scale(x: number, y: number, z: number): NativeRendererTransform {
+    public scale(x: number, y: number, z: number): com.zhekasmirnov.innercore.api.NativeRenderer.Transform {
         return this.animation.transform().scale(x, y, z);
     };
 

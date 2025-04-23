@@ -80,13 +80,13 @@ class BasicBlock {
 
         const tags = this.getTags();
 
-        if(tags) {
+        if(tags != null) {
             TagRegistry.addCommonObject("blocks", this.id, tags);
         }
 
         const states = this.getStates();
 
-        if(states) {
+        if(states != null) {
             this.setStates(states);
         }
 
@@ -250,14 +250,6 @@ class BasicBlock {
         return this;
     }
 
-    public getID() {
-        return BlockID[this.stringID];
-    }
-
-    public getStates(): (string | number)[] {
-        return null;
-    }
-
     public setStates(states: ReturnType<typeof this.getStates>) {
         for(const i in states) {
             const state = states[i];
@@ -269,9 +261,17 @@ class BasicBlock {
         }
     }
 
-    public getTags?(): string[] {
+    public getID() {
+        return BlockID[this.stringID];
+    }
+
+    public getStates(): (string | number)[] {
         return null;
-    };
+    }
+
+    public getTags(): string[] {
+        return null;
+    }
 
     public getDrop?(coords: Callback.ItemUseCoordinates, id: number, data: number, diggingLevel: number, enchant: ToolAPI.EnchantData, item: ItemStack, region: BlockSource): ItemInstanceArray[]
 
