@@ -254,9 +254,9 @@ class BasicBlock {
         for(const i in states) {
             const state = states[i];
             if(typeof state == "string") {
-                Block.addBlockState(this.id, state);
+                Block.addBlockState && Block.addBlockState(this.id, state);
             } else {
-                Block.addBlockStateId(this.id, state);
+                Block.addBlockStateId && Block.addBlockStateId(this.id, state);
             }
         }
     }

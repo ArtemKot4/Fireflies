@@ -5,6 +5,7 @@ translations.js
 header.ts
 MathHelper.ts
 
+addition/TileEntity.ts
 addition/ToolAPI.ts
 addition/Block.ts
 addition/Item.ts
