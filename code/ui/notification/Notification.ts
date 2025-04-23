@@ -2,66 +2,101 @@
  * Class to create custom notification animations, be like as minecraft achievement animation.
  * @example
  * ```ts
-    namespace ENotificationStyle {
-        export const LEARNING: INotificationStyle = {
-            scale: 2.3,
-            width: 240,
-            height: 40,
-            waitTime: 2000,
-            queueTime: 1000,
-            background: {
-                defaultX: 0,
-                defaultY: 0,
-                icon: {
-                    image: {
-                        bitmap: "notification",
-                        width: 240,
-                        height: 40
-                    }
-                }
-            },
-            text: {
-                defaultX: 48,
-                defaultY: 30,
-                text: {
-                    max_line_length: 30
-                }
-            },
-            icon: {
-                defaultX: 8,
-                defaultY: 10,
-                icon: {
-                    image: {    
-                        width: 27,
-                        height: 27
-                    },
-                    item: {
-                        defaultX: 2.25,
-                        defaultY: 0,
-                        size: 90
-                    }
-                }
-            }
-        };  
+    class TransparentNotification extends Notification {
+        public mark: boolean = false;
+
+        protected onInit(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams, description: INotificationWindowData): void {
+            this.mark = false;
+            this.UI.layout.setAlpha(0);
+        };
+
+        public setAlpha(value: number): void {
+            this.UI.layout.setAlpha(value);
+        };
+
+        protected run(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams, data: INotificationWindowData): boolean {
+            const alpha = this.UI.layout.getAlpha();
+            if(alpha < 1 && !this.mark) {
+                this.setAlpha(alpha + 0.01);
+            } else {
+                if(!this.mark) {
+                    this.mark = true;
+                    java.lang.Thread.sleep(data.waitTime);
+                };
+            };
+            if(this.mark) {
+                this.setAlpha(alpha - 0.01);
+                if(alpha <= 0) {
+                    java.lang.Thread.sleep(style.queueTime);
+                    this.close();
+
+                    return true;
+                };
+            };
+        };      
     };
 
-    Notification.addStyle("learning", ENotificationStyle.LEARNING);
+    Notification.register("transparent", new TransparentNotification());
 
-    Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
-        Notification.get("achievement").sendFor(player, NotificationStyleList.LEARNING, {
-            text: {
-                text: {
-                    text: Item.getName(item.id, item.data)
+    namespace ENotificationStyle {
+        export const TRANSPARENT: INotificationStyle = {
+            waitTime: 2000,
+            queueTime: 1000,
+            scale: 2.3,
+            width: 220,
+            height: 30,
+            frame: {
+                type: "custom",
+                x: 0,
+                y: 0,
+                width: 220 * 2.3,
+                height: 30 * 2.3,
+                custom: {
+                    onSetup(element) {
+                        const paint = this.paint = new android.graphics.Paint();
+                        paint.setStyle(android.graphics.Paint.Style.STROKE);
+                        paint.setARGB(100, 0, 0, 0);
+        
+                        element.setSize(220 * 2.3, 30 * 2.3);
+                    },
+                    onDraw(element, canvas, scale) {
+                        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), this.paint);
+                    }
                 }
             },
+            text: {
+                type: "text",
+                x: 48,
+                y: 15,
+                font: {
+                    color: android.graphics.Color.WHITE,
+                },
+                maxLineLength: 30
+            },
             icon: {
-                icon: {
-                    image_type: "item",
-                    image: String(item.id)
-                }
+                type: "image",
+                x: 8,
+                y: 10,
             }
-        })
-    });
+        };
+    };
+
+    Notification.get("transparent").addStyle("transparent", ENotificationStyle.TRANSPARENT);
+
+    Callback.addCallback("ItemUse", function(c, item, b, isE, player) {
+        const obj = {
+            text: {
+                type: "text",
+                text: Item.getName(item.id, item.data)
+            },
+            icon: {
+                type: "image",
+                item: item.id
+            }
+        } as INotificationRuntimeParams;
+
+        Notification.get("transparent").sendFor(player, "transparent", obj);
+    }); 
  * ```
  */
 
@@ -69,12 +104,29 @@
 abstract class Notification {
     public static list: Record<string, Notification> = {};
 
-    public constructor() {
-        Network.addClientPacket(`packet.fireflies.send_${this.getType()}_notification`, (data: INotificationInputData) => {
+    public type: string;
+    public styles: Record<string, INotificationStyle> = {};
+    public queue: INotificationInputData[] = [];
+    public lock: boolean = false;
+    public stop: boolean = false;
+    public thread: java.lang.Thread;
+
+    public UI: UI.Window = (() => {
+        const window = new UI.Window();
+        window.setAsGameOverlay(true);
+        window.setDynamic(true);
+        window.setTouchable(false);
+        return window;
+    })()
+
+    public constructor(type?: string) {
+        if(type) this.type = type;  
+    };
+
+    public buildPacket() {
+        Network.addClientPacket(`packet.fireflies.send_${this.type}_notification`, (data: INotificationInputData) => {
             return this.init(data.styleName, data.runtimeStyle);
         });
-
-        Notification.list[this.getType()] = this;
     };
 
     /**
@@ -87,34 +139,16 @@ abstract class Notification {
             throw new java.lang.NoSuchFieldException("Notification: notification not found");
         };
         return this.list[type] as T;
-    };
-
-    public thread: java.lang.Runnable;
-    public styles: Record<string, INotificationStyle> = {};
-    public queue: INotificationInputData[] = [];
-    public lock: boolean = false;
-    public stop: boolean = false;
-    
-    public UI: UI.Window = (() => {
-        const window = new UI.Window();
-        window.setAsGameOverlay(true);
-        window.setDynamic(true);
-        window.setTouchable(false);
-        return window;
-    })()
-
-    public addStyle(name: string, style: INotificationStyle): void {
-        this.styles[name] = style;
     }
 
-    /**
-     * Method to get type of notification
-     */
-    
-    abstract getType(): string;
+    public addStyle(name: string, style: INotificationStyle): this {
+        this.styles[name] = style;
+        return this;
+    }   
 
-    public setStop(stop: boolean): void {
+    public setStop(stop: boolean): this {
         this.stop = stop;
+        return this;
     }
 
     /**
@@ -130,8 +164,9 @@ abstract class Notification {
      * @param lock lock state
      */
 
-    public setLock(lock: boolean): void {
+    public setLock(lock: boolean): this {
         this.lock = lock;
+        return this;
     }
 
     public getColor(): number {
@@ -146,14 +181,39 @@ abstract class Notification {
         return 0;
     }
 
+    public getWidth(): number {
+        return 200;
+    }
+
+    public getHeight(): number {
+        return 100;
+    }
+
+    public getScale(): number {
+        return 1;
+    }
+
+    public getSleepTime(): number {
+        return 3;
+    }
+
+    public getQueueTime(): number {
+        return 1000
+    }
+
+    public getWaitTime(): number {
+        return 2000;
+    }
+
     protected getDescription(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams): INotificationWindowData {
-        const width = style.width * style.scale;
-        const height = style.height * style.scale;
+        const scale = runtimeStyle.scale || style.scale || this.getScale();
+        const width = (runtimeStyle.width || style.width || this.getWidth()) * scale;
+        const height = (runtimeStyle.height || style.height || this.getHeight()) * scale;
 
         const content = {
             location: {
-                x: style.x || this.getLocationX(),
-                y: style.y || this.getLocationY(),
+                x: runtimeStyle.x || style.x || this.getLocationX(),
+                y: runtimeStyle.y || style.y || this.getLocationY(),
                 width,
                 height
             },
@@ -170,10 +230,10 @@ abstract class Notification {
             if(typeof description !== "number") {
                 const runtime: INotificationRuntimeParams[string] = runtimeStyle[element_name] || ({} as NotificationElement);
 
-                const defaultX = description.x * style.scale;
-                const defaultY = description.y * style.scale;
+                const defaultX = (runtime.x || description.x) * scale;
+                const defaultY = (runtime.y || description.y) * scale;
 
-                const element = Object.assign(description, runtime, {
+                const element = Object.assign({}, description, runtime, {
                     x: defaultX,
                     y: defaultY
                 }) as NotificationElement;
@@ -199,6 +259,10 @@ abstract class Notification {
                     element.iconScale = 1;
                 }
 
+                if("onInit" in element) {
+                    element.onInit(element, style, runtimeStyle);
+                }
+
                 content.elements[element_name] = element;
             }
         }
@@ -206,11 +270,27 @@ abstract class Notification {
         return (
             { 
                 content: content,
-                queueTime: runtimeStyle.queueTime, 
-                sleepTime: runtimeStyle.sleepTime, 
-                waitTime: runtimeStyle.waitTime 
+                queueTime: runtimeStyle.queueTime || style.queueTime || this.getQueueTime(), 
+                sleepTime: runtimeStyle.sleepTime || style.sleepTime || this.getSleepTime(), 
+                waitTime: runtimeStyle.waitTime || style.waitTime || this.getWaitTime()
             }
         )
+    }
+
+    public preventInit(styleName: string, runtimeStyle: INotificationRuntimeParams): boolean {
+        return this.lock == true || RuntimeData.local.screenName !== EScreenName.IN_GAME_PLAY_SCREEN;
+    };
+
+    public onPreventInit(styleName: string, runtimeStyle: INotificationRuntimeParams): void {
+        this.queue.push({ styleName: styleName, runtimeStyle: runtimeStyle });
+    }
+
+    public getStyle(styleName: string): INotificationStyle {
+        if(!(styleName in this.styles)) {
+            throw new java.lang.NoSuchFieldException(`Notification error: style ${styleName} is not exists`);
+        }
+
+        return this.styles[styleName];
     }
 
     /**
@@ -220,16 +300,11 @@ abstract class Notification {
      */
 
     public init(styleName: string, runtimeStyle: INotificationRuntimeParams): void {
-        if(this.lock || RuntimeData.local.screenName !== EScreenName.IN_GAME_PLAY_SCREEN) {
-            this.queue.push({ styleName: styleName, runtimeStyle: runtimeStyle });
-            return;
+        if(this.preventInit(styleName, runtimeStyle)) {
+            return this.onPreventInit(styleName, runtimeStyle);
         }
 
-        if(!(styleName in this.styles)) {
-            throw new java.lang.NoSuchFieldException(`Notification error: style ${styleName} is not exists`);
-        }
-
-        const style = this.styles[styleName];
+        const style = this.getStyle(styleName);
         const description = this.getDescription(style, runtimeStyle);
 
         if(!this.UI.isOpened()) {
@@ -241,20 +316,26 @@ abstract class Notification {
         this.UI.updateWindowLocation();
         this.UI.forceRefresh();
 
-        description.sleepTime = description.sleepTime || style.sleepTime || 3;
-        description.queueTime = description.queueTime || style.queueTime || 1000;
-        description.waitTime = description.waitTime || style.waitTime || 2000;
+        this.onInit(style, runtimeStyle, description);
 
-        this.onInit(style, description);
+        this.thread = this.initThread(style, runtimeStyle, description);  
+    };
 
-        Threading.initThread(`thread.ui.${this.getType()}_notification`, () => {
+    /**
+     * Method to init thread, contains logic of change notifications. 
+     */
+
+    public initThread(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams, description: INotificationWindowData): java.lang.Thread {
+        return Threading.initThread(`thread.ui.${this.type}_notification`, () => {
             while(this.stop === false) {
-                const done = this.run(style, description);
+                java.lang.Thread.sleep(description.sleepTime);
+
+                const done = this.run(style, runtimeStyle, description);
                 if(done === true) {
+                    this.setLock(false)
                     this.initLast();
                     break;
-                };
-                java.lang.Thread.sleep(description.sleepTime);
+                }
             }
         });
     };
@@ -272,7 +353,7 @@ abstract class Notification {
             return true;
         }
         return false;
-    };
+    }
 
     /**
      * Method, calls after opening ui. It can be used to set default values.
@@ -280,29 +361,55 @@ abstract class Notification {
      * @param description Description of window.
      */
 
-    protected onInit(style: INotificationStyle, description: INotificationWindowData): void {}
+    protected onInit(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams, description: INotificationWindowData): void {}
 
-    protected abstract run(style: INotificationStyle, description: INotificationWindowData): boolean;
+    /**
+     * Method, where your thread do work. Return true to reload thread with last element from queue.
+     * @param style Notification style from init
+     * @param runtimeStyle Notification runtime params from init
+     * @param description result of {@link getDescription description}
+     */
+    protected abstract run(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams, description: INotificationWindowData): boolean;
 
     /**
      * Method to send player from server notification with specified style name and runtime data.
      * @param styleName name of your style in {@link Notification.styles}
-     * @param runtimeStyle your runtime data. It can be text or image
+     * @param runtimeStyle your runtime data. 
      */
 
     public sendFor(player_uid: number, styleName: string, runtimeStyle: INotificationRuntimeParams): void {
         const client = Network.getClientForPlayer(player_uid);
 
         if(client) {
-            client.send(`packet.fireflies.send_${this.getType()}_notification`, { styleName: styleName, runtimeStyle: runtimeStyle });
+            client.send(`packet.fireflies.send_${this.type}_notification`, { styleName: styleName, runtimeStyle: runtimeStyle });
         }
     }
 
-    public onClose() {}
+    /**
+     * Method, calls with using close function.
+     * @param style Notification style from init.
+     * @param runtimeStyle your runtime data. 
+     * @param description result of {@link getDescription description}
+     */
 
-    public close() {
-        this.onClose();
+    public onClose(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams, description: INotificationWindowData) {}
+
+    public close(style?: INotificationStyle, runtimeStyle?: INotificationRuntimeParams, description?: INotificationWindowData): void {
+        this.onClose(style, runtimeStyle, description);
         this.UI.close();
+    }
+
+    public static register(type: string, notification: Notification): Notification {
+        if(type in Notification.list) {
+            throw new java.lang.SecurityException("Notification: notification is already registered");
+        };
+
+        if(!notification.type) {
+            notification.type = type;
+            notification.buildPacket();
+        };
+
+        return Notification.list[type] = notification;
     }
 }
 
@@ -312,8 +419,8 @@ Callback.addCallback("LocalLevelLeft", () => {
 
         notification.clearQueue();
         notification.setStop(true);
-        notification.close();
-    };
+        notification.UI.close();
+    }
 });
 
 Callback.addCallback("NativeGuiChanged", function(name: EScreenName, lastName, isPushEvent) {
@@ -324,8 +431,8 @@ Callback.addCallback("NativeGuiChanged", function(name: EScreenName, lastName, i
             const notification = Notification.list[i];
 
             notification.initLast();
-        };
-    };
+        }
+    }
 });
 
 namespace ENotificationStyle {
@@ -333,14 +440,24 @@ namespace ENotificationStyle {
         waitTime: 2000,
         queueTime: 1000,
         scale: 2.3,
-        width: 240,
-        height: 40,
+        width: 180,
+        height: 20,
         frame: {
-            type: "frame",
+            type: "custom",
             x: 0,
             y: 0,
-            width: 240,
-            height: 60
+            width: 220 * 2.3,
+            height: 30 * 2.3,
+            custom: {
+                onSetup(element) {
+                    this.paint = new android.graphics.Paint();
+                    this.paint.setARGB(100, 0, 0, 0);
+                    element.setSize(180 * 2.3, 20 * 2.3);
+                },
+                onDraw(element, canvas, scale) {
+                    canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), this.paint);
+                }
+            }
         },
         text: {
             type: "text",

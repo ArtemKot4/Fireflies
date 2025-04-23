@@ -1,3 +1,3 @@
-type INotificationRuntimeParams = INotificationTimerParams & { color?: number } & {
+type INotificationRuntimeParams = Partial<INotificationParams> & {
     [element: string]: NotificationElement
 };

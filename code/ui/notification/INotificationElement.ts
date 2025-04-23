@@ -1,4 +1,8 @@
-type NotificationElement = UI.UICustomElement
+interface INotificationElementInitEvent {
+    onInit?(element: NotificationElement, style: INotificationStyle, runtimeStyle: INotificationRuntimeParams): void;
+}
+
+type NotificationElement = (UI.UICustomElement
 | UI.UIButtonElement
 | UI.UICloseButtonElement
 | UI.UIFrameElement
@@ -10,4 +14,4 @@ type NotificationElement = UI.UICustomElement
 | UI.UITabElement
 | UI.UITextElement & { maxLineLength?: number }
 | UI.UIFPSTextElement
-| UI.UIInvSlotElement;
+| UI.UIInvSlotElement) & INotificationElementInitEvent;

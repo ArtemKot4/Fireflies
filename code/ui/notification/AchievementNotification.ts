@@ -4,10 +4,6 @@ class AchievementNotification extends Notification {
     public height: number = 0;
     public defaults: {};
 
-    public override getType(): string {
-        return "achievement";    
-    }
-
     protected updateElementsHeight(value: number): void {
         const elements = this.UI.getElements();
 
@@ -16,7 +12,7 @@ class AchievementNotification extends Notification {
         }
     }
 
-    protected override onInit(style: INotificationStyle, description: INotificationWindowData): void {
+    protected override onInit(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams, description: INotificationWindowData): void {
         this.maxHeight = style.height * style.scale;
         this.height = -this.maxHeight;
         this.mark = false;
@@ -25,13 +21,13 @@ class AchievementNotification extends Notification {
         for(const i in description.content.elements) {
             const element = description.content.elements[i];
             this.defaults[i] = {
-                x: element.x = this.height - element.x,
+                x: element.x,
                 y: element.y
             }
         }
     }
 
-    protected override run(style: INotificationStyle, data: INotificationWindowData): boolean {
+    protected override run(style: INotificationStyle, runtimeStyle: INotificationRuntimeParams, data: INotificationWindowData): boolean {
         if(!this.mark) {
             if(this.height < 0) {
                 this.updateElementsHeight(this.height += 1);
@@ -43,15 +39,14 @@ class AchievementNotification extends Notification {
             if(this.height > -this.maxHeight) {
                 this.updateElementsHeight(this.height -= 1);
             } else {
-                this.setLock(false);
-                this.setStop(true);
-                
                 java.lang.Thread.sleep(style.queueTime);
                 this.close();
+
                 return true;
             }
         }
     }
 }
 
-new AchievementNotification();
+Notification.register("achievement", new AchievementNotification())
+.addStyle("transparent", ENotificationStyle.TRANSPARENT);

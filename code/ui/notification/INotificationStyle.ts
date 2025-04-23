@@ -1,3 +1,3 @@
 type INotificationStyle = INotificationParams | INotificationParams & {
-    [key: string]: NotificationElement
+    [element: string]: NotificationElement
 };

@@ -17,7 +17,3 @@ class PlayerDataCommand extends ServerCommand<IPlayerDataCommand> {
 namespace ServerCommands {
     export const PLAYER_DATA = new PlayerDataCommand();
 };
-
-Notification.get("achievement").addStyle("transparent", ENotificationStyle.TRANSPARENT);
-Notification.get("transparent").addStyle("transparent", ENotificationStyle.TRANSPARENT);
-
