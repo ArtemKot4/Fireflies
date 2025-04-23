@@ -177,16 +177,21 @@ abstract class CommonTileEntity implements TileEntity {
         return "main";
     };
 
+    public preventUI(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
+        return Entity.getSneaking(player);
+    };
+
     public onItemClick(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
         if(!this.onClick( coords, new ItemStack(id, count, data, extra), player)) {
-            const client = Network.getClientForPlayer(player);
+            if(!this.preventUI(id, count, data, coords, player, extra)) {
+                const client = Network.getClientForPlayer(player);
+                if(client) {
+                    const screenName = this.getScreenName(player, coords);
 
-            if(client) {
-                const screenName = this.getScreenName(player, coords);
-                const screen = this.getScreenByName(screenName, this.container);
-                if(screenName && screen) {
-                    this.container.openFor(client, screenName);
-                    return true;
+                    if(screenName && this.getScreenByName(screenName, this.container)) {
+                        this.container.openFor(client, screenName);
+                        return true;
+                    };
                 };
             };
         };
@@ -194,8 +199,8 @@ abstract class CommonTileEntity implements TileEntity {
     };
 
     public requireMoreLiquid(liquid: string, amount: number): void {};
-    public sendPacket: (name: string, data: object) => {};
-    public sendResponse:(packetName: string, someData: object) => {};
+    public sendPacket: <T = {}>(name: string, data: T) => {};
+    public sendResponse: <T = {}>(packetName: string, someData: T) => {};
 
     public selfDestroy(): void {
         TileEntity.destroyTileEntityAtCoords(this.x, this.y, this.z);
@@ -224,5 +229,14 @@ namespace TileEntity {
                 prototype.containerEvents[name] = this[name];
             };
         };
-    }
-}
+    };
+
+    export function openFor(client: NetworkClient, tile: TileEntity.TileEntityPrototype & { container: ItemContainer }) {
+        if(tile != null) {
+            const screenName = tile.getScreenName(client.getPlayerUid(), new Vector3(tile.x, tile.y, tile.z));
+            if(screenName != null) {
+                tile.container.openFor(client, screenName);
+            };
+        };
+    };
+};

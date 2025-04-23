@@ -5,6 +5,12 @@ translations.js
 header.ts
 MathHelper.ts
 
+addition/ToolAPI.ts
+addition/Block.ts
+addition/World.ts
+addition/TagRegistry.ts
+addition/IDRegistry.ts
+
 render/RenderHelper.ts
 
 animation/RenderSide.ts

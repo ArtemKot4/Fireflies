@@ -10,13 +10,13 @@ class ItemStack implements ItemInstance {
     public constructor(id?: number | ItemInstance, count?: number, data?: number, extra?: ItemExtraData) {
         if(typeof id === "object") {
             this.id = id.id;
-            this.count = id.count;
-            this.data = id.data;
+            this.count = id.count || 1;
+            this.data = id.data || 0;
             this.extra = id.extra;
         } else {
             this.id = id || 0;
-            this.count = count || (id ? 64 : 0);
-            this.data = data;
+            this.count = count || (id ? this.getMaxStack() : 0);
+            this.data = data || 0;
             this.extra = extra;
         };
     };

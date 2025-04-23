@@ -1,4 +1,4 @@
 interface INotificationInputData { 
-    style_name: string, 
-    runtime_style: INotificationRuntimeParams 
-};
+    styleName: string, 
+    runtimeStyle: INotificationRuntimeParams 
+}

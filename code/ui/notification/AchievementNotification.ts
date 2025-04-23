@@ -2,54 +2,56 @@ class AchievementNotification extends Notification {
     public maxHeight: number = 100;
     public mark: boolean = false;
     public height: number = 0;
+    public defaults: {};
 
     public override getType(): string {
         return "achievement";    
-    };
+    }
 
-    protected updateElementsHeight(description: {}, value: number): void {
+    protected updateElementsHeight(value: number): void {
         const elements = this.UI.getElements();
 
-        for(const name in description) {
-            elements.get(name).setPosition(description[name].default_x, value + description[name].default_y);
-        };
-    };
+        for(const name in this.defaults) {
+            elements.get(name).setPosition(this.defaults[name].x, value + this.defaults[name].y);
+        }
+    }
 
     protected override onInit(style: INotificationStyle, description: INotificationWindowData): void {
         this.maxHeight = style.height * style.scale;
         this.height = -this.maxHeight;
         this.mark = false;
+        this.defaults = {};
 
         for(const i in description.content.elements) {
             const element = description.content.elements[i];
-            element.x = this.height - element.x;
-        };
-    };
+            this.defaults[i] = {
+                x: element.x = this.height - element.x,
+                y: element.y
+            }
+        }
+    }
 
-    protected override run(style: INotificationStyle, data: INotificationWindowData): void {
+    protected override run(style: INotificationStyle, data: INotificationWindowData): boolean {
         if(!this.mark) {
             if(this.height < 0) {
-                this.updateElementsHeight(data.coords, this.height += 1);
+                this.updateElementsHeight(this.height += 1);
             } else {
-                java.lang.Thread.sleep(data.wait_time);
+                java.lang.Thread.sleep(data.waitTime);
                 this.mark = true;
-            };
+            }
         } else {
             if(this.height > -this.maxHeight) {
-                this.updateElementsHeight(data.coords, this.height -= 1);
+                this.updateElementsHeight(this.height -= 1);
             } else {
                 this.setLock(false);
                 this.setStop(true);
                 
-                if(this.initLast()) {
-                    java.lang.Thread.sleep(style.queue_time);
-                    return;
-                };
-
+                java.lang.Thread.sleep(style.queueTime);
                 this.close();
-            };
-        };
-    };
-};
+                return true;
+            }
+        }
+    }
+}
 
 new AchievementNotification();

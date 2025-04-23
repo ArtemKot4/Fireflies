@@ -38,7 +38,7 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
      * @returns 
      */
 
-    protected getParsedData(client: NetworkClient, data: T) {
+    protected getParsedData(client: NetworkClient, data: T): T {
         for(const i in data) {
             const argument_name = i as string;
 
@@ -57,7 +57,7 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
                         .replace("%s", argument_name);
                             
                         client.sendMessage(Native.Color.RED + error);
-                        break;
+                        continue;
                     };
 
                     switch(value.slice(0, 2)) {
@@ -104,7 +104,7 @@ abstract class ServerCommand<T extends ICommandParams> extends Command {
 
     protected buildPacket(): void {
         Network.addClientPacket("packet.command.client." + this.caller, this.onClient.bind(this));
-        Network.addServerPacket("packet.command.server." + this.caller, (client, data: T) => this.onServer(client, this.getParsedData(client, data)));
+        Network.addServerPacket("packet.command.server." + this.caller, (client: NetworkClient, data: T) => this.onServer(client, this.getParsedData(client, data)));
     };
 
     /**

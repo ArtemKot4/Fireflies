@@ -14,14 +14,14 @@ class TransparentNotification extends Notification {
         this.UI.layout.setAlpha(value);
     };
 
-    protected run(style: INotificationStyle, data: INotificationWindowData): void {
+    protected run(style: INotificationStyle, data: INotificationWindowData): boolean {
         const alpha = this.UI.layout.getAlpha();
         if(alpha < 1 && !this.mark) {
             this.setAlpha(alpha + 0.01);
         } else {
             if(!this.mark) {
                 this.mark = true;
-                java.lang.Thread.sleep(data.wait_time);
+                java.lang.Thread.sleep(data.waitTime);
             };
         };
         if(this.mark) {
@@ -30,12 +30,9 @@ class TransparentNotification extends Notification {
                 this.setLock(false);
                 this.setStop(true);
 
-                if(this.initLast()) {
-                    java.lang.Thread.sleep(data.queue_time);
-                    return;
-                };
-
+                java.lang.Thread.sleep(style.queueTime);
                 this.close();
+                return true;
             };
         };
     };      

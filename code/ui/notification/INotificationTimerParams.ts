@@ -2,13 +2,13 @@ interface INotificationTimerParams {
     /**
      * time before moving back, in milliseconds
      */
-    wait_time?: number,
+    waitTime?: number,
     /**
      * time before next notification, in milliseconds
      */
-    queue_time?: number,
+    queueTime?: number,
     /**
      * time how much thread is sleep between elements moving, in milliseconds. 
      */ 
-    sleep_time?: number
+    sleepTime?: number
 };
