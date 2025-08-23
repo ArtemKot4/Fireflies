@@ -9,4 +9,4 @@ function NetworkEvent(target: CommonTileEntity | LocalTileEntity, propertyName: 
     target.eventNames.network = target.eventNames.network || [];
 
     target.eventNames.network.push(propertyName);
-};
+}

@@ -2,6 +2,7 @@ namespace Block {
     export const destroyFunctions: Record<number, Callback.DestroyBlockFunction> = {};
     export const destroyStartFunctions: Record<number, Callback.DestroyBlockFunction> = {};
     export const destroyContinueFunctions: Record<number, Callback.DestroyBlockContinueFunction> = {};
+    export const projectileHitFunctions: Record<number, Callback.ProjectileHitFunction> = {};
 
     export function setEmptyCollisionShape(id: number) {
         const render = new ICRender.Model();
@@ -90,13 +91,17 @@ namespace Block {
         destroyContinueFunctions[id] = func;
     }
 
+    export function registerProjectileHitFunction(id: number, func: Callback.ProjectileHitFunction): void {
+        projectileHitFunctions[id] = func;
+    }
+
     Callback.addCallback("DestroyBlockContinue", (coords, block, progress) => {
         const blockFunction = destroyContinueFunctions[block.id];
     
         if(blockFunction) {
             return blockFunction(coords, block, progress);
         }
-    });
+    })
     
     Callback.addCallback("DestroyBlockStart", (coords, block, player) => {
         const blockFunction = destroyStartFunctions[block.id];
@@ -104,7 +109,7 @@ namespace Block {
         if(blockFunction) {
             return blockFunction(coords, block, player);
         }
-    });
+    })
     
     Callback.addCallback("DestroyBlock", (coords, block, player) => {
         const blockFunction = destroyFunctions[block.id];
@@ -112,5 +117,13 @@ namespace Block {
         if(blockFunction) {
             return blockFunction(coords, block, player);
         }
-    });
+    })
+
+    Callback.addCallback("ProjectileHit", (projectile, item, target) => {
+        const projectileHitFunction = projectileHitFunctions[BlockSource.getDefaultForActor(projectile).getBlockID(target.coords.x, target.coords.y, target.coords.z)];
+    
+        if(projectileHitFunction) {
+            return projectileHitFunction(projectile, new ItemStack(item), target);
+        }
+    })
 }

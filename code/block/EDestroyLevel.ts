@@ -4,4 +4,4 @@ enum EDestroyLevel {
     IRON = 2,
     DIAMOND = 3,
     OBSIDIAN = 4
-};
+}

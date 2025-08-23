@@ -159,8 +159,8 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
             Item.registerNameOverrideFunction(instance.id, instance.onNameOverride.bind(this));
         };
 
-        if('onHand' in instance) {
-            Item.registerHoldFunctionForID(instance.id, (instance as IItemHoldCallback).onItemHold);
+        if('onItemHold' in instance) {
+            Item.registerHoldFunctionForID(instance.id, (item, playerUid, slotIndex) => (instance as IItemHoldCallback).onItemHold(item, playerUid, slotIndex));
         };
         if("getItemCategory" in instance) {
             Item.setCategory(instance.id, instance.getItemCategory())

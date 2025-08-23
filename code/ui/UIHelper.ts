@@ -1,10 +1,12 @@
 namespace UIHelper {
+    export const SCREEN_WIDTH = 1000;
+
     export function separateText(text: string, line_size: number = 25): string {
         let result: string[] = [];
         let line = "";
     
-        for (let word of text.split(" ")) {
-            if (line.length + word.length <= line_size) {
+        for(const word of text.split(" ")) {
+            if(line.length + word.length <= line_size) {
                 line += word + " ";
             } else {
                 result.push(line.trim());
@@ -12,12 +14,12 @@ namespace UIHelper {
             }
         }
     
-        if (line) {
+        if(line) {
             result.push(line.trim());
         }
     
         return result.join("\n");
-    };
+    }
 
     export function getItemIcon(itemID: string | number, x: number, y: number, size: number = 70, bitmap: string = "unknown"): UI.UISlotElement {
         return {
@@ -30,4 +32,4 @@ namespace UIHelper {
             bitmap
         }
     }
-}; 
+}

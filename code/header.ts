@@ -4,6 +4,7 @@ enum Side {
 }
 
 declare namespace com.zhekasmirnov.innercore.api.NativeBlock {
+    export function setCanContainLiquid(id: number, can: boolean): void;
     export function setSolid(id: number, solid: boolean): void;
     export function setRenderAllFaces(id: number, render: boolean): void;
     export function setRenderType(id: number, type: number): void;

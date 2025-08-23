@@ -14,6 +14,7 @@ addition/TagRegistry.ts
 addition/IDRegistry.ts
 
 render/RenderHelper.ts
+render/RenderObject.ts
 
 animation/RenderSide.ts
 animation/BlockAnimation.ts
@@ -23,28 +24,9 @@ ui/UIHelper.ts
 
 ui/EScreenName.ts
 
-ui/notification/INotificationTimerParams.ts
-ui/notification/INotificationParams.ts
-ui/notification/INotificationRuntimeParams.ts
-ui/notification/INotificationElement.ts
-ui/notification/INotificationStyle.ts
-ui/notification/INotificationWindowData.ts
-ui/notification/INotificationInputData.ts
-ui/notification/Notification.ts
-
-
-ui/notification/AchievementNotification.ts
-
-ui/notification/TransparentNotification.ts
-
 WorldSaves.ts
 
 Vector3.ts
-
-command/ICommandParams.ts
-command/Command.ts
-command/ClientCommand.ts
-command/ServerCommand.ts
 
 item/ItemStack.ts
 item/IItemHoldCallback.ts
@@ -75,7 +57,6 @@ Dimension.ts
 event/ECallback.ts
 event/SubscribeEvent.ts
 event/ServerPlayerTick.ts
-event/NativeCommand.ts
 event/ItemHold.ts
 
 final.ts

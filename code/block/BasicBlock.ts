@@ -1,42 +1,46 @@
 interface IDestroyCallback {
     onDestroy(coords: Callback.ItemUseCoordinates, block: Tile, player: number): void
-};
+}
 
 interface IDestroyContinueCallback {
     onDestroyContinue(coords: Callback.ItemUseCoordinates, block: Tile, progress: number): void
-};
+}
 
 interface IDestroyStartCallback {
     onDestroyStart(coords: Callback.ItemUseCoordinates, block: Tile, player: number): void
-};
+}
 
 interface IPlaceCallback {
     onPlace(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number, region: BlockSource): Vector | void
-};
+}
 
 interface INeighbourChangeCallback {
     onNeighbourChange(coords: Vector, block: Tile, changedCoords: Vector, region: BlockSource): void
-};
+}
 
 interface IEntityInsideCallback {
     onEntityInside(blockCoords: Vector, block: Tile, entity: number): void
-};
+}
 
 interface IEntityStepOnCallback {
     onEntityStepOn(coords: Vector, block: Tile, entity: number): void
-};
+}
 
 interface IRandomTickCallback {
     onRandomTick(x: number, y: number, z: number, id: number, data: number, region: BlockSource): void;
-};
+}
 
 interface IAnimateTickCallback {
     onAnimateTick(x: number, y: number, z: number, id: number, data: number): void;
-};
+}
 
 interface IClickCallback {
     onClick(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number): void;
-};
+}
+
+interface IProjectileHitCallback {
+    onProjectileHit(projectile: number, item: ItemStack, target: Callback.ProjectileHitTarget): void;
+}
 
 class BasicBlock {
     public readonly variationList: Block.BlockVariation[];
@@ -216,6 +220,10 @@ class BasicBlock {
             });
         }
 
+        if("onProjectileHit" in this) {
+            Block.registerProjectileHitFunction(this.id, (this as IProjectileHitCallback).onProjectileHit);
+        }
+
         BasicItem.setFunctions(this);
         Block.setDestroyLevel(this.stringID, this.getDestroyLevel());
     }
@@ -244,9 +252,7 @@ class BasicBlock {
             }
             render.addEntry(blockModel);
         }
-
         BlockRenderer.setStaticICRender(this.id, data || -1, render);
-
         return this;
     }
 
@@ -274,32 +280,21 @@ class BasicBlock {
     }
 
     public getDrop?(coords: Callback.ItemUseCoordinates, id: number, data: number, diggingLevel: number, enchant: ToolAPI.EnchantData, item: ItemStack, region: BlockSource): ItemInstanceArray[]
-
     public getDestroyTime?(): number;
-
     public getSoundType?(): Block.Sound;
-
     public getFriction?(): number;
-
     public getLightLevel?(): number;
-
     public getLightOpacity?(): number;
-
     public getExplosionResistance?(): number;
-
     public getMapColor?(): number;
-
     public getMaterial?(): string;
-
     public getRenderLayer?(): number;
-
     public getRenderType?(): number;
-
     public getTranslucency?(): number;
 
     public getDestroyLevel(): EDestroyLevel {
         return EDestroyLevel.STONE;
-    };
+    }
 
     public getCreativeGroup?(): string;
 

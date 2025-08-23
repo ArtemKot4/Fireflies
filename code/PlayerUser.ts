@@ -215,9 +215,9 @@ class PlayerUser {
     }
 
     public decreaseCarriedItem(count: number = 1): void {
-        const stack = this.getInventorySlot(this.getSelectedSlot());
+        const stack = this.getCarriedItem();
 
-        this.setInventorySlot(this.getSelectedSlot(), stack.id, stack.count - count, stack.data, stack.extra);
+        Entity.setCarriedItem(this.playerUid, stack.id, stack.count - count, stack.data, stack.extra);
     }
 
     public clearSlot(slot?: number): void {

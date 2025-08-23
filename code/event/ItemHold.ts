@@ -1,13 +1,11 @@
 Callback.addCallback("ServerPlayerTick", (playerUid) => {
-    if(World.getThreadTime() % 8 === 0) {
-        const actor = new PlayerActor(playerUid);
-        const slot = actor.getSelectedSlot();
-        const selectedItem = actor.getInventorySlot(slot);
-        const carriedItem = Entity.getCarriedItem(playerUid);
+    const actor = new PlayerActor(playerUid);
+    const slot = actor.getSelectedSlot();
+    const selectedItem = actor.getInventorySlot(slot);
+    const carriedItem = Entity.getCarriedItem(playerUid);
 
-        if(selectedItem.id !== 0 && selectedItem.id == carriedItem.id) {
-            return Callback.invokeCallback<Callback.ItemHoldFunction>("ItemHold", selectedItem, playerUid, slot);
-        };
+    if(selectedItem.id !== 0 && selectedItem.id == carriedItem.id) {
+        return Callback.invokeCallback<Callback.ItemHoldFunction>("ItemHold", selectedItem, playerUid, slot);
     };
 });
 

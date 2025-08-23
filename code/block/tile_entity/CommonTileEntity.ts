@@ -6,32 +6,32 @@
  *     public exampleMessagePacket(): void {
  *         Game.message("example");
  *         return;
- *     };
+ *     }
  * 
  *     public onTick(): void {
  *         Game.message("tick work")
- *     };
- * };
+ *     }
+ * }
  * 
  * class ExampleTile extends CommonTileEntity {
  *     public getLocalTileEntity(): LocalTileEntity {
  *         return new LocalExampleTile();    
- *     };
+ *     }
  * 
  *     public onTick(): void {
  *         this.sendPacket("exampleMessagePacket", {});
- *     };
- * };
+ *     }
+ * }
  * 
  * class ExampleBlock extends BasicBlock {
  *     public constructor() {
  *         super("example_block");
- *     };
+ *     }
  * 
  *     public override getTileEntity(): CommonTileEntity {
  *         return new ExampleTile();
- *     };
- * };
+ *     }
+ * }
  * ```
  */
 
@@ -50,7 +50,7 @@ abstract class CommonTileEntity implements TileEntity {
      * Scriptable object that contains data of tile entity.
      * You can use it instead {@link defaultValues}
      */
-    public data: Scriptable;
+    public data: Record<string | number, unknown>;
     /**
      * Scriptable object that contains default data of tile entity.
      */
@@ -62,34 +62,35 @@ abstract class CommonTileEntity implements TileEntity {
     public noupdate: boolean;
     public readonly useNetworkItemContainer: boolean = true;
     public events: { [packetName: string]: (packetData: any, packetExtra: any) => void; };
-
     public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void; };
-    client?: LocalTileEntity;
-
     public eventNames: {
         network: string[],
         container: string[]
     };
+    client?: LocalTileEntity;
 
     public constructor() {
         const localTileEntity = this.getLocalTileEntity();
 
         if(localTileEntity != null) {
             this.client = localTileEntity;
-        };
+        }
+        if("onTick" in this) {
+            this.tick = this.onTick;
+        }
 
-        this.tick = this.onTick;
         this.init = this.onInit;
         this.load = this.onLoad;
         this.unload = this.onUnload;
         this.destroyBlock = this.onDestroyBlock;
         this.destroy = this.onDestroyTile;
         this.projectileHit = this.onProjectileHit;
-      
         TileEntity.buildEvents(this);
-        this.defaultValues = (this.defaultValues || this.data) || {};
-        this.data = {};
-    };
+
+        if("data" in this) {
+            this.defaultValues = Object.assign({}, this.defaultValues, this.data);
+        }
+    }
 
     public created(): void {};
 
@@ -115,6 +116,12 @@ abstract class CommonTileEntity implements TileEntity {
 
     public update: () => void;
 
+    /**@deprecated
+     * Use {@link onTick} instead
+     */
+    
+    public tick: () => void;
+
     public onCheckerTick(isInitialized: boolean, isLoaded: boolean, wasLoaded: boolean): void {};
 
     public click(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: ItemExtraData): boolean | void {};
@@ -138,12 +145,6 @@ abstract class CommonTileEntity implements TileEntity {
      */
 
     public destroy(): boolean | void {};
-
-    /**@deprecated
-     * Use {@link onTick} instead
-     */
-
-    public tick(): void {};
     public onInit(): void {};
     public onLoad(): void {};
     public onUnload(): void {};
@@ -158,28 +159,28 @@ abstract class CommonTileEntity implements TileEntity {
 
     public onClick(coords: Callback.ItemUseCoordinates, item: ItemStack, player: number): boolean | void {
         return false;
-    };
+    }
 
     public onDestroyBlock(coords: Callback.ItemUseCoordinates, player: number): void {};
     public onProjectileHit(coords: Callback.ItemUseCoordinates, target: Callback.ProjectileHitTarget): void {};
     public onDestroyTile(): boolean | void {};
-    public onTick(): void {};
+    public onTick?(): void;
 
     public getGuiScreen(): Nullable<UI.IWindow> {
         return null;
-    };
+    }
 
     public getScreenByName(screenName?: string, container?: ItemContainer): Nullable<UI.IWindow> {
         return null;
-    };
+    }
 
     public getScreenName(player: number, coords: Vector): string {
         return "main";
-    };
+    }
 
     public preventUI(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
         return Entity.getSneaking(player);
-    };
+    }
 
     public onItemClick(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
         if(!this.onClick( coords, new ItemStack(id, count, data, extra), player)) {
@@ -191,12 +192,12 @@ abstract class CommonTileEntity implements TileEntity {
                     if(screenName && this.getScreenByName(screenName, this.container)) {
                         this.container.openFor(client, screenName);
                         return true;
-                    };
-                };
-            };
-        };
+                    }
+                }
+            }
+        }
         return false;
-    };
+    }
 
     public requireMoreLiquid(liquid: string, amount: number): void {};
     public sendPacket: <T = {}>(name: string, data: T) => {};
@@ -204,10 +205,10 @@ abstract class CommonTileEntity implements TileEntity {
 
     public selfDestroy(): void {
         TileEntity.destroyTileEntityAtCoords(this.x, this.y, this.z);
-    };
+    }
 
     public getLocalTileEntity(): LocalTileEntity {
         return null;
-    };
-};
+    }
+}
 

@@ -19,9 +19,6 @@ ModAPI.registerAPI("FirefliesAPI", {
     Planks,
     RotatableLog,
     BasicItem,
-    Command,
-    ClientCommand,
-    ServerCommand,
     CommonTileEntity,
     LocalTileEntity,
     NetworkEvent,
@@ -29,9 +26,9 @@ ModAPI.registerAPI("FirefliesAPI", {
     Dimension,
     RuntimeData,
     EScreenName,
-    Notification,
     ECallback,
     Side,
+    RenderObject,
     SubscribeEvent,
     requireGlobal(command: string) {
 		return eval(command);
