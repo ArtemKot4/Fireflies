@@ -8,7 +8,7 @@ enum EScreenName {
     SURVIVAL_INVENTORY_SCREEN = "survival_inventory_screen",
     INVENTORY_SCREEN = "inventory_screen",
     INVENTORY_SCREEN_POCKET = "inventory_screen_pocket" 
-};
+}
 
 Callback.addCallback("NativeGuiChanged", function(name: EScreenName, lastName, isPushEvent) {
     RuntimeData.local.screenName = name;

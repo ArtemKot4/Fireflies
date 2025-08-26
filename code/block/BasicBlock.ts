@@ -42,6 +42,10 @@ interface IProjectileHitCallback {
     onProjectileHit(projectile: number, item: ItemStack, target: Callback.ProjectileHitTarget): void;
 }
 
+interface IBlockSelectionCallback {
+    onSelection(block: Tile, position: BlockPosition, vector: Vector): void;
+}
+
 class BasicBlock {
     public readonly variationList: Block.BlockVariation[];
 
@@ -67,7 +71,6 @@ class BasicBlock {
 
     public build() {
         const canRotate = this.canRotate();
-
         if(canRotate) {
             this.variationList.map((v) => {
                 if(v.texture.length < 6) {
@@ -81,19 +84,15 @@ class BasicBlock {
         } else {
             Block.createBlock(this.stringID, this.variationList);
         }
-
         const tags = this.getTags();
-
         if(tags != null) {
             TagRegistry.addCommonObject("blocks", this.id, tags);
         }
 
         const states = this.getStates();
-
         if(states != null) {
             this.setStates(states);
         }
-
         if("getModel" in this) {
             const modelList: BlockModel[] = [].concat((this as IBlockModel).getModel());
 
@@ -108,7 +107,6 @@ class BasicBlock {
                 }
             }
         }
-
         if("getDestroyTime" in this) {
             Block.setDestroyTime(this.id, this.getDestroyTime());
         }
@@ -224,6 +222,10 @@ class BasicBlock {
             Block.registerProjectileHitFunction(this.id, (this as IProjectileHitCallback).onProjectileHit);
         }
 
+        if("onSelection" in this) {
+            Block.registerSelectionFunctionForID(this.id, (this as IBlockSelectionCallback).onSelection);
+        }
+
         BasicItem.setFunctions(this);
         Block.setDestroyLevel(this.stringID, this.getDestroyLevel());
     }
@@ -247,7 +249,6 @@ class BasicBlock {
                 } else {
                     mesh = model;
                 }
-
                 blockModel = new BlockRenderer.Model(mesh);
             }
             render.addEntry(blockModel);

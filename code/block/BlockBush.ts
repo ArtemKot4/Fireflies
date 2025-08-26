@@ -3,28 +3,27 @@ abstract class BlockBush extends BlockPlant implements IClickCallback, IRandomTi
 
     public getMaxStage() {
         return this.variationList.length - 1;
-    };
+    }
 
-    constructor(stringID: string, variationList: Block.BlockVariation[], berryID: number) {
+    public constructor(stringID: string, variationList: Block.BlockVariation[], berryID: number) {
         super(stringID, variationList);
         this.berryID = berryID;
-    };
+    }
 
-    abstract getChance(): number;
-
-    abstract getCount(): [min: number, max: number];
+    public abstract getChance(): number;
+    
+    public abstract getCount(): [min: number, max: number];
 
     public onRandomTick(x: number, y: number, z: number, id: number, data: number, region: BlockSource): void {
         if(Math.random() > this.getChance()) return;
 
         if(data < this.getMaxStage()) {
             region.setBlock(x, y, z, id, data + 1);
-        };
-    };
+        }
+    }
 
     public onClick(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number): void {
         if(block.data === this.getMaxStage()) {
-
             const count = this.getCount();
 
             BlockSource.getDefaultForActor(player).spawnDroppedItem(
@@ -35,6 +34,6 @@ abstract class BlockBush extends BlockPlant implements IClickCallback, IRandomTi
                 MathHelper.randomInt(count[0], count[1]),
                 0
             );
-        };
+        }
     }
 }

@@ -23,14 +23,22 @@ abstract class LocalTileEntity implements LocalTileEntity {
      */
 
     public tick: () => void;
+    public selection: () => void;
 
     public onLoad(): void {};
     public onUnload(): void {};
     public onTick?(): void;
+    /**
+     * Method, works if player looks and touchs block.
+     */
+    public onSelection?(): void;
 
     public constructor() {
         if("onTick" in this) {
             this.tick = this.onTick;
+        }
+        if("onSelection" in this) {
+            this.selection = this.onSelection;
         }
         this.load = this.onLoad;
         this.unload = this.onUnload;

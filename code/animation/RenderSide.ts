@@ -35,11 +35,11 @@ class RenderSide<T extends string | RenderMesh> {
         return this.list[data];
     }
 
-    public getForTile(tile_entity: TileEntity.TileEntityPrototype): RenderMesh {
+    public getForTile(tileEntity: TileEntity.TileEntityPrototype): RenderMesh {
         const data = BlockSource.getCurrentClientRegion().getBlockData(
-            tile_entity.x,
-            tile_entity.y,
-            tile_entity.z
+            tileEntity.x,
+            tileEntity.y,
+            tileEntity.z
         );
 
         return this.getWithData(data);

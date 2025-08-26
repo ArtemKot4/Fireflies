@@ -1,4 +1,4 @@
-abstract class BlockPlant extends BasicBlock implements INeighbourChangeCallback, IPlaceCallback {
+class BlockPlant extends BasicBlock implements INeighbourChangeCallback, IPlaceCallback {
     public static allowedBlockList: number[] = [
         VanillaBlockID.dirt,
         VanillaBlockID.grass,

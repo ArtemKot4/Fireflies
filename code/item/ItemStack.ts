@@ -18,16 +18,16 @@ class ItemStack implements ItemInstance {
             this.count = count || (id ? this.getMaxStack() : 0);
             this.data = data || 0;
             this.extra = extra;
-        };
-    };
+        }
+    }
 
     public decrease(count: number = 1): void {
         this.count = Math.max(this.count - count, 0);
-    };
+    }
 
     public increase(count: number = 1): void {
         this.count = Math.min(this.count + count, this.getMaxStack());
-    };
+    }
 
     public equals(stack: ItemInstance | ItemStack): boolean {
         return (
@@ -36,7 +36,7 @@ class ItemStack implements ItemInstance {
             stack.data === this.data && 
             ((stack.extra && this.extra) && stack.extra.equals(this.extra))
         );
-    };
+    }
 
     public getItemInstance(): ItemInstance {
         return {
@@ -45,11 +45,11 @@ class ItemStack implements ItemInstance {
             data: this.data,
             extra: this.extra
         };
-    }; 
+    }
 
     public isEmpty(): boolean {
         return this.id === 0 && this.count === 0 && this.data === 0 && this.extra === null;
-    };
+    }
 
     public clear(): void {
         this.id = 0;
@@ -57,25 +57,25 @@ class ItemStack implements ItemInstance {
 
         delete this.data;
         delete this.extra;
-    };
+    }
 
     public getMaxStack(): number {
         return Item.getMaxStack(this.id);
-    };
+    }
 
     public getMaxDamage(): number {
         return Item.getMaxDamage(this.id);
-    };
+    }
 
     public isNativeItem(): boolean {
         return Item.isNativeItem(this.id);
-    };
+    }
 
     public getStringID(): string {
         return IDRegistry.getStringIdForIntegerId(this.id);
-    };
+    }
     
     public copy(): ItemStack {
         return new ItemStack(this.id, this.count, this.data, this.extra);
-    };
-};
+    }
+}

@@ -182,11 +182,9 @@ class RenderObject implements Vector {
         }
         this.threadInited = true;
         this.thread = Threading.initThread("thread." + this.getStringID(), () => {
-            while(this.threadInited == true) {//true) {
+            while(this.threadInited == true) {
                 java.lang.Thread.sleep(sleepTime);
-                //if(this.threadInited == true) {
                 this.run();
-                //}
             }
         }); 
     }

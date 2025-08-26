@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/../toolchain/classpath/android.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../toolchain/classpath/horizon-1.2.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../toolchain/classpath/innercore-test.jar!/" />
+    <src_description expected_position="4">
+      <src_folder value="file://$MODULE_DIR$/java/src" expected_position="4" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/java/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
+    <orderEntry type="module-library">
+      <library name="android.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../toolchain/classpath/android.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="horizon-1.2.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../toolchain/classpath/horizon-1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="innercore-test.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../toolchain/classpath/innercore-test.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

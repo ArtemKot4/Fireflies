@@ -10,16 +10,15 @@ namespace RenderHelper {
         rotate?: number[]
     ): RenderMesh {
         const mesh = new RenderMesh(
-          dir + model + ".obj",
-          "obj",
-          params
+            dir + model + ".obj",
+            "obj",
+            params
         );
 
         if(rotate) {
             mesh.rotate(rotate[0], rotate[1], rotate[2]);
-        };
+        }
 
         return mesh;
-    };
-
+    }
 }

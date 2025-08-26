@@ -17,13 +17,12 @@ class Keyboard {
                 editText.setHint(self.default_string);
                 let builder: any = new android.app.AlertDialog.Builder(self.context);
                 
-                builder.setView(editText)
-                    .setPositiveButton("ok", {
-                        onClick(){
-                            let text = String(editText.getText());
-                            self.func(text)
-                        }
-                    }).show();
+                builder.setView(editText).setPositiveButton("ok", {
+                    onClick(){
+                        let text = String(editText.getText());
+                        self.func(text)
+                    }
+                }).show();
             }
         });
     }

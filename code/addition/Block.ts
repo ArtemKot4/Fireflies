@@ -3,8 +3,13 @@ namespace Block {
     export const destroyStartFunctions: Record<number, Callback.DestroyBlockFunction> = {};
     export const destroyContinueFunctions: Record<number, Callback.DestroyBlockContinueFunction> = {};
     export const projectileHitFunctions: Record<number, Callback.ProjectileHitFunction> = {};
+    export const selectionFunctions: Record<number, Callback.BlockSelectionFunction> = {};
 
-    export function setEmptyCollisionShape(id: number) {
+    export function createPlantBlock(nameID: string, defineData: BlockVariation[]) {
+        new BlockPlant(nameID, defineData);
+    }
+
+    export function setEmptyCollisionShape(id: number): void {
         const render = new ICRender.Model();
         const model = BlockRenderer.createModel();
         const shape = new ICRender.CollisionShape();
@@ -68,7 +73,7 @@ namespace Block {
     }
 
     export function registerDestroyFunction(id: number, func: Callback.DestroyBlockFunction): void {
-        destroyFunctions[typeof id === "string" ? IDRegistry.parseBlockID(id) : id] = func;
+        destroyFunctions[typeof id == "string" ? IDRegistry.parseBlockID(id) : id] = func;
     }
 
     export function registerDestroyFunctionForID(id: number, func: Callback.DestroyBlockFunction): void {
@@ -76,7 +81,7 @@ namespace Block {
     }
 
     export function registerDestroyStartFunction(id: number, func: Callback.DestroyBlockFunction): void {
-        destroyStartFunctions[typeof id === "string" ? IDRegistry.parseBlockID(id) : id] = func;
+        destroyStartFunctions[typeof id == "string" ? IDRegistry.parseBlockID(id) : id] = func;
     }
 
     export function registerDestroyStartFunctionForID(id: number, func: Callback.DestroyBlockFunction): void {
@@ -84,7 +89,7 @@ namespace Block {
     }
 
     export function registerDestroyContinueFunction(id: number, func: Callback.DestroyBlockContinueFunction): void {
-        destroyContinueFunctions[typeof id === "string" ? IDRegistry.parseBlockID(id) : id] = func;
+        destroyContinueFunctions[typeof id == "string" ? IDRegistry.parseBlockID(id) : id] = func;
     }
 
     export function registerDestroyContinueFunctionForID(id: number, func: Callback.DestroyBlockContinueFunction): void {
@@ -95,35 +100,54 @@ namespace Block {
         projectileHitFunctions[id] = func;
     }
 
+    export function registerSelectionFunction(id: number, func: Callback.BlockSelectionFunction): void {
+        selectionFunctions[id] = func;
+    }
+
+    export function registerSelectionFunctionForID(id: number, func: Callback.BlockSelectionFunction) {
+        selectionFunctions[typeof id == "string" ? IDRegistry.parseBlockID(id) : id]; 
+    }
+
     Callback.addCallback("DestroyBlockContinue", (coords, block, progress) => {
         const blockFunction = destroyContinueFunctions[block.id];
     
-        if(blockFunction) {
+        if(blockFunction != null) {
             return blockFunction(coords, block, progress);
         }
-    })
+    });
     
     Callback.addCallback("DestroyBlockStart", (coords, block, player) => {
         const blockFunction = destroyStartFunctions[block.id];
     
-        if(blockFunction) {
+        if(blockFunction != null) {
             return blockFunction(coords, block, player);
         }
-    })
+    });
     
     Callback.addCallback("DestroyBlock", (coords, block, player) => {
         const blockFunction = destroyFunctions[block.id];
     
-        if(blockFunction) {
+        if(blockFunction != null) {
             return blockFunction(coords, block, player);
         }
-    })
+    });
 
     Callback.addCallback("ProjectileHit", (projectile, item, target) => {
         const projectileHitFunction = projectileHitFunctions[BlockSource.getDefaultForActor(projectile).getBlockID(target.coords.x, target.coords.y, target.coords.z)];
     
-        if(projectileHitFunction) {
+        if(projectileHitFunction != null) {
             return projectileHitFunction(projectile, new ItemStack(item), target);
         }
-    })
+    });
+
+    Callback.addCallback("BlockSelection", (block: Tile, position: BlockPosition, vector: Vector) => {
+        const selectionFunction = selectionFunctions[block.id];
+        if(selectionFunction != null) {
+            return selectionFunction(block, position, vector);
+        }
+        const tile = TileEntity.getTileEntity(position.x, position.y, position.z);
+        if(tile != null && "client" in tile && "selection" in tile.client) {
+            return tile.onSelection();
+        }
+    });
 }

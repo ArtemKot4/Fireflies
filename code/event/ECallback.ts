@@ -112,5 +112,31 @@ enum ECallback {
     /**
      * Custom callback. Works in one time of 8 ticks, if player held the item.
      */
-    ITEM_HOLD = "ItemHold"
+    ITEM_HOLD = "ItemHold",
+    BLOCK_SELECTION = "BlockSelection"
 };
+
+declare namespace Callback {
+    /** 
+     * Function used in "ItemHold" callback. Callback works one time of 8 ticks.
+     * @since 0.1a  
+     * @param item ItemInstance of held item
+     * @param playerUid unique identifier of holder player
+     */
+
+    export interface ItemHoldFunction {
+        (item: ItemInstance, playerUid: number, slotIndex: number): void;
+    }
+
+    export interface BlockSelectionFunction {
+        (block: Tile, position: BlockPosition, vector: Vector);
+    }
+
+    export interface EntitySelectionFunction {
+        (entityUid: number, vector: Vector);
+    }
+
+    export function addCallback(name: "ItemHold", func: ItemHoldFunction, priority?: number): void;
+    export function addCallback(name: "BlockSelection", func: BlockSelectionFunction, priority?: number): void
+    export function addCallback(name: "EntitySelection", func: EntitySelectionFunction, priority?: number);
+}

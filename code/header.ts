@@ -20,8 +20,6 @@ declare namespace com.zhekasmirnov.innercore.api.NativeBlock {
     export function setMaterialBase(id: number, base_id: number): void;
 }
 
-
-
 declare namespace com.zhekasmirnov.innercore.api.NativeAPI {
     export function getDifficulty(): EGameDifficulty;
 

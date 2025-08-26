@@ -49,6 +49,12 @@
 			"targetDir": "."
 		}
 	],
+    "compile": [
+		{
+			"source": "java/",
+			"type": "java"
+		}
+	],
 	"info": {
 		"name": "Fireflies",
 		"author": "ArtemKot",

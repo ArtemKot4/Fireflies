@@ -32,14 +32,14 @@ function SubscribeEvent(event: ECallback): MethodDecorator;
 function SubscribeEvent(target: unknown, key: string, descriptor: PropertyDescriptor): PropertyDescriptor;
 
 function SubscribeEvent(value: unknown, key?: string, descriptor?: PropertyDescriptor): unknown {
-    if(typeof value === "string" && arguments.length === 1) {
+    if(typeof value == "string" && arguments.length == 1) {
         return function(target: any, key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
             Callback.addCallback(value, descriptor.value);
             return descriptor;
-        };
-    };
-    let name = key.replace("on", "");
+        }
+    }
+    const name = key.replace("on", "");
 
     Callback.addCallback(name, descriptor.value);
     return descriptor;
-};
+}
