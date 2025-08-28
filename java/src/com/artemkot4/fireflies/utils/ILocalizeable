@@ -1,0 +1,6 @@
+package com.artemkot4.coffee_cup.utils;
+
+public interface ILocalizeable {
+    public String getName();
+    public String getLocalizedName();
+}
