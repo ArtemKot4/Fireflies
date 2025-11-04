@@ -8,7 +8,7 @@ class ItemStack implements ItemInstance {
     public constructor(instance: ItemInstance);
     public constructor(id: number, count?: number, data?: number, extra?: ItemExtraData);
     public constructor(id?: number | ItemInstance, count?: number, data?: number, extra?: ItemExtraData) {
-        if(typeof id === "object") {
+        if(typeof id == "object") {
             this.id = id.id;
             this.count = id.count || (id ? this.getMaxStack() : 0);
             this.data = id.data || 0;
@@ -31,9 +31,9 @@ class ItemStack implements ItemInstance {
 
     public equals(stack: ItemInstance | ItemStack): boolean {
         return (
-            stack.id === this.id && 
-            this.count === stack.count && 
-            stack.data === this.data && 
+            stack.id == this.id && 
+            this.count == stack.count && 
+            stack.data == this.data && 
             ((stack.extra && this.extra) && stack.extra.equals(this.extra))
         );
     }
@@ -48,7 +48,7 @@ class ItemStack implements ItemInstance {
     }
 
     public isEmpty(): boolean {
-        return this.id === 0 && this.count === 0 && this.data === 0 && this.extra === null;
+        return this.id == 0 && this.count == 0 && this.data == 0 && this.extra == null;
     }
 
     public clear(): void {
@@ -77,5 +77,23 @@ class ItemStack implements ItemInstance {
     
     public copy(): ItemStack {
         return new ItemStack(this.id, this.count, this.data, this.extra);
+    }
+
+    public static equals(stack1: ItemInstance, stack2: ItemInstance): boolean {
+        return (
+            stack1.id == stack2.id && 
+            stack1.count == stack2.count && 
+            stack1.data == stack2.data //&& 
+            //((stack1.extra && stack2.extra) && stack1.extra.equals(stack2.extra))
+        );
+    }
+
+    public static contains(stack1: ItemInstance, stack2: ItemInstance): boolean {
+        return (
+            stack1.id == stack2.id && 
+            stack1.count >= stack2.count && 
+            stack1.data == stack2.data //&& 
+            //((stack1.extra && stack2.extra) && stack1.extra.equals(stack2.extra))
+        );
     }
 }

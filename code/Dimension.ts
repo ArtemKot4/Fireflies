@@ -32,7 +32,6 @@ abstract class Dimension {
         }
 
         this.dimension.setGenerator(this.getGenerator());
-        this.dimension.setHasSkyLight(this.hasSkyLight());
 
         if("getSkyColor" in this) {
             const skyColor = this.getSkyColor();

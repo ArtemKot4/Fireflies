@@ -10,8 +10,7 @@ abstract class BlockBush extends BlockPlant implements IClickCallback, IRandomTi
         this.berryID = berryID;
     }
 
-    public abstract getChance(): number;
-    
+    public abstract getChance(): number
     public abstract getCount(): [min: number, max: number];
 
     public onRandomTick(x: number, y: number, z: number, id: number, data: number, region: BlockSource): void {

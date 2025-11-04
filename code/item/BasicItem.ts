@@ -169,19 +169,16 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
 
     public create(params: ItemParams): void {
         params = params || {};
-
         const tags = this.getTags();
 
         if(tags) {
             TagRegistry.addCommonObject("items", this.id, tags);
         }
         const textureData = this.getTexture();
-
         const itemTexture = Object.assign(
             textureData,
             textureData.name instanceof Array && {texture: textureData.name[0]}
         ) as Item.TextureData;
-    
         const itemParams = Object.assign({
             stack: this.getMaxStack(),
             isTech: !this.inCreative(),
@@ -192,11 +189,9 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
         if("food" in params) {
             key = "createFoodItem";
         }
-
         if("type" in params) {
             key = "createArmorItem";
         }
-
         if(this.isThrowable && this.isThrowable()) {
             key = "createThrowableItem";
         }

@@ -50,7 +50,7 @@ abstract class CommonTileEntity implements TileEntity {
      * Scriptable object that contains data of tile entity.
      * You can use it instead {@link defaultValues}
      */
-    public data: Record<string | number, unknown>;
+    public data: Scriptable;
     /**
      * Scriptable object that contains default data of tile entity.
      */

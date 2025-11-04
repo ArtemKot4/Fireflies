@@ -1,4 +1,4 @@
-package com.artemkot4.fireflies.events;
+package com.artemkot4.fireflies.events.interfaces;
 
 import com.zhekasmirnov.apparatus.adapter.innercore.game.item.ItemStack;
 

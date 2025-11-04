@@ -43,12 +43,17 @@ interface IProjectileHitCallback {
 }
 
 interface IBlockSelectionCallback {
+    /**
+     * Method, adds client event for block selection of player 
+     * @param block block id and data
+     * @param position position of block
+     * @param vector look vector of player
+     */
     onSelection(block: Tile, position: BlockPosition, vector: Vector): void;
 }
 
 class BasicBlock {
     public readonly variationList: Block.BlockVariation[];
-
     public readonly id: number;
     public readonly stringID: string;
 
@@ -62,219 +67,27 @@ class BasicBlock {
             texture: [[stringID, 0]]
         }];
 
-        this.build();
+        BasicBlock.build(this);
     }
 
-    public canRotate() {
+    /**
+     * Method declares, can block place rotated by data or not
+     */
+    public canRotate(): boolean {
         return false;
     }
 
-    public build() {
-        const canRotate = this.canRotate();
-        if(canRotate) {
-            this.variationList.map((v) => {
-                if(v.texture.length < 6) {
-                    for(let i = v.texture.length; i < 6; i++) {
-                        v.texture.push(v.texture[v.texture.length - 1]);
-                    };
-                };
-                return v;
-            });
-            Block.createBlockWithRotation(this.stringID, this.variationList);
-        } else {
-            Block.createBlock(this.stringID, this.variationList);
-        }
-        const tags = this.getTags();
-        if(tags != null) {
-            TagRegistry.addCommonObject("blocks", this.id, tags);
-        }
-
-        const states = this.getStates();
-        if(states != null) {
-            this.setStates(states);
-        }
-        if("getModel" in this) {
-            const modelList: BlockModel[] = [].concat((this as IBlockModel).getModel());
-
-            if(modelList.length === 1) {
-                this.setModel(modelList[0], -1);
-            } else {
-                for (let i: number = 0; i < modelList.length; i++) {
-                    const model = modelList[i];
-
-                    const data: number = model instanceof BlockModel ? model.getBlockData() : i;
-                    this.setModel(model, data);
-                }
-            }
-        }
-        if("getDestroyTime" in this) {
-            Block.setDestroyTime(this.id, this.getDestroyTime());
-        }
-
-        if("getSoundType" in this) {
-            Block.setSoundType(this.id, this.getSoundType());
-        }
-
-        if("getFriction" in this) {
-            Block.setFriction(this.id, this.getFriction());
-        }
-
-        if("getLightLevel" in this) {
-            Block.setLightLevel(this.id, this.getLightLevel());
-        }
-
-        if("getLightOpacity" in this) {
-            Block.setLightOpacity(this.id, this.getLightOpacity());
-        }
-
-        if("getExplosionResistance" in this) {
-            Block.setExplosionResistance(this.id, this.getExplosionResistance());
-        }
-
-        if("getMapColor" in this) {
-            Block.setMapColor(this.id, this.getMapColor());
-        }
-
-        if("getMaterial" in this) {
-            ToolAPI.registerBlockMaterial(this.id, this.getMaterial(), this.getDestroyLevel());
-        }
-
-        if("getRenderLayer" in this) {
-            Block.setRenderLayer(this.id, this.getRenderLayer());
-        }
-
-        if("getTranslucency" in this) {
-            Block.setTranslucency(this.id, this.getTranslucency());
-        }
-
-        if("isSolid" in this) {
-            Block.setSolid(this.id, this.isSolid());
-        }
-
-        if("getRenderType" in this) {
-            Block.setRenderType(this.id, this.getRenderType());
-        }
-
-        if("getTileEntity" in this) {
-            TileEntity.registerPrototype(this.id, this.getTileEntity() as any);
-        }
-
-        if("getCreativeGroup" in this) {
-            const group = this.getCreativeGroup();
-            Item.addCreativeGroup(group, Translation.translate(group), [this.id]);
-        }
-
-        if("getDrop" in this) {
-            Block.registerDropFunctionForID(this.id, (coords, id, data, diggingLevel, enchant, item, region) => {
-                return this.getDrop(coords, id, data, diggingLevel, enchant, new ItemStack(item), region);
-            });
-        }
-
-        if("onDestroy" in this) {
-            Block.registerDestroyFunctionForID(this.id, (this as IDestroyCallback).onDestroy);
-        }
-
-        if("onDestroyContinue" in this) {
-            Block.registerDestroyContinueFunctionForID(this.id, (this as IDestroyContinueCallback).onDestroyContinue);
-        }
-
-        if("onDestroyStart" in this) {
-            Block.registerDestroyStartFunctionForID(this.id, (this as IDestroyStartCallback).onDestroyStart);
-        }
-
-        if("onPlace" in this) {
-            Block.registerPlaceFunctionForID(this.id, (coords, item, block, player, region) => {
-                return (this as unknown as IPlaceCallback).onPlace(coords, new ItemStack(item), block, player, region)
-            });
-        }
-
-        if("onNeighbourChange" in this) {
-            Block.registerNeighbourChangeFunctionForID(this.id, (coords, block, changedCoords, region) => {
-                return (this as unknown as INeighbourChangeCallback).onNeighbourChange(coords, block, changedCoords, region);
-            });
-        }
-
-        if("onEntityInside" in this) {
-            Block.registerEntityInsideFunctionForID(this.id, (coords, block, entity) => {
-                return (this as unknown as IEntityInsideCallback).onEntityInside(coords, block, entity);
-            });
-        }
-
-        if("onEntityStepOn" in this) {
-            Block.registerEntityStepOnFunctionForID(this.id, (coords, block, entity) => {
-                return (this as unknown as IEntityStepOnCallback).onEntityStepOn(coords, block, entity);
-            });
-        }
-
-        if("onRandomTick" in this) {
-            Block.setRandomTickCallback(this.id, (x, y, z, id, data, region) => {
-                return (this as unknown as IRandomTickCallback).onRandomTick(x, y, z, id, data, region);
-            });
-        }
-
-        if("onClick" in this) {
-            Block.registerClickFunctionForID(this.id, (coords, item, block, player) => {
-                return (this as unknown as IClickCallback).onClick(coords, new ItemStack(item), block, player);
-            });
-        }
-
-        if("onProjectileHit" in this) {
-            Block.registerProjectileHitFunction(this.id, (this as IProjectileHitCallback).onProjectileHit);
-        }
-
-        if("onSelection" in this) {
-            Block.registerSelectionFunctionForID(this.id, (this as IBlockSelectionCallback).onSelection);
-        }
-
-        BasicItem.setFunctions(this);
-        Block.setDestroyLevel(this.stringID, this.getDestroyLevel());
-    }
-
-    public setModel(model: BlockModel | RenderMesh | BlockRenderer.Model | ICRender.Model, data: number): this {
-        let render: ICRender.Model = null;
-        let mesh: RenderMesh = null;
-        let blockModel: BlockRenderer.Model = null;
-
-        if(model instanceof ICRender.Model) {
-            render = model;
-        } else {
-            if(model instanceof BlockRenderer.Model) {
-                blockModel = model;
-            } else {
-                render = new ICRender.Model();
-            
-                if(model instanceof BlockModel) {
-                    mesh = model.getRenderMesh();
-                    data = model.getBlockData();
-                } else {
-                    mesh = model;
-                }
-                blockModel = new BlockRenderer.Model(mesh);
-            }
-            render.addEntry(blockModel);
-        }
-        BlockRenderer.setStaticICRender(this.id, data || -1, render);
-        return this;
-    }
-
-    public setStates(states: ReturnType<typeof this.getStates>) {
-        for(const i in states) {
-            const state = states[i];
-            if(typeof state == "string") {
-                Block.addBlockState && Block.addBlockState(this.id, state);
-            } else {
-                Block.addBlockStateId && Block.addBlockStateId(this.id, state);
-            }
-        }
-    }
-
-    public getID() {
-        return BlockID[this.stringID];
-    }
+    /**
+     * Method must list of blockstates which will be registered to block
+     */
 
     public getStates(): (string | number)[] {
         return null;
     }
+
+    /**
+     * Method must return tags which will be added to block
+     */
 
     public getTags(): string[] {
         return null;
@@ -298,16 +111,211 @@ class BasicBlock {
     }
 
     public getCreativeGroup?(): string;
-
     public getTileEntity?(): CommonTileEntity;
-
     public isSolid?(): boolean;
-
-    public static destroyWithTile(x: number, y: number, z: number, blockSource: BlockSource) {
-        TileEntity.destroyTileEntityAtCoords(x, y, z, blockSource);
-        blockSource.destroyBlock(x, y, z, true);
-        return;
+    
+    public static setStates(id: number, states: ReturnType<typeof BasicBlock.prototype.getStates>): void {
+        for(const i in states) {
+            const state = states[i];
+            if(typeof state == "string") {
+                Block.addBlockState && Block.addBlockState(id, state);
+            } else {
+                Block.addBlockStateId && Block.addBlockStateId(id, state);
+            }
+        }
     }
+
+    public static setModel(id: number, data: number, model: BlockModel | RenderMesh | BlockRenderer.Model | ICRender.Model): void {
+        let render: ICRender.Model = null;
+        let mesh: RenderMesh = null;
+        let blockModel: BlockRenderer.Model = null;
+
+        if(model instanceof ICRender.Model) {
+            render = model;
+        } else {
+            if(model instanceof BlockRenderer.Model) {
+                blockModel = model;
+            } else {
+                render = new ICRender.Model();
+            
+                if(model instanceof BlockModel) {
+                    mesh = model.getRenderMesh();
+                    data = model.getBlockData();
+                } else {
+                    mesh = model;
+                }
+                blockModel = new BlockRenderer.Model(mesh);
+            }
+            render.addEntry(blockModel);
+        }
+        BlockRenderer.setStaticICRender(id, data || -1, render);
+    }
+
+    public static build(block: BasicBlock): void {
+        if(block.canRotate() == true) {
+            block.variationList.map((v) => {
+                if(v.texture.length < 6) {
+                    for(let i = v.texture.length; i < 6; i++) {
+                        v.texture.push(v.texture[v.texture.length - 1]);
+                    };
+                };
+                return v;
+            });
+            Block.createBlockWithRotation(block.stringID, block.variationList);
+        } else {
+            Block.createBlock(block.stringID, block.variationList);
+        }
+        const tags = block.getTags();
+        if(tags != null) {
+            TagRegistry.addCommonObject("blocks", block.id, tags);
+        }
+
+        const states = block.getStates();
+        if(states != null) {
+            BasicBlock.setStates(block.id, states);
+        }
+        if("getModel" in block) {
+            const modelList: BlockModel[] = [].concat((block as IBlockModel).getModel());
+
+            if(modelList.length === 1) {
+                BasicBlock.setModel(block.id, -1, modelList[0]);
+            } else {
+                for (let i: number = 0; i < modelList.length; i++) {
+                    const model = modelList[i];
+
+                    const data: number = model instanceof BlockModel ? model.getBlockData() : i;
+                    BasicBlock.setModel(block.id, data, model);
+                }
+            }
+        }
+        if("getDestroyTime" in block) {
+            Block.setDestroyTime(block.id, block.getDestroyTime());
+        }
+
+        if("getSoundType" in block) {
+            Block.setSoundType(block.id, block.getSoundType());
+        }
+
+        if("getFriction" in block) {
+            Block.setFriction(block.id, block.getFriction());
+        }
+
+        if("getLightLevel" in block) {
+            Block.setLightLevel(block.id, block.getLightLevel());
+        }
+
+        if("getLightOpacity" in block) {
+            Block.setLightOpacity(block.id, block.getLightOpacity());
+        }
+
+        if("getExplosionResistance" in block) {
+            Block.setExplosionResistance(block.id, block.getExplosionResistance());
+        }
+
+        if("getMapColor" in block) {
+            Block.setMapColor(block.id, block.getMapColor());
+        }
+
+        if("getMaterial" in block) {
+            ToolAPI.registerBlockMaterial(block.id, block.getMaterial(), block.getDestroyLevel());
+        }
+
+        if("getRenderLayer" in block) {
+            Block.setRenderLayer(block.id, block.getRenderLayer());
+        }
+
+        if("getTranslucency" in block) {
+            Block.setTranslucency(block.id, block.getTranslucency());
+        }
+
+        if("isSolid" in block) {
+            Block.setSolid(block.id, block.isSolid());
+        }
+
+        if("getRenderType" in block) {
+            Block.setRenderType(block.id, block.getRenderType());
+        }
+
+        if("getTileEntity" in block) {
+            TileEntity.registerPrototype(block.id, block.getTileEntity() as any);
+        }
+
+        if("getCreativeGroup" in block) {
+            const group = block.getCreativeGroup();
+            Item.addCreativeGroup(group, group, [block.id]);
+        }
+
+        if("getDrop" in block) {
+            Block.registerDropFunctionForID(block.id, (coords, id, data, diggingLevel, enchant, item, region) => {
+                return block.getDrop(coords, id, data, diggingLevel, enchant, new ItemStack(item), region);
+            });
+        }
+
+        if("onDestroy" in block) {
+            Block.registerDestroyFunctionForID(block.id, (block as IDestroyCallback).onDestroy.bind(block));
+        }
+
+        if("onDestroyContinue" in block) {
+            Block.registerDestroyContinueFunctionForID(block.id, (block as IDestroyContinueCallback).onDestroyContinue.bind(block));
+        }
+
+        if("onDestroyStart" in block) {
+            Block.registerDestroyStartFunctionForID(block.id, (block as IDestroyStartCallback).onDestroyStart.bind(block));
+        }
+
+        if("onPlace" in block) {
+            Block.registerPlaceFunctionForID(block.id, (coords, item, block, player, region) => {
+                return (block as unknown as IPlaceCallback).onPlace(coords, new ItemStack(item), block, player, region)
+            });
+        }
+
+        if("onNeighbourChange" in block) {
+            Block.registerNeighbourChangeFunctionForID(block.id, (coords, block, changedCoords, region) => {
+                return (block as unknown as INeighbourChangeCallback).onNeighbourChange(coords, block, changedCoords, region);
+            });
+        }
+
+        if("onEntityInside" in block) {
+            Block.registerEntityInsideFunctionForID(block.id, (coords, block, entity) => {
+                return (block as unknown as IEntityInsideCallback).onEntityInside(coords, block, entity);
+            });
+        }
+
+        if("onEntityStepOn" in block) {
+            Block.registerEntityStepOnFunctionForID(block.id, (coords, block, entity) => {
+                return (block as unknown as IEntityStepOnCallback).onEntityStepOn(coords, block, entity);
+            });
+        }
+
+        if("onRandomTick" in block) {
+            Block.setRandomTickCallback(block.id, (x, y, z, id, data, region) => {
+                return (block as unknown as IRandomTickCallback).onRandomTick(x, y, z, id, data, region);
+            });
+        }
+
+        if("onClick" in block) {
+            Block.registerClickFunctionForID(block.id, (coords, item, block, player) => {
+                return (block as unknown as IClickCallback).onClick(coords, new ItemStack(item), block, player);
+            });
+        }
+
+        if("onProjectileHit" in block) {
+            Block.registerProjectileHitFunction(block.id, (block as IProjectileHitCallback).onProjectileHit.bind(block));
+        }
+
+        if("onSelection" in block) {
+            Block.registerSelectionFunctionForID(block.id, (block as IBlockSelectionCallback).onSelection.bind(block));
+        }
+
+        BasicItem.setFunctions(block);
+        Block.setDestroyLevel(block.stringID, block.getDestroyLevel());
+    }
+
+    // public static destroyWithTile(x: number, y: number, z: number, blockSource: BlockSource) {
+    //     TileEntity.destroyTileEntityAtCoords(x, y, z, blockSource);
+    //     blockSource.destroyBlock(x, y, z, true);
+    //     return;
+    // }
 }
 
 

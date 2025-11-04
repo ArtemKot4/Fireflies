@@ -1,5 +1,7 @@
 package com.artemkot4.fireflies.events;
 
+import com.artemkot4.fireflies.events.interfaces.IEvent;
+import com.artemkot4.fireflies.events.interfaces.INativeGuiChangedEvent;
 import com.zhekasmirnov.apparatus.adapter.innercore.game.block.BlockState;
 import com.zhekasmirnov.apparatus.adapter.innercore.game.item.ItemStack;
 import com.zhekasmirnov.apparatus.mcpe.NativeBlockSource;
@@ -17,14 +19,18 @@ import org.mozilla.javascript.Scriptable;
 public class Event {
     public static void init() {};
 
-    public static void add(String name, IEvent callback, int priority) {
+    public static void add(String name, IEvent event, int priority) {
         Callback.addCallback(name, new ScriptableFunctionImpl() {
             @Override
             public Object call(Context context, Scriptable scriptable, Scriptable scriptable1, Object[] objects) {
-                callback.call(objects);
+                event.call(objects);
                 return null;
             }
         }, priority);
+    }
+
+    public static void addOnNativeGuiChanged(String name, INativeGuiChangedEvent event, int priority) {
+        add(name, (args) -> event.onNativeGuiChanged((String) args[0], (String) args[1], (Boolean) args[2]), priority);
     }
 
     static {

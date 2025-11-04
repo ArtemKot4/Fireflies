@@ -6,13 +6,10 @@ namespace TileEntity {
 
             for(const i in prototype.eventNames.network) {
                 const name = prototype.eventNames.network[i];
-
                 prototype.events[name] = prototype[name];
             }
-    
             for(const i in prototype.eventNames.container) {
                 const name = prototype.eventNames.container[i];
-
                 prototype.containerEvents[name] = prototype[name];
             }
         }
