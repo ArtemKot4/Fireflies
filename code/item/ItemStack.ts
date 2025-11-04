@@ -91,8 +91,8 @@ class ItemStack implements ItemInstance {
     public static contains(stack1: ItemInstance, stack2: ItemInstance): boolean {
         return (
             stack1.id == stack2.id && 
-            stack1.count >= stack2.count && 
-            stack1.data == stack2.data //&& 
+            stack1.count >= (stack2.count || 1) && 
+            (stack1.data || 0) == (stack2.data || 0) //&& 
             //((stack1.extra && stack2.extra) && stack1.extra.equals(stack2.extra))
         );
     }

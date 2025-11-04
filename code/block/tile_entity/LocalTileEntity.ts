@@ -5,6 +5,7 @@ abstract class LocalTileEntity implements LocalTileEntity {
         network: string[],
         container: string[]
     };
+    sendResponse: <T = {}>(packetName: string, someData: T) => {};
 
     /**@deprecated
      * Use {@link onLoad} instead
