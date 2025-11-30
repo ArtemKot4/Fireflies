@@ -12,6 +12,7 @@ addition/Item.ts
 addition/World.ts
 addition/TagRegistry.ts
 addition/IDRegistry.ts
+addition/LiquidRegistry.ts
 
 render/RenderHelper.ts
 render/RenderObject.ts
@@ -31,6 +32,7 @@ Vector3.ts
 item/ItemStack.ts
 item/IItemHoldCallback.ts
 item/BasicItem.ts
+item/LiquidStorageItem.ts
 
 block/EDestroyLevel.ts
 block/IBlockModel.ts

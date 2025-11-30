@@ -31,7 +31,7 @@ public class Fireflies {
     }
 
     public static void boot(HashMap<?, ?> args) {
-        // ModLoader.loadMods();
-        // Event.init();
+        //ModLoader.loadMods();
+        Event.init();
     }
 }

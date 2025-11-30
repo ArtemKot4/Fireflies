@@ -186,7 +186,7 @@ abstract class CommonTileEntity implements TileEntity {
         if(!this.onClick( coords, new ItemStack(id, count, data, extra), player)) {
             if(!this.preventUI(id, count, data, coords, player, extra)) {
                 const client = Network.getClientForPlayer(player);
-                if(client) {
+                if(client != null) {
                     const screenName = this.getScreenName(player, coords);
 
                     if(screenName && this.getScreenByName(screenName, this.container)) {

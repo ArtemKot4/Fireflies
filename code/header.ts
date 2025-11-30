@@ -1,4 +1,4 @@
-enum Side {
+enum ESide {
     CLIENT,
     SERVER
 }

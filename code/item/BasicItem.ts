@@ -1,12 +1,10 @@
-type itemTextureAnimated = [texture: string, frames: number | number[], interval: number];
-
 interface IItemTextureDescription {
-    name: string |  itemTextureAnimated,
+    name: string,
     meta: number
 }
 
 interface IIconOverrideCallback {
-    onIconOverride?(item: ItemInstance, isModUi: boolean): void | Item.TextureData
+    onIconOverride?(item: ItemInstance, isModUi: boolean): void | Item.TextureData;
 }
 
 interface INoTargetUseCallback {
@@ -22,7 +20,7 @@ interface IItemUsingCompleteCallback {
 }
 
 interface IItemUseCallback {
-    onItemUse(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number): void
+    onItemUse(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number): void;
 }
 
 interface INameOverrideCallback {
@@ -50,24 +48,19 @@ type ItemParams = Item.ItemParams | Item.FoodParams | Item.ArmorParams;
 class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
     public maxStack: number = 64;
     public texture: IItemTextureDescription;
-
     public id: number;
     public stringID: string;
 
-    public constructor(stringID: string, texture: IItemTextureDescription, params?: T);
-    public constructor(stringID: string, texture: IItemTextureDescription, stack: number | T = 64, params?: T) {
+    public constructor(stringID: string, texture: IItemTextureDescription, params?: T) {
         this.id = IDRegistry.genItemID(stringID);
- 
-        const isStack = typeof stack === "number";
-
         this.stringID = stringID;
-        this.maxStack = isStack ? stack : 64;
+        this.maxStack = params.stack || 64;
         this.texture = texture;
         
         if("getFood" in this) {
             (params as Item.FoodParams).food = this.getFood();
         }
-        this.create(!isStack ? stack : params || {});
+        this.create(params || {});
     }
 
     public getMaxStack(): number {
@@ -75,7 +68,7 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
     }
 
     public getName(): string {
-        return `item.${this.id}`;
+        return `item.${this.stringID}`;
     }
 
     public getStringID(): string {
@@ -167,45 +160,30 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
         }
     }
 
-    public create(params: ItemParams): void {
-        params = params || {};
+    public create(params: ItemParams = {}): void {
         const tags = this.getTags();
-
-        if(tags) {
-            TagRegistry.addCommonObject("items", this.id, tags);
-        }
-        const textureData = this.getTexture();
-        const itemTexture = Object.assign(
-            textureData,
-            textureData.name instanceof Array && {texture: textureData.name[0]}
-        ) as Item.TextureData;
-        const itemParams = Object.assign({
-            stack: this.getMaxStack(),
-            isTech: !this.inCreative(),
+        const itemParams = Object.assign({ 
+            stack: this.getMaxStack(), 
+            isTech: !this.inCreative(), 
             category: this.getItemCategory()
         }, params);
         let key = "createItem";
 
+        if(tags != null) {
+            TagRegistry.addCommonObject("items", this.id, tags);
+        }
         if("food" in params) {
             key = "createFoodItem";
         }
         if("type" in params) {
             key = "createArmorItem";
         }
-        if(this.isThrowable && this.isThrowable()) {
+        if("isThrowable" in this && this.isThrowable() == true) {
             key = "createThrowableItem";
         }
-        Item[key](this.stringID, this.getName(), itemTexture, itemParams);
-        // if(textureData.name instanceof Array) { 
-        //     const [texture, frames, interval] = textureData.name;
-
-        //     IAHelper.makeAdvancedAnim(this.id, 
-        //         texture, 
-        //         interval,
-        //         frames instanceof Array ? frames : Utils.range(0, frames)
-        //     );
-        // };
+        Item[key](this.stringID, this.getName(), this.getTexture(), itemParams);
         BasicItem.setFunctions(this);
     }
 }
 
+const a = 1 //hello 
