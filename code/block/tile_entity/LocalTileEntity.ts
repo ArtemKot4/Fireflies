@@ -1,4 +1,9 @@
-abstract class LocalTileEntity implements LocalTileEntity {
+abstract class LocalTileEntity implements LocalTileEntity, Vector {
+    public x: number;
+    public y: number;
+    public z: number;
+    public networkData: SyncedNetworkData;
+    
     public events: { [packetName: string]: (packetData: any, packetExtra: any) => void };
     public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: UI.WindowContent, eventData: any) => void };
     public eventNames: {
