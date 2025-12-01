@@ -62,12 +62,12 @@ abstract class CommonTileEntity implements TileEntity {
     public noupdate: boolean;
     public readonly useNetworkItemContainer: boolean = true;
     public events: { [packetName: string]: (packetData: any, packetExtra: any) => void; };
-    public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void; };
+    public containerEvents?: { [eventName: string]: (packetData: any, connectedClient: NetworkClient) => void; };
     public eventNames: {
         network: string[],
         container: string[]
     };
-    client?: LocalTileEntity;
+    public client?: LocalTileEntity;
 
     public constructor() {
         const localTileEntity = this.getLocalTileEntity();

@@ -30,7 +30,7 @@ abstract class BlockBush extends BlockPlant implements IClickCallback, IRandomTi
                 coords.y + 0.7,
                 coords.z + 0.5,
                 this.berryID,
-                MathHelper.randomInt(count[0], count[1]),
+                MathHelper.randomNumber(count[0], count[1]),
                 0
             );
         }

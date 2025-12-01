@@ -33,8 +33,7 @@ class ItemStack implements ItemInstance {
         return (
             stack.id == this.id && 
             this.count == stack.count && 
-            stack.data == this.data && 
-            ((stack.extra && this.extra) && stack.extra.equals(this.extra))
+            stack.data == this.data
         );
     }
 
@@ -72,7 +71,7 @@ class ItemStack implements ItemInstance {
     }
 
     public getStringID(): string {
-        return IDRegistry.getStringIdForIntegerId(this.id);
+        return IDRegistry.getStringIdForItemId(this.id);
     }
     
     public copy(): ItemStack {

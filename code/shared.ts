@@ -27,7 +27,7 @@ ModAPI.registerAPI("FirefliesAPI", {
     RuntimeData,
     EScreenName,
     ECallback,
-    Side,
+    ESide,
     RenderObject,
     SubscribeEvent,
     requireGlobal(command: string) {

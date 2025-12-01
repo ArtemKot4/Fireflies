@@ -11,17 +11,16 @@ namespace MathHelper {
         return (gradus * Math.PI) / 180;
     }
 
-    export function randomInt(min: number, max: number): number {
+    export function randomNumber(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     export function range(min: number, max: number, number: number = 1): number[] {
         const list: number[] = [];
-    
+        
         for(let i = min; i < max; i += number) {
             list.push(i);
         }
-    
         return list;
     }
 }

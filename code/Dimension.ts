@@ -10,8 +10,8 @@ interface CustomGeneratorDescription {
 
 abstract class Dimension {
     public static generateChunkFunctions: Record<number, (chunkX: number, chunkZ: number, random: java.util.Random) => void> = {};
-    public static insideDimensionTransferFunctions: Record<number, (playerUid: number, from: number) => void> = {};
-    public static outsideDimensionTransferFunctions: Record<number, (playerUid: number, to: number) => void> = {};
+    public static insideTransferFunctions: Record<number, typeof Dimension.prototype.onInsideEntityTransfer> = {};
+    public static outsideTransferFunctions: Record<number, typeof Dimension.prototype.onOutsideEntityTransfer> = {};
 
     public dimension: Dimensions.CustomDimension;
     public biome: CustomBiome;
@@ -96,10 +96,10 @@ abstract class Dimension {
             Dimension.generateChunkFunctions[this.id] = this.generateDimensionChunk;
         }
         if("insidePlayerDimensionTransfer" in this) {
-            Dimension.insideDimensionTransferFunctions[this.id] = this.insidePlayerDimensionTransfer;
+            Dimension.insideTransferFunctions[this.id] = this.onInsideEntityTransfer;
         }
         if("outsidePlayerDimensionTransfer" in this) {
-            Dimension.outsideDimensionTransferFunctions[this.id] = this.outsidePlayerDimensionTransfer;
+            Dimension.outsideTransferFunctions[this.id] = this.onOutsideEntityTransfer;
         }
     }
     
@@ -187,24 +187,23 @@ abstract class Dimension {
      * Number between 0 and 1
      */
     public getStarBrightness?(): number;
-
     public generateDimensionChunk?(chunkX: number, chunkZ: number, random: java.util.Random): void;
-    public insidePlayerDimensionTransfer?(playerUid: number, from: number): void;
-    public outsidePlayerDimensionTransfer?(playerUid: number, to: number): void;
+    public onInsideEntityTransfer?(entityUid: number, from: number): void;
+    public onOutsideEntityTransfer?(entityUid: number, to: number): void;
 }
+
+Callback.addCallback("CustomDimensionTransfer", (entityUid, from, to) => {
+    if(to in Dimension.insideTransferFunctions) {
+        Dimension.insideTransferFunctions[to](entityUid, from);
+    }
+
+    if(from in Dimension.outsideTransferFunctions) {
+        Dimension.outsideTransferFunctions[from](entityUid, to);
+    }
+});
 
 Callback.addCallback("GenerateCustomDimensionChunk", (chunkX, chunkZ, random, dimensionId) => {
     if(dimensionId in Dimension.generateChunkFunctions) {
         return Dimension.generateChunkFunctions[dimensionId](chunkX, chunkZ, random);
-    }
-});
-
-Callback.addCallback("PlayerChangedDimension", (playerUid, from, to) => {
-    if(to in Dimension.insideDimensionTransferFunctions) {
-        Dimension.insideDimensionTransferFunctions[to](playerUid, from);
-    }
-
-    if(from in Dimension.outsideDimensionTransferFunctions) {
-        Dimension.outsideDimensionTransferFunctions[from](playerUid, to);
     }
 });

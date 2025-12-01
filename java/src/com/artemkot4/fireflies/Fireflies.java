@@ -3,7 +3,6 @@ package com.artemkot4.fireflies;
 import java.util.HashMap;
 import com.artemkot4.fireflies.events.Event;
 import com.artemkot4.fireflies.loader.Mod;
-import com.artemkot4.fireflies.loader.ModLoader;
 import com.zhekasmirnov.apparatus.modloader.LegacyInnerCoreMod;
 
 @Mod(Fireflies.ID)

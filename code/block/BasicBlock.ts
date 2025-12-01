@@ -157,8 +157,8 @@ class BasicBlock {
                 if(v.texture.length < 6) {
                     for(let i = v.texture.length; i < 6; i++) {
                         v.texture.push(v.texture[v.texture.length - 1]);
-                    };
-                };
+                    }
+                }
                 return v;
             });
             Block.createBlockWithRotation(block.stringID, block.variationList);
@@ -180,10 +180,10 @@ class BasicBlock {
             if(modelList.length === 1) {
                 BasicBlock.setModel(block.id, -1, modelList[0]);
             } else {
-                for (let i: number = 0; i < modelList.length; i++) {
+                for (let i = 0; i < modelList.length; i++) {
                     const model = modelList[i];
-
                     const data: number = model instanceof BlockModel ? model.getBlockData() : i;
+                    
                     BasicBlock.setModel(block.id, data, model);
                 }
             }

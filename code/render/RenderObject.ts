@@ -34,54 +34,16 @@ class RenderObject implements Vector {
     public z: number;
     public thread?: java.lang.Thread;
     public animation: Animation.Base;
-    public isLoaded: boolean = false;
-    public scale?: number;
+    public loaded: boolean = false;
+    public renderScale?: number;
     public skin?: string;
     protected threadInited?: boolean;
 
     public constructor(x: number, y: number, z: number) {
         this.animation = new Animation.Base(x, y, z);
-
-        if(this.autoSetPositions() == true) {
-            const self = this;
-            let _x = x;
-            let _y = y;
-            let _z = z;
-            Object.defineProperties(this, {
-                x: {
-                    set(v) {
-                        self.translateBy(v - _x, 0, 0);
-                        _x = v;
-                    },
-                    get() {
-                        return _x;
-                    }
-                },
-                y: {
-                    set(v) {
-                        self.translateBy(0, v - _y, 0);
-                        _y = v;
-                    },
-                    get() {
-                        return _y;
-                    },
-                },
-                z: {
-                    set(v) {
-                        self.translateBy(0, 0, v - _z);
-                        _z = v;
-                    },
-                    get() {
-                        return _z;
-                    }
-                }
-            });
-        } else {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
+        this.x = x;
+        this.y = y;
+        this.z = z;
         const lightMode = this.getLightMode();
         if(lightMode != null) {
             switch(lightMode) {
@@ -115,7 +77,7 @@ class RenderObject implements Vector {
             describeObject.skin = skin;
         }
         if("scale" in this) {
-            describeObject.scale = this.scale;
+            describeObject.scale = this.renderScale;
         }
         if(material != null) {
             describeObject.material = material;
@@ -157,12 +119,12 @@ class RenderObject implements Vector {
     public run?(): void;
 
     public load(): void {
-        if(this.isLoaded == true) {
+        if(this.loaded == true) {
             return;
         }
         this.animation.describe(this.getDescription());
         this.animation.load();
-        this.isLoaded = true;
+        this.loaded = true;
         
         if("run" in this) {
             this.startThread();
@@ -203,23 +165,23 @@ class RenderObject implements Vector {
 
     public destroy(): void {
         this.animation.destroy();
-        this.isLoaded = false;
+        this.loaded = false;
         this.threadInited = false;
     }
 
-    public rotateBy(x: number, y: number, z: number): com.zhekasmirnov.innercore.api.NativeRenderer.Transform {
+    public rotate(x: number, y: number, z: number): Render.Transform {
         return this.animation.transform && this.animation.transform().rotate(x, y, z);
     }
 
-    public scaleBy(x: number, y: number, z: number): com.zhekasmirnov.innercore.api.NativeRenderer.Transform {
+    public scale(x: number, y: number, z: number): Render.Transform {
         return this.animation.transform && this.animation.transform().scale(x, y, z);
     }
 
-    public translateBy(x: number, y: number, z: number): com.zhekasmirnov.innercore.api.NativeRenderer.Transform {
+    public translate(x: number, y: number, z: number): Render.Transform {
         return this.animation.transform && this.animation.transform().translate(x, y, z);
     }
 
     public exists(): boolean {
-        return this.isLoaded;
+        return this.loaded;
     }
 }

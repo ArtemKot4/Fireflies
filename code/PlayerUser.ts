@@ -216,7 +216,6 @@ class PlayerUser {
 
     public decreaseCarriedItem(count: number = 1): void {
         const stack = this.getCarriedItem();
-
         Entity.setCarriedItem(this.playerUid, stack.id, stack.count - count, stack.data, stack.extra);
     }
 
@@ -236,7 +235,6 @@ class PlayerUser {
 
     public static isCreative(player: number): boolean {
         const gamemode = new PlayerActor(player).getGameMode();
-        
         return gamemode === EGameMode.CREATIVE || gamemode === EGameMode.SPECTATOR;
     }
 }

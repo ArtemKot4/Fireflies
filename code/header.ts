@@ -54,18 +54,6 @@ declare namespace com.zhekasmirnov.innercore.api.NativeAPI {
     export function setCloudColor(r: number, g: number, b: number): void;
 }
 
-
-
-
-
-// declare namespace Game {
-//     export function titleMessage(message: string): void;
-// };
-
-// Game.titleMessage = function(message: string): void {
-//     Commands.exec(`title ${Player.getLocal()} title ${message}`);
-// };
-
 namespace RuntimeData {
     /**
      * Screen name on client. 

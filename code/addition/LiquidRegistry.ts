@@ -28,7 +28,7 @@ namespace LiquidItemRegistry {
 
     export function getCurrentLiquid(extra: Nullable<ItemExtraData>): Nullable<string> {
         if(extra == null) {
-            return null
+            return null;
         }
         return extra.getString("liquid.name");
     }

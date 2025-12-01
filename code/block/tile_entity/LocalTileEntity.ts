@@ -1,6 +1,6 @@
 abstract class LocalTileEntity implements LocalTileEntity {
-    public events: { [packetName: string]: (packetData: any, packetExtra: any) => void; };
-    public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: com.zhekasmirnov.innercore.api.mod.ui.window.WindowContent, eventData: any) => void };
+    public events: { [packetName: string]: (packetData: any, packetExtra: any) => void };
+    public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: UI.WindowContent, eventData: any) => void };
     public eventNames: {
         network: string[],
         container: string[]
@@ -44,6 +44,6 @@ abstract class LocalTileEntity implements LocalTileEntity {
         this.load = this.onLoad;
         this.unload = this.onUnload;
 
-        TileEntity.buildEvents(this);
+        TileEntity.buildEvents(this as unknown as TileEntity.TileEntityPrototype);
     }
 }
