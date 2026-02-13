@@ -28,7 +28,13 @@ declare namespace Animation {
     };
 }
 
-class RenderObject implements Vector {
+class WorldRenderObject implements Vector {
+    public static objects: {
+        [stringID: string]: {
+            [uuid: string]: WorldRenderObject
+        }
+    } = {};
+    
     public x: number;
     public y: number;
     public z: number;
@@ -37,6 +43,7 @@ class RenderObject implements Vector {
     public loaded: boolean = false;
     public renderScale?: number;
     public skin?: string;
+    public uuid!: string;
     protected threadInited?: boolean;
 
     public constructor(x: number, y: number, z: number) {
@@ -58,6 +65,8 @@ class RenderObject implements Vector {
                 }
             }
         }
+        const id = this.getStringID();
+        WorldRenderObject.objects[id] ??= {};
     }
 
     public getDescription(): Animation.description {
@@ -85,9 +94,8 @@ class RenderObject implements Vector {
         return describeObject;
     }
 
-    public autoSetPositions(): boolean {
-        return false;
-    }
+    /** Id for thread name if need
+     */
 
     public getStringID(): string {
         return "fireflies.basic";
@@ -118,6 +126,9 @@ class RenderObject implements Vector {
      */
     public run?(): void;
 
+    /**
+     * Loads render object in world and puts it to the storage by id and uuid
+     */
     public load(): void {
         if(this.loaded == true) {
             return;
@@ -125,6 +136,8 @@ class RenderObject implements Vector {
         this.animation.describe(this.getDescription());
         this.animation.load();
         this.loaded = true;
+        this.uuid ??= String(java.util.UUID.randomUUID());
+        WorldRenderObject.objects[this.getStringID()][this.uuid] = this;
         
         if("run" in this) {
             this.startThread();
@@ -166,6 +179,7 @@ class RenderObject implements Vector {
     public destroy(): void {
         this.animation.destroy();
         this.loaded = false;
+        delete WorldRenderObject.objects[this.getStringID()][this.uuid];
         this.threadInited = false;
     }
 
@@ -183,5 +197,35 @@ class RenderObject implements Vector {
 
     public exists(): boolean {
         return this.loaded;
+    }
+
+    public static getAllByStringID(stringID: string): Nullable<{ [uuid: string]: WorldRenderObject }> {
+        return WorldRenderObject.objects[stringID] || null;
+    }
+
+    public static getAllByPositionAndStringID(stringID: string, x: number, y: number, z: number, roundFunc: Function = Math.round): WorldRenderObject[] {
+        const list: WorldRenderObject[] = [];
+        const group = this.getAllByStringID(stringID) || {};
+        for(const i in group) {
+            const object = group[i];
+            let objX = roundFunc(object.x), objY = roundFunc(object.y), objZ = roundFunc(object.z);
+            if(x == objX && y == objY && z == objZ) {
+                list.push(object);
+            }
+        }
+        return list;
+    }
+
+    public static getAllByPosition(x: number, y: number, z: number, roundFunc: Function = Math.round): WorldRenderObject[] {
+        let list: WorldRenderObject[] = [];
+        for(const stringID in WorldRenderObject.objects) {
+            list = list.concat(this.getAllByPositionAndStringID(stringID, x, y, z, roundFunc));
+        }
+        return list;
+    }
+
+    @SubscribeEvent
+    public static onLevelLeft() {
+        WorldRenderObject.objects = {};
     }
 }

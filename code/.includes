@@ -15,7 +15,7 @@ addition/IDRegistry.ts
 addition/LiquidRegistry.ts
 
 render/RenderHelper.ts
-render/RenderObject.ts
+render/WorldRenderObject.ts
 
 animation/RenderSide.ts
 animation/BlockAnimation.ts

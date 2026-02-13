@@ -66,7 +66,6 @@ class BasicBlock {
             name: `block.${stringID}`,
             texture: [[stringID, 0]]
         }];
-
         BasicBlock.build(this);
     }
 
@@ -151,9 +150,9 @@ class BasicBlock {
         BlockRenderer.setStaticICRender(id, data || -1, render);
     }
 
-    public static build(block: BasicBlock): void {
-        if(block.canRotate() == true) {
-            block.variationList.map((v) => {
+    public static build(blockPrototype: BasicBlock): void {
+        if(blockPrototype.canRotate() == true) {
+            blockPrototype.variationList.map((v) => {
                 if(v.texture.length < 6) {
                     for(let i = v.texture.length; i < 6; i++) {
                         v.texture.push(v.texture[v.texture.length - 1]);
@@ -161,154 +160,152 @@ class BasicBlock {
                 }
                 return v;
             });
-            Block.createBlockWithRotation(block.stringID, block.variationList);
+            Block.createBlockWithRotation(blockPrototype.stringID, blockPrototype.variationList);
         } else {
-            Block.createBlock(block.stringID, block.variationList);
+            Block.createBlock(blockPrototype.stringID, blockPrototype.variationList);
         }
-        const tags = block.getTags();
+        const tags = blockPrototype.getTags();
         if(tags != null) {
-            TagRegistry.addCommonObject("blocks", block.id, tags);
+            TagRegistry.addCommonObject("blocks", blockPrototype.id, tags);
         }
 
-        const states = block.getStates();
+        const states = blockPrototype.getStates();
         if(states != null) {
-            BasicBlock.setStates(block.id, states);
+            BasicBlock.setStates(blockPrototype.id, states);
         }
-        if("getModel" in block) {
-            const modelList: BlockModel[] = [].concat((block as IBlockModel).getModel());
+        if("getModel" in blockPrototype) {
+            const modelList: BlockModel[] = [].concat((blockPrototype as IBlockModel).getModel());
 
-            if(modelList.length === 1) {
-                BasicBlock.setModel(block.id, -1, modelList[0]);
+            if(modelList.length == 1) {
+                BasicBlock.setModel(blockPrototype.id, -1, modelList[0]);
             } else {
                 for (let i = 0; i < modelList.length; i++) {
                     const model = modelList[i];
                     const data: number = model instanceof BlockModel ? model.getBlockData() : i;
-                    
-                    BasicBlock.setModel(block.id, data, model);
+                    BasicBlock.setModel(blockPrototype.id, data, model);
                 }
             }
         }
-        if("getDestroyTime" in block) {
-            Block.setDestroyTime(block.id, block.getDestroyTime());
+        if("getDestroyTime" in blockPrototype) {
+            Block.setDestroyTime(blockPrototype.id, blockPrototype.getDestroyTime());
         }
 
-        if("getSoundType" in block) {
-            Block.setSoundType(block.id, block.getSoundType());
+        if("getSoundType" in blockPrototype) {
+            Block.setSoundType(blockPrototype.id, blockPrototype.getSoundType());
         }
 
-        if("getFriction" in block) {
-            Block.setFriction(block.id, block.getFriction());
+        if("getFriction" in blockPrototype) {
+            Block.setFriction(blockPrototype.id, blockPrototype.getFriction());
         }
 
-        if("getLightLevel" in block) {
-            Block.setLightLevel(block.id, block.getLightLevel());
+        if("getLightLevel" in blockPrototype) {
+            Block.setLightLevel(blockPrototype.id, blockPrototype.getLightLevel());
         }
 
-        if("getLightOpacity" in block) {
-            Block.setLightOpacity(block.id, block.getLightOpacity());
+        if("getLightOpacity" in blockPrototype) {
+            Block.setLightOpacity(blockPrototype.id, blockPrototype.getLightOpacity());
         }
 
-        if("getExplosionResistance" in block) {
-            Block.setExplosionResistance(block.id, block.getExplosionResistance());
+        if("getExplosionResistance" in blockPrototype) {
+            Block.setExplosionResistance(blockPrototype.id, blockPrototype.getExplosionResistance());
         }
 
-        if("getMapColor" in block) {
-            Block.setMapColor(block.id, block.getMapColor());
+        if("getMapColor" in blockPrototype) {
+            Block.setMapColor(blockPrototype.id, blockPrototype.getMapColor());
         }
 
-        if("getMaterial" in block) {
-            ToolAPI.registerBlockMaterial(block.id, block.getMaterial(), block.getDestroyLevel());
+        if("getMaterial" in blockPrototype) {
+            ToolAPI.registerBlockMaterial(blockPrototype.id, blockPrototype.getMaterial(), blockPrototype.getDestroyLevel());
         }
 
-        if("getRenderLayer" in block) {
-            Block.setRenderLayer(block.id, block.getRenderLayer());
+        if("getRenderLayer" in blockPrototype) {
+            Block.setRenderLayer(blockPrototype.id, blockPrototype.getRenderLayer());
         }
 
-        if("getTranslucency" in block) {
-            Block.setTranslucency(block.id, block.getTranslucency());
+        if("getTranslucency" in blockPrototype) {
+            Block.setTranslucency(blockPrototype.id, blockPrototype.getTranslucency());
         }
 
-        if("isSolid" in block) {
-            Block.setSolid(block.id, block.isSolid());
+        if("isSolid" in blockPrototype) {
+            Block.setSolid(blockPrototype.id, blockPrototype.isSolid());
         }
 
-        if("getRenderType" in block) {
-            Block.setRenderType(block.id, block.getRenderType());
+        if("getRenderType" in blockPrototype) {
+            Block.setRenderType(blockPrototype.id, blockPrototype.getRenderType());
         }
 
-        if("getTileEntity" in block) {
-            TileEntity.registerPrototype(block.id, block.getTileEntity() as any);
+        if("getTileEntity" in blockPrototype) {
+            TileEntity.registerPrototype(blockPrototype.id, blockPrototype.getTileEntity() as any);
         }
 
-        if("getCreativeGroup" in block) {
-            const group = block.getCreativeGroup();
-            Item.addCreativeGroup(group, group, [block.id]);
+        if("getCreativeGroup" in blockPrototype) {
+            const group = blockPrototype.getCreativeGroup();
+            Item.addCreativeGroup(group, group, [blockPrototype.id]);
         }
 
-        if("getDrop" in block) {
-            Block.registerDropFunctionForID(block.id, (coords, id, data, diggingLevel, enchant, item, region) => {
-                return block.getDrop(coords, id, data, diggingLevel, enchant, new ItemStack(item), region);
+        if("getDrop" in blockPrototype) {
+            Block.registerDropFunctionForID(blockPrototype.id, (coords, id, data, diggingLevel, enchant, item, region) => {
+                return blockPrototype.getDrop(coords, id, data, diggingLevel, enchant, new ItemStack(item), region);
             });
         }
 
-        if("onDestroy" in block) {
-            Block.registerDestroyFunctionForID(block.id, (block as IDestroyCallback).onDestroy.bind(block));
+        if("onDestroy" in blockPrototype) {
+            Block.registerDestroyFunctionForID(blockPrototype.id, (blockPrototype as IDestroyCallback).onDestroy.bind(blockPrototype));
         }
 
-        if("onDestroyContinue" in block) {
-            Block.registerDestroyContinueFunctionForID(block.id, (block as IDestroyContinueCallback).onDestroyContinue.bind(block));
+        if("onDestroyContinue" in blockPrototype) {
+            Block.registerDestroyContinueFunctionForID(blockPrototype.id, (blockPrototype as IDestroyContinueCallback).onDestroyContinue.bind(blockPrototype));
         }
 
-        if("onDestroyStart" in block) {
-            Block.registerDestroyStartFunctionForID(block.id, (block as IDestroyStartCallback).onDestroyStart.bind(block));
+        if("onDestroyStart" in blockPrototype) {
+            Block.registerDestroyStartFunctionForID(blockPrototype.id, (blockPrototype as IDestroyStartCallback).onDestroyStart.bind(blockPrototype));
         }
 
-        if("onPlace" in block) {
-            Block.registerPlaceFunctionForID(block.id, (coords, item, block, player, region) => {
-                return (block as unknown as IPlaceCallback).onPlace(coords, new ItemStack(item), block, player, region)
+        if("onPlace" in blockPrototype) {
+            Block.registerPlaceFunctionForID(blockPrototype.id, (coords, item, block, player, region) => {
+                return (blockPrototype as unknown as IPlaceCallback).onPlace(coords, new ItemStack(item), block, player, region)
             });
         }
 
-        if("onNeighbourChange" in block) {
-            Block.registerNeighbourChangeFunctionForID(block.id, (coords, block, changedCoords, region) => {
-                return (block as unknown as INeighbourChangeCallback).onNeighbourChange(coords, block, changedCoords, region);
+        if("onNeighbourChange" in blockPrototype) {
+            Block.registerNeighbourChangeFunctionForID(blockPrototype.id, (coords, block, changedCoords, region) => {
+                return (blockPrototype as unknown as INeighbourChangeCallback).onNeighbourChange(coords, block, changedCoords, region);
             });
         }
 
-        if("onEntityInside" in block) {
-            Block.registerEntityInsideFunctionForID(block.id, (coords, block, entity) => {
-                return (block as unknown as IEntityInsideCallback).onEntityInside(coords, block, entity);
+        if("onEntityInside" in blockPrototype) {
+            Block.registerEntityInsideFunctionForID(blockPrototype.id, (coords, block, entity) => {
+                return (blockPrototype as unknown as IEntityInsideCallback).onEntityInside(coords, block, entity);
             });
         }
 
-        if("onEntityStepOn" in block) {
-            Block.registerEntityStepOnFunctionForID(block.id, (coords, block, entity) => {
-                return (block as unknown as IEntityStepOnCallback).onEntityStepOn(coords, block, entity);
+        if("onEntityStepOn" in blockPrototype) {
+            Block.registerEntityStepOnFunctionForID(blockPrototype.id, (coords, block, entity) => {
+                return (blockPrototype as unknown as IEntityStepOnCallback).onEntityStepOn(coords, block, entity);
             });
         }
 
-        if("onRandomTick" in block) {
-            Block.setRandomTickCallback(block.id, (x, y, z, id, data, region) => {
-                return (block as unknown as IRandomTickCallback).onRandomTick(x, y, z, id, data, region);
+        if("onRandomTick" in blockPrototype) {
+            Block.setRandomTickCallback(blockPrototype.id, (x, y, z, id, data, region) => {
+                return (blockPrototype as unknown as IRandomTickCallback).onRandomTick(x, y, z, id, data, region);
             });
         }
 
-        if("onClick" in block) {
-            Block.registerClickFunctionForID(block.id, (coords, item, block, player) => {
-                return (block as unknown as IClickCallback).onClick(coords, new ItemStack(item), block, player);
+        if("onClick" in blockPrototype) {
+            Block.registerClickFunctionForID(blockPrototype.id, (coords, item, block, player) => {
+                return (blockPrototype as unknown as IClickCallback).onClick(coords, new ItemStack(item), block, player);
             });
         }
 
-        if("onProjectileHit" in block) {
-            Block.registerProjectileHitFunction(block.id, (block as IProjectileHitCallback).onProjectileHit.bind(block));
+        if("onProjectileHit" in blockPrototype) {
+            Block.registerProjectileHitFunction(blockPrototype.id, (blockPrototype as IProjectileHitCallback).onProjectileHit.bind(blockPrototype));
         }
 
-        if("onSelection" in block) {
-            Block.registerSelectionFunctionForID(block.id, (block as IBlockSelectionCallback).onSelection.bind(block));
+        if("onSelection" in blockPrototype) {
+            Block.registerSelectionFunctionForID(blockPrototype.id, (blockPrototype as IBlockSelectionCallback).onSelection.bind(blockPrototype));
         }
-
-        BasicItem.setFunctions(block);
-        Block.setDestroyLevel(block.stringID, block.getDestroyLevel());
+        BasicItem.setFunctions(blockPrototype);
+        Block.setDestroyLevel(blockPrototype.stringID, blockPrototype.getDestroyLevel());
     }
 
     // public static destroyWithTile(x: number, y: number, z: number, blockSource: BlockSource) {

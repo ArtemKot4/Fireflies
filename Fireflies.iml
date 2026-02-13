@@ -32,15 +32,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="innercore-test.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../toolchain/classpath/innercore-test.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

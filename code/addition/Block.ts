@@ -1,9 +1,12 @@
 namespace Block {
+    export interface ISelectionFunction {
+        (block: BlockState, blockPosition: Vector, viewVector: Vector): void;
+    }
     export const destroyFunctions: Record<number, Callback.DestroyBlockFunction> = {};
     export const destroyStartFunctions: Record<number, Callback.DestroyBlockFunction> = {};
     export const destroyContinueFunctions: Record<number, Callback.DestroyBlockContinueFunction> = {};
     export const projectileHitFunctions: Record<number, Callback.ProjectileHitFunction> = {};
-    export const selectionFunctions: Record<number, Callback.BlockSelectionFunction> = {};
+    export const selectionFunctions: Record<number, ISelectionFunction> = {};
 
     export function createPlantBlock(nameID: string, defineData: BlockVariation[]) {
         new BlockPlant(nameID, defineData);
@@ -100,11 +103,11 @@ namespace Block {
         projectileHitFunctions[id] = func;
     }
 
-    export function registerSelectionFunction(id: number, func: Callback.BlockSelectionFunction): void {
+    export function registerSelectionFunction(id: number, func: ISelectionFunction): void {
         selectionFunctions[id] = func;
     }
 
-    export function registerSelectionFunctionForID(id: number, func: Callback.BlockSelectionFunction) {
+    export function registerSelectionFunctionForID(id: number, func: ISelectionFunction) {
         selectionFunctions[typeof id == "string" ? IDRegistry.parseBlockID(id) : id]; 
     }
 
@@ -140,12 +143,12 @@ namespace Block {
         }
     });
 
-    Callback.addCallback("BlockSelection", (block: Tile, position: BlockPosition, vector: Vector) => {
+    Callback.addCallback("Selection", (viewVector: Vector, blockPosition: Vector, entityUid: number, block: BlockState) => {
         const selectionFunction = selectionFunctions[block.id];
         if(selectionFunction != null) {
-            return selectionFunction(block, position, vector);
+            return selectionFunction(block, blockPosition, viewVector);
         }
-        const tile = TileEntity.getTileEntity(position.x, position.y, position.z);
+        const tile = TileEntity.getTileEntity(blockPosition.x, blockPosition.y, blockPosition.z);
         if(tile != null && "client" in tile && "selection" in tile.client) {
             return tile.onSelection();
         }

@@ -3,16 +3,17 @@
  * @example
  * ```ts
     class Example {
-        [@SubscribeEvent(ECallback.LOCAL_TICK)]
-        public onTick() {
+        \@SubscribeEvent(ECallback.LOCAL_TICK)
+        public static onTick() {
             Game.message("example")
         }
     };
  * ```
  * @param event {@link ECallback} enum value
+ * @param priority priority
  * @returns decorator
  */
-function SubscribeEvent(event: ECallback): MethodDecorator;
+function SubscribeEvent(event: ECallback, priority?: number): MethodDecorator;
 
 /**
  * Decorator to add callback from function by function name and same function. Format will be "onNameOfCallback". "on" optional.
@@ -20,7 +21,7 @@ function SubscribeEvent(event: ECallback): MethodDecorator;
  * ```ts
  * class ExampleDestroyBlock {
         [@SubscribeEvent]
-        public onDestroyBlock() {
+        public static onDestroyBlock() {
             Game.message("break block")
         }
     }
@@ -31,15 +32,15 @@ function SubscribeEvent(event: ECallback): MethodDecorator;
  */
 function SubscribeEvent(target: unknown, key: string, descriptor: PropertyDescriptor): PropertyDescriptor;
 
-function SubscribeEvent(value: unknown, key?: string, descriptor?: PropertyDescriptor): unknown {
-    if(typeof value == "string" && arguments.length == 1) {
-        return function(target: any, key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
-            Callback.addCallback(value, descriptor.value);
+function SubscribeEvent(value: ECallback | unknown, key?: string | number, descriptor?: PropertyDescriptor): unknown {
+    const method: Function = descriptor.value;
+    if(arguments.length > 0) {
+        return function(value: any, key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+            Callback.addCallback(value, method, key ? Number(key) : null);
             return descriptor;
         }
     }
-    const name = key.replace("on", "");
-
-    Callback.addCallback(name, descriptor.value);
+    const name = (key as string).replace("on", "");
+    Callback.addCallback(name, method);
     return descriptor;
 }
