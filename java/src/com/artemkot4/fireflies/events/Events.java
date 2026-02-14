@@ -1,11 +1,10 @@
 package com.artemkot4.fireflies.events;
 
 import org.innercore.icstd.event.EventController;
-import org.innercore.icstd.event.Events;
 import org.innercore.icstd.event.IScriptEventListener;
 import org.innercore.icstd.inventory.ItemInstance;
-import com.zhekasmirnov.apparatus.adapter.innercore.game.block.BlockState;
 
+import com.zhekasmirnov.apparatus.adapter.innercore.game.block.BlockState;
 import com.zhekasmirnov.apparatus.api.common.Vector3;
 import com.zhekasmirnov.apparatus.mcpe.NativeBlockSource;
 import com.zhekasmirnov.innercore.api.NativeAPI;
@@ -13,9 +12,9 @@ import com.zhekasmirnov.innercore.api.mod.adaptedscript.AdaptedScriptAPI.Entity;
 import com.zhekasmirnov.innercore.api.mod.adaptedscript.AdaptedScriptAPI.PlayerActor;
 import com.zhekasmirnov.innercore.api.runtime.Callback;
 
-public class Event {
+public class Events {
     public static void init() {
-        Events.onScriptEvent("LocalTick", new IScriptEventListener() {
+        org.innercore.icstd.event.Events.onScriptEvent("LocalTick", new IScriptEventListener() {
             @Override
             public boolean isEventCtrlRequired() {
                 return false;
@@ -35,7 +34,7 @@ public class Event {
             }
         });
 
-        Events.onScriptEvent("ServerPlayerTick", new IScriptEventListener() {
+        org.innercore.icstd.event.Events.onScriptEvent("ServerPlayerTick", new IScriptEventListener() {
             @Override
             public boolean isEventCtrlRequired() {
                 return false;

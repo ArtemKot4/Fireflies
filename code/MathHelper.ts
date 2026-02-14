@@ -15,10 +15,10 @@ namespace MathHelper {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    export function range(min: number, max: number, number: number = 1): number[] {
+    export function range(min: number, max: number, step: number = 1): number[] {
         const list: number[] = [];
         
-        for(let i = min; i < max; i += number) {
+        for(let i = min; i < max; i += step) {
             list.push(i);
         }
         return list;

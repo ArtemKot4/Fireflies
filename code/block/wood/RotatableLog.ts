@@ -1,7 +1,6 @@
 class RotatableLog extends BasicBlock implements IPlaceCallback {
     constructor(id: string, texture?: string) {
         texture = texture || id;
-        
         const upperTexture = texture + "_top";
         const sideTexture = texture + "_side";
         
@@ -32,7 +31,6 @@ class RotatableLog extends BasicBlock implements IPlaceCallback {
                 [upperTexture, 0]
             ] 
         }]);
-
     };
 
     public onPlace(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number, region: BlockSource): void | Vector {
@@ -51,16 +49,15 @@ class RotatableLog extends BasicBlock implements IPlaceCallback {
             case 2:
                 data = 1;
                 break;
-        };
-
+        }
         region.setBlock(coords.relative.x, coords.relative.y, coords.relative.z, this.id, data);
-    };
+    }
 
     public override getSoundType(): Block.Sound {
         return "wood";
-    };
+    }
 
     public override getDrop(coords: Callback.ItemUseCoordinates, id: number, data: number, diggingLevel: number, enchant: ToolAPI.EnchantData, item: ItemStack, region: BlockSource): ItemInstanceArray[] {
         return [[id, 1, 0]];
-    };
-};
+    }
+}

@@ -2,7 +2,7 @@
  * @example
  * ```ts 
  * class LocalExampleTile extends LocalTileEntity {
- *     @NetworkEvent
+ *     \@NetworkEvent
  *     public exampleMessagePacket(): void {
  *         Game.message("example");
  *         return;
@@ -78,7 +78,6 @@ abstract class CommonTileEntity implements TileEntity {
         if("onTick" in this) {
             this.tick = this.onTick;
         }
-
         this.init = this.onInit;
         this.load = this.onLoad;
         this.unload = this.onUnload;

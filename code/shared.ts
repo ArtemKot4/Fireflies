@@ -23,7 +23,7 @@ ModAPI.registerAPI("FirefliesAPI", {
     LocalTileEntity,
     NetworkEvent,
     ContainerEvent,
-    Dimension,
+    BasicDimension,
     RuntimeData,
     EScreenName,
     ECallback,

@@ -20,7 +20,7 @@ function SubscribeEvent(event: ECallback, priority?: number): MethodDecorator;
  * @example
  * ```ts
  * class ExampleDestroyBlock {
-        [@SubscribeEvent]
+        \@SubscribeEvent
         public static onDestroyBlock() {
             Game.message("break block")
         }

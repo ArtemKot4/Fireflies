@@ -5,5 +5,5 @@ class Planks extends BasicBlock {
             inCreative: true,
             texture: [[id, 0]]
         }]);
-    };
+    }
 }

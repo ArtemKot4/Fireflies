@@ -1,33 +1,3 @@
-declare namespace Animation {
-    type description = {
-        /**
-         * {@link RenderMesh} object to be displayed with animation.
-         * @since 2.0.2b20
-         */
-        mesh?: RenderMesh,
-        /**
-         * Numeric ID of the {@link Render} object to be displayed with animation.
-         * Can be obtained using {@link Render.getId}
-         */
-        render?: number,
-        /**
-         * Name of the texture to be used as render's skin.
-         */
-        skin?: string,
-        /**
-         * Animation scale.
-         * @default 1
-         */
-        scale?: number,
-        /**
-         * Animation material, can be used to apply custom materials to the
-         * animation.
-         * @since 2.0.2b20
-         */
-        material?: string
-    };
-}
-
 class WorldRenderObject implements Vector {
     public static objects: {
         [stringID: string]: {
@@ -179,8 +149,8 @@ class WorldRenderObject implements Vector {
     public destroy(): void {
         this.animation.destroy();
         this.loaded = false;
-        delete WorldRenderObject.objects[this.getStringID()][this.uuid];
         this.threadInited = false;
+        delete WorldRenderObject.objects[this.getStringID()][this.uuid];
     }
 
     public rotate(x: number, y: number, z: number): Render.Transform {

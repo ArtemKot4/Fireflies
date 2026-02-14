@@ -13,6 +13,7 @@ addition/World.ts
 addition/TagRegistry.ts
 addition/IDRegistry.ts
 addition/LiquidRegistry.ts
+addition/UI.ts
 
 render/RenderHelper.ts
 render/WorldRenderObject.ts
@@ -54,12 +55,10 @@ block/tile_entity/CommonTileEntity.ts
 
 PlayerUser.ts
 
-Dimension.ts
+BasicDimension.ts
 
 event/ECallback.ts
 event/SubscribeEvent.ts
-event/ServerPlayerTick.ts
-event/ItemHold.ts
 
 final.ts
 shared.ts
