@@ -5,6 +5,7 @@ declare namespace com {
                 export class Font {
                     public static TYPEFACES: java.util.HashMap<string, android.graphics.Typeface>;
                     public static registerTypeface(path: string, name: string): Nullable<android.graphics.Typeface>;
+                    public static registerTypefaceAll(path: string): void;
                     public static getTypeface(name: string): Nullable<android.graphics.Typeface>
                     public static getTypefaceSafe(nameOfPath: string): android.graphics.Typeface;
                 }
@@ -15,9 +16,9 @@ declare namespace com {
 
 namespace UI {
     export interface FontDescription {
-        /** Path or name for font typeface. If not defined, will be default minecraft typeface
+        /** typeface, or path or name for font typeface. If not defined, will be default minecraft typeface
          */
-        typeface?: string;
+        typeface?: string | android.graphics.Typeface;
     }
 
     export namespace FontManager {
@@ -49,9 +50,16 @@ namespace UI {
         }
 
         export function registerTypefaceAll(path: string): void {
-            for(const file of FileTools.GetListOfFiles(path)) {
-                registerTypeface(file.getAbsolutePath(), file.getName())
-            }
+            return com.artemkot4.fireflies.ui.Font.registerTypefaceAll(path);
+        }
+
+        export namespace TYPESPACES {
+            export const MINECRAFT = UI.FontManager.getTypeface("minecraft");
+            export const DEFAULT = android.graphics.Typeface.DEFAULT;
+            export const DEFAULT_BOLD = android.graphics.Typeface.DEFAULT_BOLD;
+            export const MONOSPACE = android.graphics.Typeface.MONOSPACE;
+            export const SANS_SERIF = android.graphics.Typeface.SANS_SERIF;
+            export const SERIF = android.graphics.Typeface.SERIF;
         }
     }
 }
@@ -61,7 +69,7 @@ namespace UI {
 
 // Callback.addCallback("ItemUse", (c,i) => {
 //     if(i.id == VanillaItemID.stick) {
-//         new UI.Window({
+//         const ui = new UI.Window({
 //             "drawing": [
 //                 {
 //                     type: "background",
@@ -76,11 +84,34 @@ namespace UI {
 //                     text: "Проверка прекрасного текста",
 //                     font: {
 //                         size: 50,
+//                         typeface: UI.FontManager.getTypeface("goth"),
+//                         color: android.graphics.Color.BLACK,
+//                     }
+//                 },
+//                 "aboba2": {
+//                     x: 35,
+//                     y: 90,
+//                     type: "text",
+//                     text: "Сегодня хороший день",
+//                     font: {
+//                         size: 50,
 //                         typeface: "goth",
+//                         color: android.graphics.Color.BLACK,
+//                     }
+//                 },
+//                 "aboba3": {
+//                     x: 35,
+//                     y: 130,
+//                     type: "text",
+//                     text: "Это должен быть обычный шрифт",
+//                     font: {
+//                         size: 30,
 //                         color: android.graphics.Color.BLACK,
 //                     }
 //                 }
 //             }
-//         }).open();
+//         });
+//         ui.setTouchable(false);
+//         ui.open();
 //     }
 // })

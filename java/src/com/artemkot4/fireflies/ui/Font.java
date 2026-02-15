@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.Wrapper;
 
 public class Font {
     public static HashMap<String, Typeface> TYPEFACES = new HashMap();
@@ -34,8 +35,8 @@ public class Font {
     public float size;
     private Paint textPaint;
 
-    public Font(int color, float size, float shadow, String typeface) {
-        Typeface typefaceInstance = getTypefaceSafe(typeface);
+    public Font(int color, float size, float shadow, Object typeface) {
+        Typeface typefaceInstance = getTypefaceFromObject(typeface);
 
         this.alignment = 0;
         this.color = color;
@@ -47,14 +48,28 @@ public class Font {
         this.shadowPaint.setTypeface(typefaceInstance);
     }
 
+    public Typeface getTypefaceFromObject(Object value) {
+        if(value instanceof Wrapper) {
+            value = ((Wrapper)value).unwrap();
+        }
+        if(value instanceof Typeface) {
+            return (Typeface) value;
+        }
+        String name = null;
+        if(value instanceof String) {
+            name = (String) value;
+        }
+        return getTypefaceSafe(name);
+    }
+
     public Font(ScriptableObject description, UIStyle style) {
-        Typeface typefaceInstance = getTypefaceSafe(ScriptableObjectHelper.getStringProperty(description, "typeface", ""));
+        Typeface typefaceInstance = getTypefaceFromObject(ScriptableObjectHelper.getProperty(description, "typeface", null));
         byte var4 = 0;
         this.alignment = 0;
         if(style == null) {
             style = UIStyle.DEFAULT;
         }
-
+    
         this.color = style.getColorProperty(ScriptableObjectHelper.getProperty(description, "color", (Object) null), -16777216);
         this.size = ScriptableObjectHelper.getFloatProperty(description, "size", 20.0F);
         this.shadow = ScriptableObjectHelper.getFloatProperty(description, "shadow", 0.0F);
@@ -165,6 +180,10 @@ public class Font {
 
     @Nullable
     public static Typeface registerTypeface(String path, String name) {
+        if(path == null || name == null) {
+            Logger.error("Fireflies", "Cannot register typeface by unknown name or path");
+            return null;
+        }
         File file = new File(path);
 
         if(!file.exists()) {
@@ -172,6 +191,17 @@ public class Font {
             return null;
         }
         return TYPEFACES.put(name, Typeface.createFromFile(file));
+    }
+
+    public static void registerTypefaceAll(String path) {
+        if(path == null) {
+            Logger.error("Cannot register fonts by unknown path");
+            return;
+        }
+
+        for(File file : new File(path).listFiles()) {
+            registerTypeface(file.getAbsolutePath(), file.getName());
+        }
     }
 
     @Nullable
