@@ -5,22 +5,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.support.annotation.Nullable;
 
-import com.zhekasmirnov.horizon.runtime.logger.Logger;
+import com.artemkot4.fireflies.ui.utils.FontManager;
 import com.zhekasmirnov.innercore.api.mod.ScriptableObjectHelper;
 import com.zhekasmirnov.innercore.api.mod.ui.types.UIStyle;
-import com.zhekasmirnov.innercore.utils.FileTools;
-
-import java.io.File;
-import java.util.HashMap;
 
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.Wrapper;
 
 public class Font {
-    public static HashMap<String, Typeface> TYPEFACES = new HashMap();
-
     public static final int ALIGN_CENTER = 1;
     public static final int ALIGN_CENTER_HORIZONTAL = 3;
     public static final int ALIGN_DEFAULT = 0;
@@ -36,7 +28,7 @@ public class Font {
     private Paint textPaint;
 
     public Font(int color, float size, float shadow, Object typeface) {
-        Typeface typefaceInstance = getTypefaceFromObject(typeface);
+        Typeface typefaceInstance = FontManager.getTypefaceUnknown(typeface);
 
         this.alignment = 0;
         this.color = color;
@@ -48,22 +40,8 @@ public class Font {
         this.shadowPaint.setTypeface(typefaceInstance);
     }
 
-    public Typeface getTypefaceFromObject(Object value) {
-        if(value instanceof Wrapper) {
-            value = ((Wrapper)value).unwrap();
-        }
-        if(value instanceof Typeface) {
-            return (Typeface) value;
-        }
-        String name = null;
-        if(value instanceof String) {
-            name = (String) value;
-        }
-        return getTypefaceSafe(name);
-    }
-
     public Font(ScriptableObject description, UIStyle style) {
-        Typeface typefaceInstance = getTypefaceFromObject(ScriptableObjectHelper.getProperty(description, "typeface", null));
+        Typeface typefaceInstance = FontManager.getTypefaceUnknown(ScriptableObjectHelper.getProperty(description, "typeface", null));
         byte var4 = 0;
         this.alignment = 0;
         if(style == null) {
@@ -176,55 +154,5 @@ public class Font {
 
     public float getTextWidth(String var1, float var2) {
         return (float) this.getBounds(var1, 0.0F, 0.0F, var2).width();
-    }
-
-    @Nullable
-    public static Typeface registerTypeface(String path, String name) {
-        if(path == null || name == null) {
-            Logger.error("Fireflies", "Cannot register typeface by unknown name or path");
-            return null;
-        }
-        File file = new File(path);
-
-        if(!file.exists()) {
-            Logger.error("Fireflies", "Cannot register typeface \"" + name + "\" from path \"" + path + "\"");
-            return null;
-        }
-        return TYPEFACES.put(name, Typeface.createFromFile(file));
-    }
-
-    public static void registerTypefaceAll(String path) {
-        if(path == null) {
-            Logger.error("Cannot register fonts by unknown path");
-            return;
-        }
-
-        for(File file : new File(path).listFiles()) {
-            registerTypeface(file.getAbsolutePath(), file.getName());
-        }
-    }
-
-    @Nullable
-    public static Typeface getTypeface(String name) {
-        if(TYPEFACES.containsKey(name)) {
-            return TYPEFACES.get(name);
-        } 
-        return null;
-    }
-
-    public static Typeface getTypefaceSafe(String nameOrPath) {
-        Typeface foundTypeface = getTypeface(nameOrPath);
-        if(foundTypeface == null) {
-            Typeface createdTypeface = registerTypeface(nameOrPath, nameOrPath);
-            if(createdTypeface == null) {
-                return FileTools.getMcTypeface();
-            }
-            return createdTypeface;
-        }
-        return foundTypeface;
-    }
-
-    static {
-        TYPEFACES.put("minecraft", FileTools.getMcTypeface());
     }
 }

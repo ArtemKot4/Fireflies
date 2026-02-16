@@ -88,7 +88,6 @@ public class UITextElement extends UIElement {
             }
             this.lastMeasuredScale = -1.0F;
         }
-
     }
 
     public void onDraw(Canvas var1, float var2) {

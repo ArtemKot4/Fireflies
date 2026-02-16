@@ -8,7 +8,11 @@
 		{
 			"path": "assets/gui",
 			"type": "gui"
-		}
+		},
+        {
+            "path": "assets/font",
+            "type": "font"
+        }
 	],
 	"project": {
 		"composite": false

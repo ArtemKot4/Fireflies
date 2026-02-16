@@ -3,6 +3,7 @@ package com.artemkot4.fireflies;
 import java.util.HashMap;
 import com.artemkot4.fireflies.events.Events;
 import com.artemkot4.fireflies.loader.Mod;
+import com.artemkot4.fireflies.loader.ModLoader;
 import com.artemkot4.fireflies.ui.elements.UITextElement;
 import com.zhekasmirnov.apparatus.modloader.LegacyInnerCoreMod;
 import com.zhekasmirnov.horizon.runtime.logger.Logger;
@@ -37,5 +38,6 @@ public class Fireflies {
         //ModLoader.loadMods();
         Events.init();
         ElementFactory.put("text", UITextElement.class);
+
     }
 }

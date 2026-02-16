@@ -2,12 +2,15 @@ declare namespace com {
     export namespace artemkot4 {
         export namespace fireflies {
             export namespace ui {
-                export class Font {
-                    public static TYPEFACES: java.util.HashMap<string, android.graphics.Typeface>;
-                    public static registerTypeface(path: string, name: string): Nullable<android.graphics.Typeface>;
-                    public static registerTypefaceAll(path: string): void;
-                    public static getTypeface(name: string): Nullable<android.graphics.Typeface>
-                    public static getTypefaceSafe(nameOfPath: string): android.graphics.Typeface;
+                export namespace utils {
+                    export class FontManager {
+                        private static TYPEFACES: java.util.HashMap<string, android.graphics.Typeface>;
+                        public static registerTypeface(typeface: android.graphics.Typeface, name: string): android.graphics.Typeface;
+                        public static registerTypefaceFrom(path: string, name: string): Nullable<android.graphics.Typeface>;
+                        public static registerTypefacesFrom(path: string): void;
+                        public static getTypeface(name: string): Nullable<android.graphics.Typeface>
+                        public static getTypefaceSafe(nameOfPath: string): android.graphics.Typeface;
+                    }
                 }
             }
         }
@@ -21,51 +24,43 @@ namespace UI {
         typeface?: string | android.graphics.Typeface;
     }
 
-    export namespace FontManager {
-        export function registerTypeface(path: string, name: string): Nullable<android.graphics.Typeface> {
-            return com.artemkot4.fireflies.ui.Font.registerTypeface(path, name);
-        }
-    
-        /**
-         * Returns typeface for font
-         * @param name name of typeface
-         */
-        export function getTypeface(name: string): Nullable<android.graphics.Typeface>;
+    export const FontManager = com.artemkot4.fireflies.ui.utils.FontManager;
 
-        /**
-         * Returns minecraft default typeface for font
-         */
-        export function getTypeface(name: "minecraft"): android.graphics.Typeface;
+    // export namespace FontManager {
+    //     export function registerTypeface(typeface: android.graphics.Typeface, name: string): android.graphics.Typeface {
+    //         return com.artemkot4.fireflies.ui.utils.FontManager.registerTypeface(typeface, name);
+    //     }
 
-        export function getTypeface(name: string): Nullable<android.graphics.Typeface> {
-            return com.artemkot4.fireflies.ui.Font.getTypeface(name);
-        }
+    //     export function registerTypefacesFrom(path: string): void {
+    //         com.artemkot4.fireflies.ui.utils.FontManager.registerTypefacesFrom(path);
+    //     }
 
-        /** 
-         * @returns default minecraft font typeface
-         */
-    
-        export function getTypefaceSafe(nameOrPath: string): android.graphics.Typeface {
-            return com.artemkot4.fireflies.ui.Font.getTypefaceSafe(nameOrPath);
-        }
+    //     export function registerTypefaceFrom(path: string, name: string) {
+    //         com.artemkot4.fireflies.ui.utils.FontManager.registerTypefaceFrom(path, name);
+    //     }
 
-        export function registerTypefaceAll(path: string): void {
-            return com.artemkot4.fireflies.ui.Font.registerTypefaceAll(path);
-        }
+    //     export function getTypeface(name: string): Nullable<android.graphics.Typeface> {
+    //         return com.artemkot4.fireflies.ui.utils.FontManager.getTypeface(name);
+    //     }
 
-        export namespace TYPESPACES {
-            export const MINECRAFT = UI.FontManager.getTypeface("minecraft");
-            export const DEFAULT = android.graphics.Typeface.DEFAULT;
-            export const DEFAULT_BOLD = android.graphics.Typeface.DEFAULT_BOLD;
-            export const MONOSPACE = android.graphics.Typeface.MONOSPACE;
-            export const SANS_SERIF = android.graphics.Typeface.SANS_SERIF;
-            export const SERIF = android.graphics.Typeface.SERIF;
-        }
+    //     export function getTypefaceSafe(name: string): android.graphics.Typeface {
+    //         return com.artemkot4.fireflies.ui.utils.FontManager.getTypefaceSafe(name);
+    //     }
+    // }
+
+    export namespace FONT_TYPESPACES {
+        export const MINECRAFT = UI.FontManager.getTypeface("minecraft");
+        export const DEFAULT = android.graphics.Typeface.DEFAULT;
+        export const DEFAULT_BOLD = android.graphics.Typeface.DEFAULT_BOLD;
+        export const MONOSPACE = android.graphics.Typeface.MONOSPACE;
+        export const SANS_SERIF = android.graphics.Typeface.SANS_SERIF;
+        export const SERIF = android.graphics.Typeface.SERIF;
     }
 }
 
 //test
-// UI.FontManager.registerTypeface(__dir__ + "resources/assets/gui/goth.ttf", "goth");
+// UI.FontManager.registerTypefacesFrom(__dir__ + "resources/assets/gui/");
+// UI.FontManager.registerTypefaceFrom(__dir__ + "resources/assets/gui/goth.ttf", "aboba");
 
 // Callback.addCallback("ItemUse", (c,i) => {
 //     if(i.id == VanillaItemID.stick) {
@@ -84,7 +79,7 @@ namespace UI {
 //                     text: "Проверка прекрасного текста",
 //                     font: {
 //                         size: 50,
-//                         typeface: UI.FontManager.getTypeface("goth"),
+//                         typeface: "aboba",
 //                         color: android.graphics.Color.BLACK,
 //                     }
 //                 },
