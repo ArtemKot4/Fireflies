@@ -8,11 +8,7 @@
 		{
 			"path": "assets/gui",
 			"type": "gui"
-		},
-        {
-            "path": "assets/font",
-            "type": "font"
-        }
+		}
 	],
 	"project": {
 		"composite": false
@@ -55,7 +51,7 @@
 		"name": "Fireflies",
 		"author": "ArtemKot",
 		"version": "2025",
-		"description": "Мод-библиотека, добавляющая возможности для более широкого создания модификаций объектно-ориентированным методом с использованием TypeScript. Добавляет классы под блоки, предметы, команды, анимации уведомлений, тайл энтити и не только. Подробнее читайте в документации на сайте проекта.",
+		"description": "Мод-библиотека, добавляющая более удобное api для разработки модификаций объектно-ориентированным методом. Так же дополняет встроенное, добавляя возможности, которых раньше не было.",
 		"icon": "mod_icon.png",
         "javaBoot": "com.artemkot4.fireflies.Fireflies"
 	},
@@ -65,25 +61,14 @@
 		"innercore",
 		"nativejs"
 	],
-	"excludeFromRelease": []
+	"excludeFromRelease": [],
+	"tsconfig": {
+		"strict": false,
+		"strictNullChecks": false,
+		"ignoreDeprecations": "6.0",
+		"downlevelIteration": false
+	},
+	"environment": {
+  		"JAVA_HOME": "C:\\Program Files\\Eclipse Adoptium\\jdk-8.0.492.9-hotspot\\"
+ 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,8 +1,8 @@
 abstract class LocalTileEntity implements LocalTileEntity, Vector {
-    public x: number;
-    public y: number;
-    public z: number;
-    public networkData: SyncedNetworkData;
+    public readonly x: number;
+    public readonly y: number;
+    public readonly z: number;
+    public readonly networkData: SyncedNetworkData;
     
     public events: { [packetName: string]: (packetData: any, packetExtra: any) => void };
     public containerEvents?: { [eventName: string]: (container: ItemContainer, window: UI.Window | UI.StandartWindow | UI.StandardWindow | UI.TabbedWindow, windowContent: UI.WindowContent, eventData: any) => void };
