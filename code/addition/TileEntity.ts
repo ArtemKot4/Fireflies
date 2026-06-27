@@ -17,7 +17,7 @@ namespace TileEntity {
 
     export function openFor(client: NetworkClient, tile: TileEntity.TileEntityPrototype & { container: ItemContainer }) {
         if(tile != null) {
-            const screenName = tile.getScreenName(client.getPlayerUid(), new Vector3(tile.x, tile.y, tile.z));
+            const screenName = tile.getScreenName(client.getPlayerUid(), new Vector3(tile.x, tile.y, tile.z) as unknown as Callback.ItemUseCoordinates);
             if(screenName != null) {
                 tile.container.openFor(client, screenName);
             }

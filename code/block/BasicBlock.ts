@@ -11,7 +11,8 @@ interface IDestroyStartCallback {
 }
 
 interface IPlaceCallback {
-    onPlace(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number, region: BlockSource): Vector | void
+    onPlace?(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number, region: BlockSource): Vector | void
+    place?(coords: Callback.ItemUseCoordinates, item: ItemStack, block: Tile, player: number, region: BlockSource): void
 }
 
 interface INeighbourChangeCallback {
@@ -267,6 +268,14 @@ class BasicBlock {
             });
         }
 
+        if("place" in blockPrototype) {
+            Block.registerPlaceFunctionForID(blockPrototype.id, (coords, item, block, player, region) => {
+                Game.prevent();
+                (blockPrototype as unknown as IPlaceCallback).place(coords, new ItemStack(item), block, player, region);
+                return coords;
+            });
+        }
+
         if("onNeighbourChange" in blockPrototype) {
             Block.registerNeighbourChangeFunctionForID(blockPrototype.id, (coords, block, changedCoords, region) => {
                 return (blockPrototype as unknown as INeighbourChangeCallback).onNeighbourChange(coords, block, changedCoords, region);
@@ -305,14 +314,15 @@ class BasicBlock {
             Block.registerSelectionFunctionForID(blockPrototype.id, (blockPrototype as IBlockSelectionCallback).onSelection.bind(blockPrototype));
         }
         BasicItem.setFunctions(blockPrototype);
-        Block.setDestroyLevel(blockPrototype.stringID, blockPrototype.getDestroyLevel());
+        Block.destroyLevelsToInit[blockPrototype.stringID] = blockPrototype.getDestroyLevel();
     }
 
-    // public static destroyWithTile(x: number, y: number, z: number, blockSource: BlockSource) {
-    //     TileEntity.destroyTileEntityAtCoords(x, y, z, blockSource);
-    //     blockSource.destroyBlock(x, y, z, true);
-    //     return;
-    // }
+    @SubscribeEvent
+    private static onLevelDisplayed() {
+        for(const id in Block.destroyLevelsToInit) {
+            Block.setDestroyLevelForID(Number(id), Block.destroyLevelsToInit[id]);
+        }
+    }
 }
 
 

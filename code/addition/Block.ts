@@ -2,6 +2,7 @@ namespace Block {
     export interface ISelectionFunction {
         (block: BlockState, blockPosition: Vector, viewVector: Vector): void;
     }
+    export const destroyLevelsToInit: Record<number, number> = {};
     export const destroyFunctions: Record<number, Callback.DestroyBlockFunction> = {};
     export const destroyStartFunctions: Record<number, Callback.DestroyBlockFunction> = {};
     export const destroyContinueFunctions: Record<number, Callback.DestroyBlockContinueFunction> = {};
