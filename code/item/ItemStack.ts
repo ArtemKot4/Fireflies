@@ -12,12 +12,12 @@ class ItemStack implements ItemInstance {
             this.id = id.id;
             this.count = id.count || (id ? this.getMaxStack() : 0);
             this.data = id.data || 0;
-            this.extra = id.extra;
+            this.extra = id.extra || null;
         } else {
             this.id = id || 0;
             this.count = count || (id ? this.getMaxStack() : 0);
             this.data = data || 0;
-            this.extra = extra;
+            this.extra = extra || null;
         }
     }
 
@@ -47,7 +47,7 @@ class ItemStack implements ItemInstance {
     }
 
     public isEmpty(): boolean {
-        return this.id == 0 && this.count == 0 && this.data == 0 && this.extra == null;
+        return ItemStack.isEmpty(this);
     }
 
     public clear(): void {
@@ -94,5 +94,9 @@ class ItemStack implements ItemInstance {
             (stack1.data || 0) == (stack2.data || 0) //&& 
             //((stack1.extra && stack2.extra) && stack1.extra.equals(stack2.extra))
         );
+    }
+
+    public static isEmpty(stack: ItemInstance): boolean {
+        return stack.id == 0 && stack.count == 0 && stack.data == 0;
     }
 }

@@ -41,6 +41,7 @@ abstract class CommonTileEntity implements TileEntity {
     public readonly z: number;
     public readonly dimension: number;
     public readonly blockID: number;
+    public readonly blockData;
     public readonly blockSource: BlockSource;
     public readonly networkData: SyncedNetworkData;
     public readonly networkEntity: NetworkEntity;
@@ -85,10 +86,6 @@ abstract class CommonTileEntity implements TileEntity {
         this.destroy = this.onDestroyTile;
         this.projectileHit = this.onProjectileHit;
         TileEntity.buildEvents(this);
-
-        if("data" in this) {
-            this.defaultValues = Object.assign({}, this.defaultValues, this.data);
-        }
     }
 
     public created(): void {};

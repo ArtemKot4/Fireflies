@@ -8,6 +8,7 @@ class WorldRenderObject implements Vector {
     public x: number;
     public y: number;
     public z: number;
+    //@ts-ignore
     public thread?: java.lang.Thread;
     public animation: Animation.Base;
     public loaded: boolean = false;

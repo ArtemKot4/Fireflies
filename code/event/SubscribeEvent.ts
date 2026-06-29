@@ -37,10 +37,9 @@ function SubscribeEvent(
         const key = keyOrPriority as string;
         const method = (descriptor as PropertyDescriptor).value;
         
-        if (typeof target != 'function') {
+        if(typeof target != 'function') {
             throw new Error(`@SubscribeEvent can only be used on static methods inside class`);
         }
-        
         const eventName = key.replace(/^on/, "");
         Callback.addCallback(eventName, method);
         
@@ -52,11 +51,11 @@ function SubscribeEvent(
     return function(target: any, key: string, desc: PropertyDescriptor): PropertyDescriptor {
         const method = desc.value;
         
-        if (typeof target != 'function') {
+        if(typeof target != 'function') {
             throw new Error(`@SubscribeEvent can only be used on static methods inside class`);
         }
         
-        if (priority != undefined) {
+        if(priority != undefined) {
             Callback.addCallback(eventName, method, priority);
         } else {
             Callback.addCallback(eventName, method);

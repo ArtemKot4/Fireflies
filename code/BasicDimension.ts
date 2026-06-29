@@ -9,6 +9,7 @@ interface CustomGeneratorDescription {
 }
 
 abstract class BasicDimension {
+    //@ts-ignore
     public static generateChunkFunctions: Record<number, (chunkX: number, chunkZ: number, random: java.util.Random) => void> = {};
     public static insideTransferFunctions: Record<number, typeof BasicDimension.prototype.onInsideEntityTransfer> = {};
     public static outsideTransferFunctions: Record<number, typeof BasicDimension.prototype.onOutsideEntityTransfer> = {};
@@ -187,6 +188,7 @@ abstract class BasicDimension {
      * Number between 0 and 1
      */
     public getStarBrightness?(): number;
+    //@ts-ignore
     public generateDimensionChunk?(chunkX: number, chunkZ: number, random: java.util.Random): void;
     public onInsideEntityTransfer?(entityUid: number, from: number): void;
     public onOutsideEntityTransfer?(entityUid: number, to: number): void;

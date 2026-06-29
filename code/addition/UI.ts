@@ -4,11 +4,17 @@ declare namespace com {
             export namespace ui {
                 export namespace utils {
                     export class FontManager {
+                        //@ts-ignore
                         private static TYPEFACES: java.util.HashMap<string, android.graphics.Typeface>;
+                        //@ts-ignore
                         public static registerTypeface(typeface: android.graphics.Typeface, name: string): android.graphics.Typeface;
+                        //@ts-ignore
                         public static registerTypefaceFrom(path: string, name: string): Nullable<android.graphics.Typeface>;
+                        //@ts-ignore
                         public static registerTypefacesFrom(path: string): void;
+                        //@ts-ignore
                         public static getTypeface(name: string): Nullable<android.graphics.Typeface>
+                        //@ts-ignore
                         public static getTypefaceSafe(nameOfPath: string): android.graphics.Typeface;
                     }
                 }
@@ -21,6 +27,7 @@ namespace UI {
     export interface FontDescription {
         /** typeface, or path or name for font typeface. If not defined, will be default minecraft typeface
          */
+        //@ts-ignore
         typeface?: string | android.graphics.Typeface;
     }
 
