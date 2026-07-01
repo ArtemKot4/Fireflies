@@ -154,7 +154,7 @@ namespace TileEntity {
     }
 
     TileEntity.registerPrototype = function(blockID, customPrototype) {
-        if(!blockID) {
+        if(blockID == null) {
             Logger.info("ERROR", "TileEntity cannot be registered with invalid numeric ID: " + blockID);
             return false;
         }
