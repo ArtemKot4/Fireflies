@@ -102,8 +102,8 @@ namespace TileEntity {
             if(this.useNetworkItemContainer && this.getScreenName) {
                 const screenName = this.getScreenName(player, coords);
                 if(screenName) {
-                    var client = Network.getClientForPlayer(player);
-                    if(client) {
+                    const client = Network.getClientForPlayer(player);
+                    if(client != null) {
                         this.container.openFor(client, screenName);
                         return true;
                     }
