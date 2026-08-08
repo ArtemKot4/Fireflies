@@ -19,7 +19,6 @@ abstract class BasicDimension {
     public layers: Dimensions.TerrainLayerParams[] = [];
     
     public hasSkyLight?: boolean;
-    public hasBedrockLayer?: boolean;
     public hasMoon?: boolean;
     public hasSun?: boolean;
     public hasVanillaWeather?: boolean;
@@ -114,11 +113,15 @@ abstract class BasicDimension {
     public getSkyAtmosphereEnabled(): boolean {
         return true;
     }
+
+    public hasBedrockLayer() {
+        return true;
+    }
     
     public getGenerator(): Dimensions.CustomGenerator {
         const object = {
             biome: this.biome.id,
-            layers: this.hasBedrockLayer ? 
+            layers: this.hasBedrockLayer() ? 
             this.layers.concat({
                 minY: 0,
                 maxY: 1,
