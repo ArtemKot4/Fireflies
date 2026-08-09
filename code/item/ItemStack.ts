@@ -6,6 +6,7 @@ class ItemStack implements ItemInstance {
 
     public constructor();
     public constructor(instance: ItemInstance);
+    public constructor(id: number | ItemInstance);
     public constructor(id: number, count?: number, data?: number, extra?: ItemExtraData);
     public constructor(id?: number | ItemInstance, count?: number, data?: number, extra?: ItemExtraData) {
         if(typeof id == "object") {
@@ -73,6 +74,14 @@ class ItemStack implements ItemInstance {
     public getStringID(): string {
         return IDRegistry.getStringIdForItemId(this.id);
     }
+
+    /**
+     * @param level level of string: `0` is `id` format, `1` is `id:data` format, `2` is `id:data:count` format
+     * @returns 
+     */
+    public toString(level: 0 | 1 | 2 = 2): string {
+        return ItemStack.toString(this, level);
+    }
     
     public copy(): ItemStack {
         return new ItemStack(this.id, this.count, this.data, this.extra);
@@ -98,5 +107,25 @@ class ItemStack implements ItemInstance {
 
     public static isEmpty(stack: ItemInstance): boolean {
         return stack.id == 0 && stack.count == 0 && stack.data == 0;
+    }
+
+    /**
+     * @param level level of string: `0` is `id` format, `1` is `id:data` format, `2` is `id:data:count` format
+     * @returns 
+     */
+    public static toString(stack: ItemInstance, level: 0 | 1 | 2 = 2): string {
+        let string = `${stack.id}`;
+        if(level >= 1) {
+            string += `:${stack.data}`;
+        }
+        if(level >= 2) {
+            string += `:${stack.count}`;
+        }
+        return string;
+    }
+
+    public static fromString(string: string): ItemStack {
+        const [id, data, count] = string.split(":").map((value) => Number(value));
+        return new ItemStack(id, count, data);
     }
 }

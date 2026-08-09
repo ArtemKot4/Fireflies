@@ -24,6 +24,10 @@ class Vector3 {
         }
     }
 
+    public toString(): string {
+        return Vector3.toString(this);
+    }
+
     public copy(): Vector3 {
         return new Vector3(this.x, this.y, this.z);
     }
@@ -71,5 +75,14 @@ class Vector3 {
 
     public static equals(vector1: Vector, vector2: Vector): boolean {
         return vector1.x == vector2.x && vector1.y == vector2.y && vector1.z == vector2.z;
+    }
+
+    public static toString(vector: Vector): string {
+        return `${vector.x}:${vector.y}:${vector.z}`;
+    }
+
+    public static fromString(string: string): Vector3 {
+        const [x, y, z] = string.split(":").map(value => Number(value));
+        return new Vector3(x, y, z);
     }
 }

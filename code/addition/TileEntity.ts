@@ -50,7 +50,9 @@ namespace TileEntity {
                 this.__delayedRedstone = null;
             }
             this.__initialized = true;
-            this.noupdate = this.noupdate || !this.tick;
+            if(!("noupdate" in this)) {
+                this.noupdate = !this.tick;
+            }
             return true;
         },
         update: function(dt) {
