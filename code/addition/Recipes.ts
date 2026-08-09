@@ -24,12 +24,10 @@ namespace Recipes {
         specialFuelBurnDurations[`${id}:${data}`] = duration;
     }
 
-    registerSpecialFuelBurnDuration(VanillaItemID.lava_bucket, 0, 1000);
+    registerSpecialFuelBurnDuration(VanillaItemID.lava_bucket, 0, 1000 * 20);
 
     registerFuelBurnDurationResult(
         { id: VanillaItemID.lava_bucket, count: 1, data: 0 }, 
         { id: VanillaItemID.bucket, count: 1, data: 0 }
     );
 }
-
-alert(Recipes.getSpecialFuelBurnDuration(VanillaItemID.lava_bucket, 1))
