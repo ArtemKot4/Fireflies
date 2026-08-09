@@ -5,10 +5,14 @@ translations.js
 header.ts
 MathHelper.ts
 
+Vector3.ts
+item/ItemStack.ts
+
 addition/TileEntity.ts
 addition/ToolAPI.ts
 addition/Block.ts
 addition/Item.ts
+addition/Recipes.ts
 addition/World.ts
 addition/TagRegistry.ts
 addition/IDRegistry.ts
@@ -27,10 +31,6 @@ ui/UIHelper.ts
 ui/EScreenName.ts
 
 WorldSaves.ts
-
-Vector3.ts
-
-item/ItemStack.ts
 item/IItemHoldCallback.ts
 item/BasicItem.ts
 item/LiquidStorageItem.ts
