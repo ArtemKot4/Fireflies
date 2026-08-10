@@ -1,4 +1,9 @@
 namespace LiquidItemRegistry {
+    /**
+     * in mili buckets
+     */
+    export const BUCKET_CAPACITY = 1000;
+
     export interface ILiquidStorage {
         capacity: number;
         liquids: string[]
@@ -6,7 +11,6 @@ namespace LiquidItemRegistry {
     export const storage: Record<string, ILiquidStorage> = {};
 
     export function registerLiquidStorage(id: number, data: number, description: ILiquidStorage): void {
-        data = data == -1 ? 0 : data;
         const key = (id + ":" + data);
         if(getLiquidStorage(id, data) != null) {
             throw new Error(`Item liquid storage by "${key}" already registered`);
@@ -15,15 +19,30 @@ namespace LiquidItemRegistry {
     }
 
     export function getLiquidStorage(id: number, data: number): Nullable<ILiquidStorage> {
-        return storage[id + ":" + (data == -1 ? 0 : data)] || null;
+        return storage[id + ":" + data] || null;
     }
 
     export function getCapacity(id: number, data: number): number {
-        return getLiquidStorage(id, data).capacity || 0;
+        const capacity = getLiquidStorage(id, data)?.capacity;
+        if(capacity != null) {
+            return capacity;
+        }
+        if(LiquidRegistry.getItemLiquid(id, data) != null) {
+            return LiquidItemRegistry.BUCKET_CAPACITY;
+        }
     }
 
     export function getLiquids(id: number, data: number): string[] {
-        return getLiquidStorage(id, data).liquids || [];
+        const liquids = getLiquidStorage(id, data).liquids;
+        if(liquids != null) {
+            return liquids;
+        }
+        const list = [];
+        const liquid = LiquidRegistry.getItemLiquid(id, data);
+        if(liquid != null) {
+            list.push(liquid);
+        }
+        return list;
     }
 
     export function getCurrentLiquid(extra: Nullable<ItemExtraData>): Nullable<string> {

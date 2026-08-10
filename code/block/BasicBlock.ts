@@ -58,23 +58,24 @@ class BasicBlock {
     public readonly id: number;
     public readonly stringID: string;
 
-    public constructor(stringID: string, variationList?: Block.BlockVariation[]) {
+    public constructor(stringID: string, variationList: Block.BlockVariation[] = 
+    [{
+        inCreative: true,
+        name: `block.${stringID}`,
+        texture: [[stringID, 0]]
+    }]) {
         this.id = IDRegistry.genBlockID(stringID);
-
         this.stringID = stringID;
-        this.variationList = variationList || [{
-            inCreative: true,
-            name: `block.${stringID}`,
-            texture: [[stringID, 0]]
-        }];
-        BasicBlock.build(this);
+        
+        if(variationList != null) {
+            this.variationList = variationList;
+        }
+        this.build();
     }
 
-    /**
-     * Method declares, can block place rotated by data or not
-     */
-    public canRotate(): boolean {
-        return false;
+    public build(): void {
+        Block.createBlock(this.stringID, this.variationList);
+        BlockEvents.applyData(this);
     }
 
     /**
@@ -150,21 +151,10 @@ class BasicBlock {
         }
         BlockRenderer.setStaticICRender(id, data || -1, render);
     }
+}
 
-    public static build(blockPrototype: BasicBlock): void {
-        if(blockPrototype.canRotate() == true) {
-            blockPrototype.variationList.map((v) => {
-                if(v.texture.length < 6) {
-                    for(let i = v.texture.length; i < 6; i++) {
-                        v.texture.push(v.texture[v.texture.length - 1]);
-                    }
-                }
-                return v;
-            });
-            Block.createBlockWithRotation(blockPrototype.stringID, blockPrototype.variationList);
-        } else {
-            Block.createBlock(blockPrototype.stringID, blockPrototype.variationList);
-        }
+class BlockEvents {
+    public static applyData(blockPrototype: BasicBlock): void {
         const tags = blockPrototype.getTags();
         if(tags != null) {
             TagRegistry.addCommonObject("blocks", blockPrototype.id, tags);

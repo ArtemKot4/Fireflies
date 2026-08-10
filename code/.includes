@@ -39,6 +39,8 @@ block/EDestroyLevel.ts
 block/IBlockModel.ts
 block/BlockModel.ts
 block/BasicBlock.ts
+block/RotatableBlock.ts
+block/LiquidBlock.ts
 block/BlockPlant.ts
 block/BlockBush.ts
 block/wood/RotatableLog.ts

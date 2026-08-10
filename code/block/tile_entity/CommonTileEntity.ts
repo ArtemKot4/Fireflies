@@ -76,6 +76,8 @@ abstract class CommonTileEntity implements TileEntity {
         if(localTileEntity != null) {
             this.client = localTileEntity;
         }
+        delete this.getLocalTileEntity;
+        
         if("onTick" in this) {
             this.tick = this.onTick;
         }

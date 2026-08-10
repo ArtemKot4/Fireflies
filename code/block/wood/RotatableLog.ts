@@ -1,4 +1,4 @@
-class RotatableLog extends BasicBlock implements IPlaceCallback {
+class RotatableLog extends RotatableBlock implements IPlaceCallback {
     constructor(id: string, texture?: string) {
         texture = texture || id;
         const upperTexture = texture + "_top";
