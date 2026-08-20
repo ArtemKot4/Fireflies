@@ -55,17 +55,23 @@ interface IBlockSelectionCallback {
 
 class BasicBlock {
     public readonly variationList: Block.BlockVariation[];
-    public readonly id: number;
-    public readonly stringID: string;
+    public id: number;
+    public readonly stringID?: string;
 
+    /**
+     * 
+     * @param stringID you should transfer string if you don't trying to create new type of block like {@link LiquidBlock} where another system for id
+     * @param variationList 
+     */
     public constructor(stringID: string, variationList: Block.BlockVariation[] = 
     [{
         inCreative: true,
         name: `block.${stringID}`,
         texture: [[stringID, 0]]
     }]) {
-        this.id = IDRegistry.genBlockID(stringID);
-        this.stringID = stringID;
+        if(stringID != null) {
+            this.stringID = stringID;
+        }
         
         if(variationList != null) {
             this.variationList = variationList;
@@ -74,6 +80,7 @@ class BasicBlock {
     }
 
     public build(): void {
+        this.id = IDRegistry.genBlockID(this.stringID);
         Block.createBlock(this.stringID, this.variationList);
         BlockEvents.applyData(this);
     }
@@ -154,13 +161,18 @@ class BasicBlock {
 }
 
 class BlockEvents {
-    public static applyData(blockPrototype: BasicBlock): void {
+    public static applyData(blockPrototype: BasicBlock/*, { events, properties }: Record<string, boolean> = {}*/): void {
+        // events ??= true;
+        // properties ??= true;
+        ItemEvents.applyData(blockPrototype);
+        Block.destroyLevelsToInit[blockPrototype.stringID] = blockPrototype.getDestroyLevel();
+
         const tags = blockPrototype.getTags();
         if(tags != null) {
             TagRegistry.addCommonObject("blocks", blockPrototype.id, tags);
         }
-
         const states = blockPrototype.getStates();
+
         if(states != null) {
             BasicBlock.setStates(blockPrototype.id, states);
         }
@@ -303,8 +315,6 @@ class BlockEvents {
         if("onSelection" in blockPrototype) {
             Block.registerSelectionFunctionForID(blockPrototype.id, (blockPrototype as IBlockSelectionCallback).onSelection.bind(blockPrototype));
         }
-        BasicItem.setFunctions(blockPrototype);
-        Block.destroyLevelsToInit[blockPrototype.stringID] = blockPrototype.getDestroyLevel();
     }
 
     @SubscribeEvent

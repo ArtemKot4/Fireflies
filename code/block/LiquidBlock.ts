@@ -3,6 +3,14 @@ class LiquidBlock extends BasicBlock {
         super(stringID, null);
     }
 
+    public getStillStringID() {
+        return this.stringID + "_still";
+    }
+
+    public getFlowStringID() {
+        return this.stringID + "_flow";
+    }
+
     public override build(): void {
         const obj: Block.LiquidDescriptor = {
             inCreative: this.inCreative(),
@@ -10,11 +18,11 @@ class LiquidBlock extends BasicBlock {
             tickDelay: this.getTickDelay(),
             name: this.name,
             still: {
-                id: this.stringID + "_still",
+                id: this.getStillStringID(),
                 texture: [this.stillTexture, 0]
             },
             flowing: {
-                id: this.stringID + "_flow",
+                id: this.getFlowStringID(),
                 texture: [this.flowTexture, 0]
             }
         };
@@ -28,7 +36,7 @@ class LiquidBlock extends BasicBlock {
             const bucket = this.getBucket();
             if(Array.isArray(bucket)) {
                 const [empty, full] = bucket;
-                LiquidRegistry.registerItem(this.stringID + "_still", empty, full);
+                LiquidRegistry.registerItem(this.getStillStringID(), empty, full);
             } else {
                 obj.bucket = bucket;
                 bucket.id ??= this.stringID + "_bucket";

@@ -99,7 +99,34 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
 
     public getFood?(): number;
 
-    public static setFunctions(instance: 
+    public create(params: ItemParams = {}): void {
+        const tags = this.getTags();
+        const itemParams = Object.assign({ 
+            stack: this.getMaxStack(), 
+            isTech: !this.inCreative(), 
+            category: this.getItemCategory()
+        }, params);
+        let key = "createItem";
+
+        if(tags != null) {
+            TagRegistry.addCommonObject("items", this.id, tags);
+        }
+        if("food" in params) {
+            key = "createFoodItem";
+        }
+        if("type" in params) {
+            key = "createArmorItem";
+        }
+        if("isThrowable" in this && this.isThrowable() == true) {
+            key = "createThrowableItem";
+        }
+        Item[key](this.stringID, this.getName(), this.getTexture(), itemParams);
+        ItemEvents.applyData(this);
+    }
+}
+
+class ItemEvents {
+    public static applyData(instance: 
             (
                 IIconOverrideCallback | 
                 INoTargetUseCallback |
@@ -159,31 +186,4 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
             Item.setCategory(instance.id, instance.getItemCategory())
         }
     }
-
-    public create(params: ItemParams = {}): void {
-        const tags = this.getTags();
-        const itemParams = Object.assign({ 
-            stack: this.getMaxStack(), 
-            isTech: !this.inCreative(), 
-            category: this.getItemCategory()
-        }, params);
-        let key = "createItem";
-
-        if(tags != null) {
-            TagRegistry.addCommonObject("items", this.id, tags);
-        }
-        if("food" in params) {
-            key = "createFoodItem";
-        }
-        if("type" in params) {
-            key = "createArmorItem";
-        }
-        if("isThrowable" in this && this.isThrowable() == true) {
-            key = "createThrowableItem";
-        }
-        Item[key](this.stringID, this.getName(), this.getTexture(), itemParams);
-        BasicItem.setFunctions(this);
-    }
 }
-
-const a = 1 //hello 

@@ -21,7 +21,7 @@ ModAPI.registerAPI("FirefliesAPI", {
     Planks,
     RotatableLog,
     BasicItem,
-    LiquidItemRegistry,
+    CanisterLiquidRegistry,
     CommonTileEntity,
     LocalTileEntity,
     NetworkEvent,

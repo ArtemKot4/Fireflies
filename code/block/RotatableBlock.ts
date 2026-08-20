@@ -1,5 +1,6 @@
 class RotatableBlock extends BasicBlock {
     public override build(): void {
+        this.id = IDRegistry.genBlockID(this.stringID);
         Block.createBlockWithRotation(
             this.stringID, 
             this.variationList.map((v) => {
