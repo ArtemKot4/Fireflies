@@ -51,7 +51,7 @@ class BasicItem<T extends Item.ItemParams = Item.ItemParams> {
     public id: number;
     public stringID: string;
 
-    public constructor(stringID: string, texture: IItemTextureDescription, params: T = {} as T) {
+    public constructor(stringID: string, texture?: IItemTextureDescription, params: T = {} as T) {
         this.id = IDRegistry.genItemID(stringID);
         this.stringID = stringID;
         this.maxStack = params.stack || 64;
@@ -155,7 +155,7 @@ class ItemEvents {
         }
 
         if('onIconOverride' in instance) {
-            Item.registerIconOverrideFunction(instance.id, instance.onIconOverride.bind(this));
+            Item.registerIconOverrideFunction(instance.id, instance.onIconOverride.bind(instance));
         }
 
         if('onNoTargetUse' in instance) {
@@ -175,7 +175,7 @@ class ItemEvents {
         }
 
         if('onNameOverride' in instance) {
-            Item.registerNameOverrideFunction(instance.id, instance.onNameOverride.bind(this));
+            Item.registerNameOverrideFunction(instance.id, instance.onNameOverride.bind(instance));
         }
 
         if('onItemHold' in instance) {
