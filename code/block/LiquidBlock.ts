@@ -47,7 +47,7 @@ class LiquidBlock extends BasicBlock {
     }
 
     public inCreative(): boolean {
-        return true; //debug true
+        return false;
     }
 
     /**
