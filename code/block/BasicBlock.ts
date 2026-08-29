@@ -54,7 +54,7 @@ interface IBlockSelectionCallback {
 }
 
 class BasicBlock {
-    public readonly variationList: Block.BlockVariation[];
+    public variationList: Block.BlockVariation[];
     public id: number;
     public readonly stringID?: string;
 

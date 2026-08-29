@@ -1,6 +1,7 @@
 class ItemStack implements ItemInstance {
+    public static EMPTY: ItemStack = new ItemStack();
     public id: number;
-    public count: number;
+    public count: number
     public data: number;
     public extra?: ItemExtraData;
 
@@ -30,12 +31,12 @@ class ItemStack implements ItemInstance {
         this.count = Math.min(this.count + count, this.getMaxStack());
     }
 
-    public equals(stack: ItemInstance | ItemStack): boolean {
-        return (
-            stack.id == this.id && 
-            this.count == stack.count && 
-            stack.data == this.data
-        );
+    public equals(stack: ItemInstance): boolean {
+        return ItemStack.equals(this, stack);
+    }
+
+    public contains(stack: ItemInstance): boolean {
+        return ItemStack.equals(this, stack);
     }
 
     public getItemInstance(): ItemInstance {
@@ -106,7 +107,7 @@ class ItemStack implements ItemInstance {
     }
 
     public static isEmpty(stack: ItemInstance): boolean {
-        return stack.id == 0 && stack.count == 0 && stack.data == 0;
+        return stack.count <= 0; //stack.id == 0 && stack.count == 0 && stack.data == 0;
     }
 
     /**

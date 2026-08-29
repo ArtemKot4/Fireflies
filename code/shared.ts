@@ -33,6 +33,7 @@ ModAPI.registerAPI("FirefliesAPI", {
     ESide,
     WorldRenderObject,
     SubscribeEvent,
+    NetworkHelper,
     requireGlobal(command: string) {
 		return eval(command);
 	}

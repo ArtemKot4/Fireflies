@@ -30,6 +30,9 @@ ui/UIHelper.ts
 
 ui/EScreenName.ts
 
+network/ClientPackets.ts
+network/ServerPackets.ts
+
 WorldSaves.ts
 item/IItemHoldCallback.ts
 item/BasicItem.ts
