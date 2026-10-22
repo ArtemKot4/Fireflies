@@ -379,4 +379,9 @@ namespace TileEntity {
     interface LocalTileEntityPrototype extends TileEntity.LocalTileEntityPrototype {
         blockData: number;
     }
+
+    export const VanillaContainerSlotDataByID = {
+        [VanillaBlockID.chest]: 36,
+        [VanillaBlockID.barrel]: 36
+    };
 }

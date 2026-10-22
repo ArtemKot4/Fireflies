@@ -43,6 +43,10 @@ class LiquidBlock extends BasicBlock {
             }
         }
         Block.createLiquidBlock(this.stringID, obj);
+        const stillID =this.getStillStringID();
+        const flowID = this.getFlowStringID();
+        BlockID[stillID] ??= IDRegistry.genBlockID(stillID);
+        BlockID[flowID] ??= IDRegistry.genBlockID(flowID);
         BlockEvents.applyData(this);
     }
 

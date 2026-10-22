@@ -129,4 +129,25 @@ class ItemStack implements ItemInstance {
         const [id, data, count] = string.split(":").map((value) => Number(value));
         return new ItemStack(id, count, data);
     }
+
+    public static isCompatible(stack: Partial<ItemInstance>) {
+        return typeof stack == "object" && "id" in stack && "count" in stack;
+    }
+
+    /**
+     * 
+     * @param comparator comparator for sort. You can use default comparators: {@link ItemStack.FILTER_COMPARATORS}
+     * @param stacks stacks to filter
+     */
+    public static filter(stacks: ItemStack[], comparator: (stack1: ItemInstance, stack2: ItemInstance) => number = ItemStack.FilterComparators.ID_GRADATION) {
+        return stacks.sort(comparator);
+    }
+}
+
+namespace ItemStack {
+    export namespace FilterComparators {
+        export const ID_GRADATION = (stack1: ItemInstance, stack2: ItemInstance) => {
+            return stack1.id - stack2.id;
+        }
+    }
 }

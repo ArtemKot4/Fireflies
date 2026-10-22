@@ -82,6 +82,7 @@ class BasicBlock {
     public build(): void {
         this.id = IDRegistry.genBlockID(this.stringID);
         Block.createBlock(this.stringID, this.variationList);
+        BlockID[this.stringID] ??= this.id;
         BlockEvents.applyData(this);
     }
 

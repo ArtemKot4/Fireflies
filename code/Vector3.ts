@@ -85,4 +85,16 @@ class Vector3 {
         const [x, y, z] = string.split(":").map(value => Number(value));
         return new Vector3(x, y, z);
     }
+
+    public static isCompatible(vector: Vector): boolean {
+        return typeof vector == "object" && "x" in vector && "y" in vector && "z" in vector;
+    }
+
+    public static inRange(check: Vector, rangeFrom: Vector, rangeTo: Vector): boolean {
+        const validX = check.x >= rangeFrom.x && check.x <= rangeTo.x;
+        const validY = check.y >= rangeFrom.y && check.y <= rangeTo.y;
+        const validZ = check.z >= rangeFrom.z && check.z <= rangeTo.z;
+
+        return validX && validY && validZ;
+    }
 }

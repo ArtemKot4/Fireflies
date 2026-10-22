@@ -172,12 +172,19 @@ abstract class CommonTileEntity implements TileEntity {
         return null;
     }
 
+    public getScreenOpenDistance(): number {
+        return TileAccess.MAX_OPEN_DISTANCE;
+    }
+
     public getScreenName(player: number, coords: Vector): string {
         return "main";
     }
 
     public preventUI(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
-        return Entity.getSneaking(player);
+        return (
+            TileAccess.isPlayerInRange(player, coords, this.getScreenOpenDistance()) ||
+            Entity.getSneaking(player)
+        );
     }
 
     public onItemClick(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
@@ -187,7 +194,7 @@ abstract class CommonTileEntity implements TileEntity {
                 if(client != null) {
                     const screenName = this.getScreenName(player, coords);
 
-                    if(screenName && this.getScreenByName(screenName, this.container)) {
+                    if(screenName != null && this.getScreenByName(screenName, this.container)) {
                         this.container.openFor(client, screenName);
                         return true;
                     }

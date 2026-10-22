@@ -14,7 +14,7 @@ ModAPI.registerAPI("FirefliesAPI", {
     BlockBush,
     Keyboard,
     UIHelper,
-    PlayerUser,
+    PlayerWrapper,
     Bark,
     Hewn,
     Log,
@@ -34,6 +34,10 @@ ModAPI.registerAPI("FirefliesAPI", {
     WorldRenderObject,
     SubscribeEvent,
     NetworkHelper,
+    TileAccess,
+    NetworkClientPacket,
+    NetworkServerPacket,
+    ErrorLogger,
     requireGlobal(command: string) {
 		return eval(command);
 	}

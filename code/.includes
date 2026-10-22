@@ -30,6 +30,8 @@ ui/UIHelper.ts
 
 ui/EScreenName.ts
 
+network/NetworkClientPacket.ts
+network/NetworkServerPacket.ts
 network/ClientPackets.ts
 network/ServerPackets.ts
 
@@ -55,15 +57,18 @@ block/wood/Planks.ts
 block/tile_entity/NetworkEvent.ts
 block/tile_entity/ContainerEvent.ts
 
+block/tile_entity/TileAccess.ts
 block/tile_entity/LocalTileEntity.ts
 block/tile_entity/CommonTileEntity.ts
 
-PlayerUser.ts
+PlayerWrapper.ts
 
 BasicDimension.ts
 
 event/ECallback.ts
 event/SubscribeEvent.ts
+
+utils/ErrorLogger.ts
 
 final.ts
 shared.ts

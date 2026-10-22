@@ -1,8 +1,8 @@
 /**
- * The factory of decorators to add callback from function.
+ * The factory of decorators to add callback from static method.
  * @example
  * ```ts
- * class Example {
+ * class ExampleEvents {
  *     \@SubscribeEvent(ECallback.LOCAL_TICK)
  *     public static onTick() {
  *         Game.message("example")
@@ -13,11 +13,11 @@
 function SubscribeEvent(event: ECallback, priority?: number): MethodDecorator;
 
 /**
- * Decorator to add callback from function by function name and same function.
+ * Decorator to add callback from static method by static method name and same static method.
  * Format will be "onNameOfCallback". "on" optional.
  * @example
  * ```ts
- * class ExampleDestroyBlock {
+ * class ExampleBlockEvents {
  *     \@SubscribeEvent
  *     public static onDestroyBlock() {
  *         Game.message("break block")
@@ -42,7 +42,6 @@ function SubscribeEvent(
         }
         const eventName = key.replace(/^on/, "");
         Callback.addCallback(eventName, method);
-        
         return descriptor;
     }
     const eventName = eventOrTarget as ECallback;

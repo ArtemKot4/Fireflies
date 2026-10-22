@@ -1,4 +1,4 @@
-class PlayerUser {
+class PlayerWrapper {
     public readonly actor: PlayerActor;
     public constructor(public playerUid: number) {
         this.actor = new PlayerActor(playerUid);
