@@ -215,8 +215,7 @@ class PlayerWrapper {
     }
 
     public decreaseCarriedItem(count: number = 1): void {
-        const stack = this.getCarriedItem();
-        Entity.setCarriedItem(this.playerUid, stack.id, stack.count - count, stack.data, stack.extra);
+       PlayerWrapper.decreaseCarriedItem(this.playerUid, count);
     }
 
     public clearSlot(slot?: number): void {
@@ -236,5 +235,10 @@ class PlayerWrapper {
     public static isCreative(player: number): boolean {
         const gamemode = new PlayerActor(player).getGameMode();
         return gamemode === EGameMode.CREATIVE || gamemode === EGameMode.SPECTATOR;
+    }
+
+    public static decreaseCarriedItem(playerUid: number, count: number = 1): void {
+        const stack = Entity.getCarriedItem(playerUid);
+        Entity.setCarriedItem(playerUid, stack.id, stack.count - count, stack.data, stack.extra);
     }
 }

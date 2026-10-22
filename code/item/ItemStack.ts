@@ -137,15 +137,15 @@ class ItemStack implements ItemInstance {
     /**
      * 
      * @param comparator comparator for sort. You can use default comparators: {@link ItemStack.FILTER_COMPARATORS}
-     * @param stacks stacks to filter
+     * @param stacks stacks to sort
      */
-    public static filter(stacks: ItemStack[], comparator: (stack1: ItemInstance, stack2: ItemInstance) => number = ItemStack.FilterComparators.ID_GRADATION) {
+    public static sort(stacks: ItemInstance[], comparator: (stack1: ItemInstance, stack2: ItemInstance) => number = ItemStack.SortComparators.ID_GRADATION) {
         return stacks.sort(comparator);
     }
 }
 
 namespace ItemStack {
-    export namespace FilterComparators {
+    export namespace SortComparators {
         export const ID_GRADATION = (stack1: ItemInstance, stack2: ItemInstance) => {
             return stack1.id - stack2.id;
         }
