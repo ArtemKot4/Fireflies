@@ -66,10 +66,10 @@ function NetworkServerPacket(
         Network.addServerPacket(keyMethod, method);
         return descriptor;
     }
+    const name = target;
     
     return function(target: any, key: string, desc: NetworkServerPacketMethodDescriptor): NetworkServerPacketMethodDescriptor {
         const method = desc.value;
-        const name = target;
         
         if(typeof target != 'function') {
             throw new Error(`@NetworkServerPacket can only be used on static methods inside class`);

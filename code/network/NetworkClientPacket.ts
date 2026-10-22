@@ -45,7 +45,7 @@ function NetworkClientPacket(
     keyMethod?,
     descriptor?: NetworkClientPacketMethodDescriptor
 ): unknown {
-    if (descriptor != undefined) {
+    if(descriptor != undefined) {
         const method = descriptor.value;
         
         if(typeof target != 'function') {
@@ -54,10 +54,10 @@ function NetworkClientPacket(
         Network.addClientPacket(keyMethod, method);
         return descriptor;
     }
+    const name = target;
     
     return function(target: any, key: string, desc: NetworkClientPacketMethodDescriptor): NetworkClientPacketMethodDescriptor {
         const method = desc.value;
-        const name = target;
         
         if(typeof target != 'function') {
             throw new Error(`@NetworkClientPacket can only be used on static methods inside class`);
