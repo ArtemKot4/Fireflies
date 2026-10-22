@@ -182,7 +182,7 @@ abstract class CommonTileEntity implements TileEntity {
 
     public preventUI(id: number, count: number, data: number, coords: Callback.ItemUseCoordinates, player: number, extra: Nullable<ItemExtraData>): boolean {
         return (
-            TileAccess.isPlayerInRange(player, coords, this.getScreenOpenDistance()) ||
+            !TileAccess.isPlayerInRange(player, coords, this.getScreenOpenDistance()) ||
             Entity.getSneaking(player)
         );
     }

@@ -52,19 +52,12 @@ function NetworkServerPacket(name: string): (target: Object, propertyKey: string
 
 function NetworkServerPacket(target: unknown, key?: string, descriptor?: NetworkServerPacketMethodDescriptor): NetworkServerPacketMethodDescriptor;
 
-/**
- * 
- * @param name 
- * @param keyMethod 
- * @param descriptor 
- * @returns 
- */
 function NetworkServerPacket(
     target: string,
     keyMethod?,
     descriptor?: NetworkServerPacketMethodDescriptor
 ): unknown {
-    if (descriptor != undefined) {
+    if(descriptor != undefined) {
         const method = descriptor.value;
         
         if(typeof target != 'function') {
