@@ -68,6 +68,7 @@ BasicDimension.ts
 event/ECallback.ts
 event/SubscribeEvent.ts
 
+utils/SerializeableStorage.ts
 utils/ErrorLogger.ts
 
 final.ts

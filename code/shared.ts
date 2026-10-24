@@ -37,6 +37,7 @@ ModAPI.registerAPI("FirefliesAPI", {
     TileAccess,
     NetworkClientPacket,
     NetworkServerPacket,
+    SerializeableStorage,
     ErrorLogger,
     requireGlobal(command: string) {
 		return eval(command);
